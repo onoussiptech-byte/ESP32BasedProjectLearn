@@ -1,0 +1,22 @@
+{
+ "prismjs": {
+  "version": "1.29.0",
+  "url": "https://registry.npmjs.org/prismjs/-/prismjs-1.29.0.tgz",
+  "sha256": "e3b4e4286835f6f01a2cfaf8d0545542dd3da9dcc904fd134d4aface3aef499c"
+ },
+ "@fontsource/inter": {
+  "version": "5.1.0",
+  "url": "https://registry.npmjs.org/@fontsource/inter/-/inter-5.1.0.tgz",
+  "sha256": "71afcac542263665f3c8c6b53d4046f4c3504e3508f01c0f1666665ee79f56c1"
+ },
+ "@fontsource/jetbrains-mono": {
+  "version": "5.1.0",
+  "url": "https://registry.npmjs.org/@fontsource/jetbrains-mono/-/jetbrains-mono-5.1.0.tgz",
+  "sha256": "53b0344268b2404a9c194327ee3c83e3e6d5e7d0566ac74cd15497234fc0525f"
+ },
+ "lucide-static": {
+  "version": "0.460.0",
+  "url": "https://registry.npmjs.org/lucide-static/-/lucide-static-0.460.0.tgz",
+  "sha256": "24ec818481591e6795c48cd5d8466d1632c02050aa317801c207f91de9747ae4"
+ }
+}
