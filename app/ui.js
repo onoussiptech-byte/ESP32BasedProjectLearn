@@ -225,5 +225,44 @@
         small ? null : h('small', null, I18n.pick(window.ESP32TOUR_COURSE.app.long_name))));
   }
 
-  window.UI = { h, icon, statusIcon, statusLabel, counter, ring, floatDelta, toast, modal, field, button, langSwitch, logo, reduced, fmt };
+  // ---------------------------------------------------------------- lesson text: inline markup and code blocks
+  // Markup (always built as DOM nodes, never as HTML): **bold**  *italic*  `code`
+  //   [[label|t1.l01.s01/p2#section]] concept chip   [label](https://...) link to an online resource
+  const INLINE_RE = /(\*\*[^*]+\*\*|\*[^*\s][^*]*\*|`[^`]+`|\[\[[^\]|]+\|[^\]]+\]\]|\[[^\]]+\]\(https:\/\/[^)\s]+\))/;
+  function inline(text, o) {
+    const opts = o || {}, out = [];
+    String(text == null ? '' : text).split(INLINE_RE).forEach((part) => {
+      if (!part) return;
+      if (part.startsWith('**') && part.endsWith('**') && part.length > 4) out.push(h('strong', null, inline(part.slice(2, -2), opts)));
+      else if (part.startsWith('`') && part.endsWith('`') && part.length > 2) out.push(h('code', { class: 'icode' }, part.slice(1, -1)));
+      else if (part.startsWith('[[') && part.endsWith(']]')) {
+        const i = part.indexOf('|'), label = part.slice(2, i), target = part.slice(i + 1, -2);
+        out.push(opts.onChip
+          ? h('button', { class: 'chip-link', type: 'button', 'data-target': target, onclick: () => opts.onChip(target, label) }, icon('link-2'), h('span', null, label))
+          : h('span', { class: 'chip-link' }, label));
+      } else if (part.startsWith('[') && part.includes('](https://')) {
+        const i = part.indexOf(']('), label = part.slice(1, i), url = part.slice(i + 2, -1);
+        out.push(h('a', { class: 'ext', href: url, target: '_blank', rel: 'noopener noreferrer' }, label, h('span', { class: 'online-tag' }, t('common.online'))));
+      } else if (part.startsWith('*') && part.endsWith('*') && part.length > 2) out.push(h('em', null, inline(part.slice(1, -1), opts)));
+      else out.push(part);
+    });
+    return out;
+  }
+
+  // Syntax-highlighted code (Prism builds escaped markup; unknown languages fall back to plain text)
+  function codeBlock(lang, code, caption) {
+    const el = h('code', { class: 'language-' + lang });
+    const grammar = window.Prism && window.Prism.languages && window.Prism.languages[lang];
+    if (grammar) el.innerHTML = window.Prism.highlight(code, grammar, lang); else el.textContent = code;
+    const copy = h('button', { class: 'code-copy', type: 'button', 'aria-label': t('common.copy') }, icon('copy'), h('span', null, t('common.copy')));
+    copy.addEventListener('click', async () => {
+      const ok = UI.copyText ? await UI.copyText(code) : false;
+      if (ok) { copy.lastChild.textContent = t('common.copied'); setTimeout(() => { copy.lastChild.textContent = t('common.copy'); }, 1600); }
+    });
+    return h('figure', { class: 'code' },
+      h('div', { class: 'code-head' }, h('span', { class: 'code-lang' }, lang === 'cpp' ? 'C++' : lang.toUpperCase()), caption ? h('span', { class: 'code-cap' }, caption) : null, copy),
+      h('pre', { class: 'code-pre', tabindex: '0' }, el));
+  }
+
+  window.UI = { h, icon, statusIcon, statusLabel, counter, ring, floatDelta, toast, modal, field, button, langSwitch, logo, reduced, fmt, inline, codeBlock };
 })();

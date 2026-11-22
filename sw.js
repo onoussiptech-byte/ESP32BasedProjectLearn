@@ -2,7 +2,7 @@
  * - Files listed below: served from the cache first (works with no connection).
  * - Anything else (other origins, online links, POSTs): passed straight through, never touched or blocked.
  * - A new version waits until the person taps "Reload" in the "Update available" message. */
-const CACHE = 'esp32tour-v0.2.0';
+const CACHE = 'esp32tour-v0.3.0';
 const FILES = [
  "./",
  "index.html",
@@ -15,10 +15,14 @@ const FILES = [
  "app/fonts.css",
  "app/i18n.js",
  "app/icons.js",
+ "app/lessons.js",
+ "app/prism.js",
  "app/pwa.js",
+ "app/quiz.js",
  "app/store.js",
  "app/styles.css",
  "app/ui.js",
+ "content/t1.l01.s01.js",
  "fonts/inter-latin-400.woff2",
  "fonts/inter-latin-500.woff2",
  "fonts/inter-latin-600.woff2",
