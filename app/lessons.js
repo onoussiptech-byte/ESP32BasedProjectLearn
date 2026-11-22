@@ -200,7 +200,9 @@
       if (route.n) {
         const where = labelOf(l, route.n) + ' · ' + L(Course.subTitle(l.key, route.n));
         if (!Course.hasContent(qidOf(route))) return where;               // coming soon: no pages to number
-        return route.view === 'quiz' ? where + ' · ' + t('quiz.title') : where + ' · ' + t('learn.page.short', { n: route.page });
+        if (route.view === 'quiz') return where + ' · ' + t('quiz.title');
+        const loaded = (window.ESP32TOUR_CONTENT || {})[qidOf(route)];
+        return loaded && loaded.pages.length < 2 ? where : where + ' · ' + t('learn.page.short', { n: route.page });   // a one-page lesson has no page number
       }
       return labelOf(l) + ' · ' + L(l.title);
     }
@@ -335,7 +337,7 @@
       function pageEl(i) {
         const p = pages[i];
         return h('article', { class: 'lpage', 'aria-label': L(p.title) },
-          h('h2', { class: 'lpage-title', tabindex: '-1' }, h('span', { class: 'pg-n' }, t('learn.page', { n: i + 1, m: total })), L(p.title)),
+          h('h2', { class: 'lpage-title', tabindex: '-1' }, total > 1 ? h('span', { class: 'pg-n' }, t('learn.page', { n: i + 1, m: total })) : null, L(p.title)),
           p.blocks.map((b) => renderBlock(b, chipOpts)), sourcesBox(p.sources));
       }
       function drawPager() {
@@ -344,7 +346,8 @@
         const next = last
           ? h('a', { class: 'btn primary', href: href(l.key.split('.')[1], 's' + pad(n), 'quiz') }, icon('play'), h('span', null, rec ? t('learn.quiz.retake') : t('learn.quiz.start')))
           : h('a', { class: 'btn primary', href: subHref(l, n, cur + 2) }, h('span', null, t('learn.next')), icon('arrow-right'));
-        pager.replaceChildren(prev, h('span', { class: 'pager-mid' }, t('learn.page', { n: cur + 1, m: total })), next);
+        // a one-page lesson has nothing to page through: only the button that leads to the quiz
+        pager.replaceChildren(...(total > 1 ? [prev, h('span', { class: 'pager-mid' }, t('learn.page', { n: cur + 1, m: total })), next] : [h('span'), next]));
       }
       function show(i, section) {
         i = Math.max(0, Math.min(total - 1, i));
@@ -367,12 +370,12 @@
       const head = h('header', { class: 'lhead' }, h('span', { class: 'lesson-num big' }, labelOf(l, n)),
         h('div', { class: 'lhead-text' }, h('h1', null, L(Course.subTitle(l.key, n))), h('p', { class: 'lsum' }, L(content.summary)),
           h('div', { class: 'lhead-meta' },
-            h('span', { class: 'meta-chip' }, icon('file-text'), t('learn.pages.n', { n: total })),
+            h('span', { class: 'meta-chip' }, icon('file-text'), total === 1 ? t('learn.pages.one') : t('learn.pages.n', { n: total })),
             h('span', { class: 'meta-chip' }, icon('list-checks'), t('learn.questions.n', { n: maxOf(qid) })),
             h('span', { class: 'meta-chip st-' + st }, statusIcon(st, null, 16), rec ? t('learn.best', { a: rec.best, b: maxOf(qid) }) : t('status.new')),
             navLink({ class: 'link-btn', href: href(l.key.split('.')[1], 's' + pad(n), 'quiz') }, icon('play'), t('learn.skip.quiz')))));
       pageApi = { show };
-      const view = h('div', { class: 'lview' }, crumbs(l, n), head, goals, stepper, stage, pager);
+      const view = h('div', { class: 'lview' }, crumbs(l, n), head, goals, total > 1 ? stepper : null, stage, pager);
       show(route.page - 1, route.section);
       return view;
     }
@@ -445,7 +448,7 @@
       const samePage = pageApi && prev.lesson === r.lesson && prev.sub === r.sub && prev.view === 'sub' && r.view === 'sub';
       if (samePage) {                                         // only the page or the section changed
         pageApi.show(r.page - 1, r.section);
-        barLabel.textContent = currentLabel(); drawBack(); markCurrent(true);
+        barLabel.textContent = currentLabel(); document.title = currentLabel() + ' · ' + t('app.short'); drawBack(); markCurrent(true);
         if (pendingScroll != null) { const y = pendingScroll; pendingScroll = null; window.scrollTo(0, y); }
         return;
       }
