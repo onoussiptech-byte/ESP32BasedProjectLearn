@@ -25,6 +25,10 @@ Every text is `{"en": "...", "fr": "..."}`. Both languages are required.
 }
 ```
 
+**Working plan from sub-lesson 1.1.2 on: ONE lesson page (`p1`) plus the 8 quiz pages, so 9 pages per sub-lesson.**
+Use `h` headings inside that page to organise it (a chip can jump to any heading). 1.1.1 keeps its three pages.
+A one-page lesson is shown without the page stepper and without "Page 1 of 1".
+
 ## Page blocks
 
 | type | fields |
@@ -54,7 +58,8 @@ Each page lists where its facts come from. The build looks up the page number an
 ```
 
 Use the exact section title from `src/references/index.json` (PDFs) or `arduino_index.json` (Arduino core docs).
-If a title appears twice, add `"page": N`.
+If a title appears twice, add `"page": N`. If you have `pypdf` installed, the validator also opens the PDF and checks that the
+heading really is on the page the index gives; when the index is wrong, add `"pdf_page": N` with the real page (done for 4.1.3).
 
 ## Questions (8 per sub-lesson, at least 4 different types, every `explain` required)
 

@@ -13,6 +13,7 @@ All outputs are plain HTML/CSS/JS with classic scripts, so they work from file:/
   python -I src/build.py --publish             ... and publish the PWA files to gh-appages (commit + push)
   python -I src/build.py --publish --no-push   ... commit on gh-appages only, push later yourself
   python -I src/build.py --publish --message "text"   use your own commit message
+  python -I src/build.py --pwa-into FOLDER     ... and write the phone files into FOLDER, no git at all (you commit)
 """
 import argparse
 import base64
@@ -206,6 +207,35 @@ def remove_tree(path):
     shutil.rmtree(path, onerror=clear_flag_and_retry)
 
 
+def fill_pwa(dest):
+    """Write the phone/PWA version into dest: the app's own files (PAGES_KEEP), an EMPTY accounts file and
+    .nojekyll. Anything else in dest (such as a .git folder) is left alone."""
+    for name in PAGES_KEEP:
+        src, target = APP / name, dest / name
+        if not src.exists():
+            sys.exit(f"missing {src}: the folder build must run first")
+        if target.is_dir():
+            remove_tree(target)
+        elif target.exists():
+            target.unlink()
+        copy_plain(src, target)
+    (dest / "data" / "accounts.js").write_text(EMPTY_ACCOUNTS, encoding="utf-8")   # never publish anyone's accounts
+    (dest / ".nojekyll").write_text("", encoding="utf-8")
+
+
+def export_pwa(dest):
+    """--pwa-into: put the phone files into a folder you name (normally the gh-appages checkout). No git is run:
+    you commit and push yourself. Refuses a folder that holds the source (src/), so it can never overwrite main."""
+    dest = Path(dest).resolve()
+    if not dest.is_dir():
+        sys.exit(f"{dest} is not a folder")
+    if dest == APP.resolve() or (dest / "src").exists():
+        sys.exit(f"{dest} holds the source or the PC build: pick the folder where the {PAGES_BRANCH} branch is checked out")
+    fill_pwa(dest)
+    n = sum(1 for p in dest.rglob("*") if p.is_file() and ".git" not in p.relative_to(dest).parts)
+    print(f"  pwa     {dest}  ({n} files, empty accounts file; no git command was run)")
+
+
 def git(*args, cwd=ROOT):
     r = subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, encoding="utf-8")
     if r.returncode:
@@ -235,13 +265,7 @@ def publish(version, message, push):
         for p in work.iterdir():                                 # the branch holds the app files and nothing else
             if p.name != ".git":
                 shutil.rmtree(p) if p.is_dir() else p.unlink()
-        for name in PAGES_KEEP:
-            src = APP / name
-            if not src.exists():
-                sys.exit(f"missing {src}: the folder build must run first")
-            copy_plain(src, work / name)
-        (work / "data" / "accounts.js").write_text(EMPTY_ACCOUNTS, encoding="utf-8")   # never publish anyone's accounts
-        (work / ".nojekyll").write_text("", encoding="utf-8")
+        fill_pwa(work)
         git("add", "-A", cwd=work)
         if not git("status", "--porcelain", cwd=work):
             print(f"  publish {PAGES_BRANCH}: already up to date, nothing to commit")
@@ -304,6 +328,7 @@ def main():
     ap.add_argument("--publish", action="store_true", help=f"also update the {PAGES_BRANCH} branch with the PWA files")
     ap.add_argument("--no-push", action="store_true", help="with --publish: commit on the branch but do not push")
     ap.add_argument("--message", help="with --publish: the commit message")
+    ap.add_argument("--pwa-into", metavar="FOLDER", help="write the phone/PWA files into FOLDER (no git is run)")
     args = ap.parse_args()
     sys.dont_write_bytecode = True                              # keep src/tools free of __pycache__
     sys.path.insert(0, str(SRC / "tools"))
@@ -323,6 +348,8 @@ def main():
     print(f"version {version}  ({len(contents)} lesson content file(s))")
     print(f"  folder  {APP}")
     print(f"  single  {SINGLE}  ({SINGLE.stat().st_size // 1024} KB)")
+    if args.pwa_into:
+        export_pwa(args.pwa_into)
     if args.publish:
         publish(version, args.message or f"Publish ESP32 Tour v{version} (PWA build)", push=not args.no_push)
 

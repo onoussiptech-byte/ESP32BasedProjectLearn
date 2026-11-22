@@ -107,6 +107,33 @@ def markup(c, where, s):
             c.err(where, f"link must be https: {m.group(2)}")
 
 
+_PDFS = {}
+NOTES = []
+
+
+def pdf_page_text(ref, page):
+    """Text of one PDF page, or None when pypdf or the PDF is not available (the check is then skipped)."""
+    try:
+        from pypdf import PdfReader
+    except ImportError:
+        if "pypdf" not in NOTES:
+            NOTES.append("pypdf")
+        return None
+    path = ROOT.parent / ref["file"]
+    if not path.exists():
+        return None
+    if path not in _PDFS:
+        _PDFS[path] = PdfReader(str(path))
+    try:
+        return _PDFS[path].pages[page - 1].extract_text()
+    except (IndexError, ValueError):
+        return None
+
+
+def squash(s):
+    return re.sub(r"[^a-z0-9]+", "", s.lower())
+
+
 def resolve_source(c, where, src, refs):
     doc = src.get("doc")
     if doc in ("datasheet", "trm", "idf"):
@@ -124,7 +151,12 @@ def resolve_source(c, where, src, refs):
             c.err(where, f"section {src.get('section')!r} is ambiguous ({len(hits)} hits): add a 'page'")
             return None
         s = hits[0]
-        return {"doc": doc, "section": s["title"], "page": s["page"], "url": f"{ref['url']}#page={s['page']}"}
+        page = src.get("pdf_page", s["page"])                   # "pdf_page" corrects a wrong page in the index
+        text = pdf_page_text(ref, page)
+        if text is not None and squash(re.sub(r"^[\d.]+\s*", "", s["title"])) not in squash(text):
+            c.err(where, f"heading {s['title']!r} is not on PDF page {page} (the index says {s['page']}): "
+                         f"look it up and add \"pdf_page\": N to this source")
+        return {"doc": doc, "section": s["title"], "page": page, "url": f"{ref['url']}#page={page}"}
     if doc == "arduino":
         ref = refs.get("arduino")
         page = next((p for p in (ref or {}).get("pages", []) if p["path"] == src.get("page")), None)
@@ -396,6 +428,9 @@ def main():
     contents, errors, warnings = validate(verbose=True)
     for w in warnings:
         print("warning:", w)
+    if "pypdf" in NOTES:
+        print("note: pypdf is not installed here, so cited page numbers were not checked against the PDFs "
+              "(pip install pypdf to enable the check)")
     for e in errors:
         print("ERROR:", e)
     print(f"{len(contents)} content file(s), {len(errors)} error(s), {len(warnings)} warning(s)")

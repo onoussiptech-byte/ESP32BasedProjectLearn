@@ -100,7 +100,7 @@
    "sources": [
     {"doc": "datasheet", "section": "4.1.1 CPU"},
     {"doc": "datasheet", "section": "4.1.2 Internal Memory"},
-    {"doc": "datasheet", "section": "4.1.3 External Flash and RAM"},
+    {"doc": "datasheet", "section": "4.1.3 External Flash and RAM", "pdf_page": 27},
     {"doc": "datasheet", "section": "4.7 Bluetooth"},
     {"doc": "datasheet", "section": "4.8 Digital Peripherals"}
    ]
