@@ -1,14 +1,15 @@
 # ESP32 Tour: publish, install on a phone, run offline
 
-Three ready-made versions are in `dist/`:
+There are three versions, built from the same source in `src/`:
 
-| Version | What it is | Use it for |
+| Version | Where | Use it for |
 |---|---|---|
-| `ESP32_Tour/` | Normal folder | A computer. Double-click `index.html`. |
-| `ESP32_Tour_site/` | Same app plus install files (PWA) and an **empty** accounts file | Publishing on GitHub Pages, then installing on phones |
-| `ESP32_Tour_single.html` | The whole app in one 500 KB file | Sending by e-mail or Drive, opening without installing |
+| `ESP32_Tour/` | `dist/` on the main branch | A computer. Double-click `index.html`. |
+| PWA files (the same app plus install files and an **empty** accounts file) | The **`gh-appages` branch** only, never a folder in `dist/` | GitHub Pages, then installing on phones |
+| `ESP32_Tour_single.html` | `dist/` | Sending by e-mail or Drive, opening without installing |
 
-Rebuild any time with `.venv\Scripts\python.exe -I src\build.py` (from the project folder).
+Rebuild the computer versions with `python -I src\build.py` (from the project folder).
+Rebuild **and publish the phone version** with `python -I src\build.py --publish` (section 2).
 
 ---
 
@@ -24,37 +25,27 @@ Rebuild any time with `.venv\Scripts\python.exe -I src\build.py` (from the proje
 ## 2. Publish on GitHub Pages (one time, free)
 
 A phone can only install an app from an `https://` address. GitHub Pages gives you one for free.
-You need a free GitHub account. The free plan needs a **public** repository, so anyone with the link can open the course (it contains no accounts, because `ESP32_Tour_site/data/accounts.js` is empty).
+The free plan needs a **public** repository, so anyone with the link can open the course. It contains no accounts: the publish step always writes an empty `data/accounts.js`.
 
-### Option A: in the browser (no Git needed)
+### One time: tell GitHub which branch to serve
+On GitHub open **Settings → Pages**. Under **Build and deployment** set Source to **Deploy from a branch**, Branch **`gh-appages`**, folder **/(root)**, then **Save**. The page then shows your address, for example `https://YOUR-USERNAME.github.io/ESP32BasedProjectLearn/`.
 
-1. Go to <https://github.com/new>. Repository name: `esp32-tour`. Choose **Public**. Tick **Add a README file**. Click **Create repository**.
-2. Click **Add file → Upload files**.
-3. Open the folder `dist\ESP32_Tour_site` on your computer. Select **everything inside it** (the folders `app`, `data`, `fonts`, `icons`, `licenses` and the files `index.html`, `manifest.webmanifest`, `sw.js`) and drag it onto the GitHub page. `index.html` must end up at the top level of the repository, not inside another folder.
-4. Click **Commit changes**.
-5. Open **Settings → Pages**. Under **Build and deployment**, set Source to **Deploy from a branch**, Branch **main**, folder **/(root)**, then **Save**.
-6. Wait 1–2 minutes and refresh. The page shows your address:
-   `https://YOUR-USERNAME.github.io/esp32-tour/`
-7. Open that address on your computer to check it works.
+### Publishing a new version (every time)
+1. Raise `"version"` in `src/course.json` (for example `0.3.1`).
+2. Run, from the project folder:
 
-### Option B: with Git
+   ```powershell
+   python -I src\build.py --publish
+   ```
 
-```powershell
-cd dist\ESP32_Tour_site
-git init -b main
-git add -A
-git commit -m "ESP32 Tour 0.2.0"
-git remote add origin https://github.com/YOUR-USERNAME/esp32-tour.git
-git push -u origin main
-```
-Then do steps 5–7 above.
+   This rebuilds the computer versions in `dist/`, then puts the phone files on the `gh-appages` branch and pushes it. The phone files are assembled in a temporary folder that is deleted afterwards, so nothing for phones is ever left in `dist/` and `main` is never touched.
+3. Wait 1–2 minutes, open the address on your computer to check it.
+4. Phones that already installed the app show **"Update available" → Reload** the next time they open it online. Progress is kept.
 
-### Publishing a new version later
-1. Raise `"version"` in `src/course.json` (for example `0.2.1`), then rebuild.
-2. Upload the new contents of `dist\ESP32_Tour_site` over the old ones (Add file → Upload files, or `git add -A; git commit; git push`).
-3. Phones that already installed the app show **"Update available" → Reload** the next time they open it online. Progress is kept.
+Options: `--no-push` commits on `gh-appages` but does not push (then run `git push origin gh-appages` yourself); `--message "text"` sets the commit message.
+If the push is refused (HTTP 403), the commit is still on your local `gh-appages` branch: push it from a terminal signed in to a GitHub account that may write to the repository.
 
-> Never upload `dist\ESP32_Tour\data\accounts.js` after real people have used that folder: it holds their accounts (as password hashes). Always publish `ESP32_Tour_site`.
+> The phone files never include the accounts of whoever used the computer folder. Do not copy `dist\ESP32_Tour` to the `gh-appages` branch by hand: its `data\accounts.js` holds people's accounts (as password hashes).
 
 ---
 

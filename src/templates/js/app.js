@@ -179,7 +179,7 @@
   function openChangePassword() {
     const a = Store.current();
     const fOld = field({ label: t('field.oldpass'), name: 'old', type: 'password', autocomplete: 'current-password', maxlength: 128 });
-    const fNew = field({ label: t('field.newpass'), name: 'new', type: 'password', autocomplete: 'new-password', maxlength: 128, hint: t('hint.password') });
+    const fNew = field({ label: t('field.newpass'), name: 'new', type: 'password', autocomplete: 'new-password', maxlength: 128, hint: t('hint.password', { n: Store.PW_MIN }) });
     const fNew2 = field({ label: t('field.confirm'), name: 'new2', type: 'password', autocomplete: 'new-password', maxlength: 128 });
     const err = h('div', { class: 'form-err', role: 'alert' });
     const go = button(t('common.save'), { type: 'submit', icon: 'check' });
@@ -188,7 +188,7 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault(); [fOld, fNew, fNew2].forEach((f) => f.clear()); err.textContent = '';
       if (!fOld.value) return fOld.error('err.required');
-      if (fNew.value.length < 6) return fNew.error('err.pw.short');
+      if (fNew.value.length < Store.PW_MIN) return fNew.error('err.pw.short', { n: Store.PW_MIN });
       if (fNew.value !== fNew2.value) return fNew2.error('err.pw.mismatch');
       go.setBusy(true);
       try {
@@ -260,9 +260,15 @@
     shell.route = id;
     shell.header.setActive(id);
     document.title = tabTitle(id) + ' · ' + t('app.short');
+    if (id !== 't1' && shell.lessons) { shell.lessons.destroy(); shell.lessons = null; }
     if (id === 'dashboard') {
       shell.dash = Dashboard.mount({ onChangePassword: openChangePassword });
       shell.main.replaceChildren(shell.dash.el); shell.dash.update();
+    } else if (id === 't1') {
+      shell.dash = null;
+      if (!shell.lessons) { shell.lessons = Lessons.mount(); shell.main.replaceChildren(shell.lessons.el); }
+      else shell.lessons.go(location.hash);                  // the lessons view keeps its own scroll and navigation state
+      return;
     } else { shell.dash = null; shell.main.replaceChildren(placeholder(id)); }
     window.scrollTo(0, 0);
   }
@@ -271,6 +277,7 @@
     if (!shell || !Store.current()) return;
     shell.header.update();
     if (shell.dash) shell.dash.update();
+    if (shell.lessons) shell.lessons.update();
   }
 
   // Build the whole signed-in screen
@@ -278,7 +285,7 @@
     closeMenu();
     const header = buildHeader();
     const main = h('main', { class: 'main', id: 'main', tabindex: '-1' });
-    shell = { header, main, route: null, dash: null };
+    shell = { header, main, route: null, dash: null, lessons: null };
     root().replaceChildren(h('div', { class: 'app' }, header.el, main,
       h('footer', { class: 'foot' }, t('footer.version', { v: Store.VERSION }),
         Store.versionNote ? ' · ' + t('update.note', { v: Store.versionNote }) : '')));
@@ -289,6 +296,7 @@
 
   const App = {
     boot() {
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';   // the lessons view positions the page itself
       Store.init(); I18n.init();
       Store.on((what) => {
         if (what === 'results') refresh();
@@ -299,7 +307,7 @@
       window.addEventListener('hashchange', () => { if (shell) showRoute(); });
       if (Store.current()) enter(); else Auth.show('signin', authOpts());
     },
-    // Called by the quiz engine (later) after Store.recordAttempt(): floats "+n" / "▼n" over Score and Total mark
+    // Called by the quiz engine after Store.recordAttempt(): floats "+n" / "▼n" over Score and Total mark
     appCopyHtml,
     showDeltas(res) { if (shell) { shell.header.deltas(res); if (shell.dash) shell.dash.floatDeltas(res); } }
   };

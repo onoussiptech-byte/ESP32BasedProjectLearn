@@ -104,7 +104,7 @@
     const fId = field({ label: t('field.id'), name: 'id', autocomplete: 'username', maxlength: 24, hint: t('hint.id') });
     const fFirst = field({ label: t('field.first'), name: 'first', autocomplete: 'given-name', maxlength: 60 });
     const fLast = field({ label: t('field.last'), name: 'last', autocomplete: 'family-name', maxlength: 60 });
-    const fPw = field({ label: t('field.password'), name: 'password', type: 'password', autocomplete: 'new-password', maxlength: 128, hint: t('hint.password') });
+    const fPw = field({ label: t('field.password'), name: 'password', type: 'password', autocomplete: 'new-password', maxlength: 128, hint: t('hint.password', { n: Store.PW_MIN }) });
     const fPw2 = field({ label: t('field.confirm'), name: 'confirm', type: 'password', autocomplete: 'new-password', maxlength: 128 });
     const err = h('div', { class: 'form-err', role: 'alert' });
     const btn = button(t('auth.signup.btn'), { type: 'submit', icon: 'user-plus', block: true });
@@ -115,12 +115,12 @@
       e.preventDefault();
       [fId, fFirst, fLast, fPw, fPw2].forEach((f) => f.clear()); err.textContent = '';
       let bad = null;
-      const fail = (f, key) => { if (!bad) { f.error(key); bad = f; } else f.error(key); };
+      const fail = (f, key, vars) => { if (!bad) { f.error(key, vars); bad = f; } else f.error(key, vars); };
       const idErr = Store.validateId(fId.value);
       if (idErr) fail(fId, idErr); else if (Store.idTaken(fId.value)) fail(fId, 'err.id.taken');
       if (!fFirst.value.trim()) fail(fFirst, 'err.required');
       if (!fLast.value.trim()) fail(fLast, 'err.required');
-      if (fPw.value.length < 6) fail(fPw, 'err.pw.short');
+      if (fPw.value.length < Store.PW_MIN) fail(fPw, 'err.pw.short', { n: Store.PW_MIN });
       else if (fPw.value !== fPw2.value) fail(fPw2, 'err.pw.mismatch');
       if (bad) { bad.input.focus(); return; }
       btn.setBusy(true);
@@ -171,7 +171,7 @@
   function forgot(opts) {
     const fId = field({ label: t('field.id'), name: 'id', autocomplete: 'username', maxlength: 24 });
     const fCode = field({ label: t('field.recovery'), name: 'code', maxlength: 24, placeholder: 'XXXX-XXXX-XXXX-XXXX' });
-    const fPw = field({ label: t('field.newpass'), name: 'password', type: 'password', autocomplete: 'new-password', maxlength: 128, hint: t('hint.password') });
+    const fPw = field({ label: t('field.newpass'), name: 'password', type: 'password', autocomplete: 'new-password', maxlength: 128, hint: t('hint.password', { n: Store.PW_MIN }) });
     const fPw2 = field({ label: t('field.confirm'), name: 'confirm', type: 'password', autocomplete: 'new-password', maxlength: 128 });
     const err = h('div', { class: 'form-err', role: 'alert' });
     const btn = button(t('auth.forgot.btn'), { type: 'submit', icon: 'key-round', block: true });
@@ -180,7 +180,7 @@
       e.preventDefault(); [fId, fCode, fPw, fPw2].forEach((f) => f.clear()); err.textContent = '';
       if (!fId.value.trim()) return fId.error('err.required');
       if (!fCode.value.trim()) return fCode.error('err.required');
-      if (fPw.value.length < 6) return fPw.error('err.pw.short');
+      if (fPw.value.length < Store.PW_MIN) return fPw.error('err.pw.short', { n: Store.PW_MIN });
       if (fPw.value !== fPw2.value) return fPw2.error('err.pw.mismatch');
       btn.setBusy(true);
       try {

@@ -142,20 +142,24 @@
       cont.replaceChildren(h('h3', { class: 'card-title' }, t('dash.continue')),
         h('div', { class: 'cont-icon' }, icon('play')),
         h('p', { class: 'strong' }, last ? t('dash.continue.last', { q: quizLabel(last.q) }) : t('dash.continue.none')),
-        h('p', { class: 'note' }, t('dash.continue.note')));
+        h('p', { class: 'note' }, t('dash.continue.note')),
+        h('a', { class: 'btn primary sm cont-go', href: last && last.q.startsWith('t1.') ? '#/' + last.q.replace(/\./g, '/') : '#/t1/l01/s01' },
+          icon('arrow-right'), h('span', null, last ? t('dash.continue.go') : t('dash.continue.start'))));
 
       // timeline
       timeline.replaceChildren(...Course.tabs.filter((tb) => tb.lessons).map((tb) => {
         const cards = Course.lessonList.filter((l) => l.tab === tb.id).map((l) => {
           const ls = s.lessons[l.key];
           const pct = ls.subs ? (ls.subsDone / ls.subs) * 100 : 0;
-          return h('article', { class: 'lesson-card ' + ls.state },
+          const lessonCard = h('article', { class: 'lesson-card ' + ls.state },
             h('div', { class: 'lesson-top' }, h('span', { class: 'lesson-num' }, tb.id.slice(1) + '.' + l.num),
               h('span', { class: 'state-chip ' + ls.state }, t('dash.lesson.' + ls.state))),
             h('h4', null, I18n.pick(l.title)),
             h('div', { class: 'bar thin' }, h('div', { class: 'bar-fill', style: { width: pct + '%' } })),
             h('div', { class: 'lesson-foot' }, h('span', null, t('dash.quizzes', { d: ls.subsDone, n: ls.subs })),
               h('span', { class: 'final-st' }, statusIcon(ls.final, 'final:' + l.key, 18), h('span', null, t('dash.final')))));
+          // the Basic Concepts lessons exist now, so their cards open the lesson; FreeRTOS... lessons are still to come
+          return tb.id === 't1' ? h('a', { class: 'lesson-link', href: '#/' + l.key.replace(/\./g, '/') }, lessonCard) : lessonCard;
         });
         return h('div', { class: 'timeline-group' }, h('h4', { class: 'group-title' }, I18n.pick(tb.title)), h('div', { class: 'timeline-grid' }, cards));
       }));

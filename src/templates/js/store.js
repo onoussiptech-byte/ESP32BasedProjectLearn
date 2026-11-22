@@ -16,7 +16,7 @@
   COURSE.tabs.filter((tb) => tb.lessons).forEach((tb) => {
     tb.lessons.forEach((ls, li) => {
       const key = tb.id + '.' + ls.id;
-      lessonList.push({ key, tab: tb.id, num: li + 1, title: ls.title, subs: ls.subs });
+      lessonList.push({ key, tab: tb.id, num: li + 1, title: ls.title, subs: ls.subs, subTitles: ls.sub_titles || null });
       for (let s = 1; s <= ls.subs; s++) {
         const q = { qid: key + '.s' + String(s).padStart(2, '0'), tab: tb.id, lesson: key, kind: 'sub', n: s,
           max: RULES.sub_quiz.questions };
@@ -36,10 +36,19 @@
     return 'done';
   }
 
+  const available = new Set(COURSE.available || []);   // quiz ids whose lesson content exists (t1.l01.s01 ...)
+
   const Course = {
-    quizzes, quizById, lessonList, statusOf,
+    quizzes, quizById, lessonList, statusOf, available,
     tabs: COURSE.tabs, rules: RULES,
     tab: (id) => COURSE.tabs.find((tb) => tb.id === id),
+    lesson: (key) => lessonList.find((l) => l.key === key),
+    hasContent: (qid) => available.has(qid),
+    // Title of sub-lesson n (1-based) of a lesson; falls back to "Sub-lesson n" when none is written
+    subTitle(key, n) {
+      const l = lessonList.find((x) => x.key === key);
+      return l && l.subTitles && l.subTitles[n - 1] ? l.subTitles[n - 1] : { en: 'Sub-lesson ' + n, fr: 'Sous-leçon ' + n };
+    },
     ranges(kind) {
       const r = kind === 'final' ? RULES.final_quiz : RULES.sub_quiz, max = r.questions;
       return { failed: [0, r.failed_max], todo: [r.failed_max + 1, r.todo_max], done: [r.done_min, max] };
@@ -195,7 +204,7 @@
 
   // ------------------------------------------------------------------ public store
   const Store = {
-    Course, VERSION,
+    Course, VERSION, PW_MIN: RULES.password_min || 4,
     get storageOk() { return storageOk; },
     get versionNote() { return loadedVersionNote; },
     on(fn) { listeners.push(fn); },

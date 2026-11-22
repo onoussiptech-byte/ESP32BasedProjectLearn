@@ -1,36 +1,52 @@
-"""Assemble ESP32 Tour (runs on the author's machine only). Three outputs in dist/:
+"""Assemble ESP32 Tour (runs on the author's machine only). Outputs in dist/:
 
-  ESP32_Tour/              the app as a folder (open index.html; copy the folder to move it)
-  ESP32_Tour_site/         the same app for GitHub Pages: PWA files, EMPTY accounts, .nojekyll
-  ESP32_Tour_single.html   everything in one file (phones, e-mail, Drive); no service worker
+  ESP32_Tour/              the app as a folder for the PC (open index.html; copy the folder to move it). Lessons
+                           are in content/ (one script per lesson, loaded when opened)
+  ESP32_Tour_single.html   everything in one file (e-mail, Drive); no service worker
 
-All outputs are plain HTML/CSS/JS with classic scripts, so they work from file:// with no server and no
-network. Run:  .venv/Scripts/python.exe -I src/build.py
+The phone/PWA version is NOT built into a folder here. With --publish it is assembled straight onto the GitHub
+Pages branch (gh-appages): the same app files, an EMPTY accounts file and .nojekyll, committed and pushed.
+
+All outputs are plain HTML/CSS/JS with classic scripts, so they work from file:// with no server and no network.
+
+  python -I src/build.py                       build the PC folder and the single file
+  python -I src/build.py --publish             ... and publish the PWA files to gh-appages (commit + push)
+  python -I src/build.py --publish --no-push   ... commit on gh-appages only, push later yourself
+  python -I src/build.py --publish --message "text"   use your own commit message
 """
+import argparse
 import base64
 import json
 import re
 import shutil
+import subprocess
 import sys
+import tempfile
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 DIST = ROOT / "dist"
 APP = DIST / "ESP32_Tour"
-SITE = DIST / "ESP32_Tour_site"
 SINGLE = DIST / "ESP32_Tour_single.html"
+PAGES_BRANCH = "gh-appages"                               # the branch GitHub Pages serves
+# only the app's own files go to the phones: anything else sitting in the folder (docs, a saved copy...) stays out
+PAGES_KEEP = ("app", "content", "data", "fonts", "icons", "licenses", "index.html", "manifest.webmanifest", "sw.js")
 EMPTY_ACCOUNTS = 'window.ESP32TOUR_DATA={"format":1,"accounts":[],"deleted":[]};\n'
 
 ICONS = """cpu layout-dashboard book-open workflow user users user-plus log-in log-out settings languages
 key-round download upload trash-2 check x chevron-down eye eye-off shield-check copy trophy target flame
 clock rotate-ccw info lock save folder-open sun moon monitor circle-alert sparkles award chart-column
-play hourglass""".split()
+play hourglass arrow-left arrow-right chevron-right chevron-left menu list corner-up-left link-2
+external-link lightbulb triangle-alert flag refresh-cw circle-check circle-x layers graduation-cap
+file-text list-checks construction rocket book-marked panel-left circle-help""".split()
 
 # Load order. "../data/accounts.js" is the carried-along accounts file (never cache-busted).
-SCRIPTS = ["icons.js", "course.js", "../data/accounts.js", "crypto.js", "i18n.js", "store.js", "ui.js",
-           "auth.js", "dashboard.js", "app.js", "pwa.js"]
-GENERATED = ("icons.js", "course.js")
+SCRIPTS = ["icons.js", "prism.js", "course.js", "../data/accounts.js", "crypto.js", "i18n.js", "store.js", "ui.js",
+           "auth.js", "dashboard.js", "quiz.js", "lessons.js", "app.js", "pwa.js"]
+GENERATED = ("icons.js", "prism.js", "course.js")
+PRISM_FILES = ["core", "clike", "markup", "c", "cpp", "bash", "ini", "json", "powershell", "python"]  # order matters (cpp needs c)
 
 FONTS = {"Inter": ("inter", [400, 500, 600, 700]), "JetBrains Mono": ("jetbrains-mono", [400, 600])}
 RANGES = {
@@ -58,14 +74,39 @@ def icons_js():
     return "window.ESP32TOUR_ICONS=" + json.dumps(out, separators=(",", ":")) + ";\n"
 
 
-def course_data():
+def prism_js():
+    """Prism core + the languages the lessons use, in one file. Manual mode: the app highlights on demand."""
+    out = ["window.Prism=window.Prism||{};window.Prism.manual=true;"]
+    for name in PRISM_FILES:
+        f = SRC / "assets" / "vendor" / "prism" / f"prism-{name}.min.js"
+        if not f.exists():
+            sys.exit(f"missing Prism file: {f.name}")
+        out.append(f.read_text(encoding="utf-8").rstrip())
+    return "\n".join(out) + "\n"
+
+
+def js_json(obj):
+    """JSON for a classic <script>: '<' is escaped so nothing can ever close an inline script block."""
+    return json.dumps(obj, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
+
+
+def course_data(contents):
     course = json.loads((SRC / "course.json").read_text(encoding="utf-8"))
     for tab in course["tabs"]:
         for lesson in tab.get("lessons", []):
+            if "sub_titles" in lesson:                          # [["en","fr"], ...] -> [{en, fr}, ...]
+                lesson["sub_titles"] = [{"en": en, "fr": fr} for en, fr in lesson["sub_titles"]]
+                lesson["subs"] = len(lesson["sub_titles"])
             lesson.setdefault("subs", course["rules"]["min_sublessons"])
     course["rules"].pop("banned_words_tabs_1_2", None)          # author-only
-    js = "window.ESP32TOUR_COURSE=" + json.dumps(course, ensure_ascii=False, separators=(",", ":")) + ";\n"
+    course["available"] = sorted(contents)                      # ids that have lesson content (t1.l01.s01 ...)
+    js = "window.ESP32TOUR_COURSE=" + js_json(course) + ";\n"
     return js, course
+
+
+def content_js(cid, data):
+    return ('window.ESP32TOUR_CONTENT=window.ESP32TOUR_CONTENT||{};'
+            f'window.ESP32TOUR_CONTENT["{cid}"]=' + js_json(data) + ";\n")
 
 
 def fonts_css(inline):
@@ -102,11 +143,16 @@ def manifest(course):
     }, indent=1, ensure_ascii=False) + "\n"
 
 
-def build_folder(course, version, icons, course_js):
-    for d in ("app", "fonts", "data", "docs", "licenses", "icons"):
+def build_folder(course, version, icons, course_js, prism, contents):
+    for d in ("app", "fonts", "data", "docs", "licenses", "icons", "content"):
         (APP / d).mkdir(parents=True, exist_ok=True)
+    for old in (APP / "content").glob("*.js"):                    # drop content that no longer exists
+        old.unlink()
+    for cid, data in contents.items():
+        (APP / "content" / f"{cid}.js").write_text(content_js(cid, data), encoding="utf-8")
     (APP / "app" / "course.js").write_text(course_js, encoding="utf-8")
     (APP / "app" / "icons.js").write_text(icons, encoding="utf-8")
+    (APP / "app" / "prism.js").write_text(prism, encoding="utf-8")
     (APP / "app" / "fonts.css").write_text(fonts_css(False), encoding="utf-8")
     for name in SCRIPTS:
         if name not in GENERATED and not name.startswith("../"):
@@ -132,23 +178,101 @@ def build_folder(course, version, icons, course_js):
 
     # Service worker: pre-caches exactly the app's own files (not licences, not docs)
     files = ["./", "index.html", "manifest.webmanifest"]
-    for sub in ("app", "fonts", "icons", "data"):
+    for sub in ("app", "content", "fonts", "icons", "data"):
         files += sorted(p.relative_to(APP).as_posix() for p in (APP / sub).iterdir() if p.is_file())
     sw = (SRC / "templates" / "sw.js").read_text(encoding="utf-8")
     sw = sw.replace("{{VERSION}}", version).replace("{{FILES}}", json.dumps(files, indent=1))
     (APP / "sw.js").write_text(sw, encoding="utf-8")
 
 
-def build_site(version):
-    """Same app for GitHub Pages: fresh copy, accounts file forced EMPTY so nobody's accounts get published."""
-    if SITE.exists():
-        shutil.rmtree(SITE)
-    shutil.copytree(APP, SITE, ignore=shutil.ignore_patterns("docs"))
-    (SITE / "data" / "accounts.js").write_text(EMPTY_ACCOUNTS, encoding="utf-8")
-    (SITE / ".nojekyll").write_text("", encoding="utf-8")
+def copy_plain(src, dst):
+    """Copy a file or folder WITHOUT its attributes. (copytree also copies a folder's Windows read-only flag, and
+    Windows then refuses to delete the copy.)"""
+    if src.is_dir():
+        dst.mkdir(parents=True, exist_ok=True)
+        for child in sorted(src.iterdir()):
+            copy_plain(child, dst / child.name)
+    else:
+        shutil.copyfile(src, dst)
 
 
-def build_single(course_js, icons, version):
+def remove_tree(path):
+    """Delete a folder even when Windows marked parts of it read-only."""
+    def clear_flag_and_retry(func, p, _exc):
+        import os
+        import stat
+        os.chmod(p, stat.S_IWRITE)
+        func(p)
+    shutil.rmtree(path, onerror=clear_flag_and_retry)
+
+
+def git(*args, cwd=ROOT):
+    r = subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, encoding="utf-8")
+    if r.returncode:
+        sys.exit(f"git {' '.join(args)} failed:\n{(r.stderr or r.stdout).strip()}")
+    return r.stdout.strip()
+
+
+def publish(version, message, push):
+    """Put the PWA files on the gh-appages branch. The branch is checked out into a temporary work folder (so the
+    project folder and main are never touched), its content is replaced by the app's own files with an EMPTY
+    accounts file, then committed and pushed. Nothing is written to dist/ for the phones."""
+    if not git("branch", "--list", PAGES_BRANCH):
+        sys.exit(f"branch {PAGES_BRANCH} does not exist here: create it first (git branch {PAGES_BRANCH} origin/{PAGES_BRANCH})")
+    if push:
+        git("fetch", "origin", PAGES_BRANCH)
+    tmp = Path(tempfile.mkdtemp(prefix="esp32tour-pages-"))
+    work = tmp / "pages"
+    git("worktree", "add", str(work), PAGES_BRANCH)
+    try:
+        if push:
+            behind = int(git("rev-list", "--count", f"{PAGES_BRANCH}..origin/{PAGES_BRANCH}", cwd=work))
+            ahead = int(git("rev-list", "--count", f"origin/{PAGES_BRANCH}..{PAGES_BRANCH}", cwd=work))
+            if behind and ahead:
+                sys.exit(f"{PAGES_BRANCH} and origin/{PAGES_BRANCH} have diverged: sort that out with git first")
+            if behind:
+                git("merge", "--ff-only", f"origin/{PAGES_BRANCH}", cwd=work)
+        for p in work.iterdir():                                 # the branch holds the app files and nothing else
+            if p.name != ".git":
+                shutil.rmtree(p) if p.is_dir() else p.unlink()
+        for name in PAGES_KEEP:
+            src = APP / name
+            if not src.exists():
+                sys.exit(f"missing {src}: the folder build must run first")
+            copy_plain(src, work / name)
+        (work / "data" / "accounts.js").write_text(EMPTY_ACCOUNTS, encoding="utf-8")   # never publish anyone's accounts
+        (work / ".nojekyll").write_text("", encoding="utf-8")
+        git("add", "-A", cwd=work)
+        if not git("status", "--porcelain", cwd=work):
+            print(f"  publish {PAGES_BRANCH}: already up to date, nothing to commit")
+            return
+        n = len(git("diff", "--cached", "--name-only", cwd=work).splitlines())
+        git("commit", "-m", message, cwd=work)
+        sha = git("rev-parse", "--short", "HEAD", cwd=work)
+        if push:
+            r = subprocess.run(["git", "push", "origin", PAGES_BRANCH], cwd=work, capture_output=True, text=True, encoding="utf-8")
+            if r.returncode:
+                sys.exit(f"The commit {sha} is on the local {PAGES_BRANCH} branch, but git could not push it:\n"
+                         f"{r.stderr.strip()}\nPush it yourself from a terminal signed in with an account that may write to "
+                         f"the repository:  git push origin {PAGES_BRANCH}")
+        print(f"  publish {PAGES_BRANCH}: {sha} ({n} file(s) changed){' pushed to origin' if push else ' (not pushed)'}")
+    finally:
+        for i in range(6):                                       # Windows may hold the folder for a moment
+            subprocess.run(["git", "worktree", "remove", "--force", str(work)], cwd=ROOT, capture_output=True)
+            try:
+                if tmp.exists():
+                    remove_tree(tmp)
+            except OSError:
+                pass
+            if not tmp.exists():
+                break
+            time.sleep(0.5)
+        subprocess.run(["git", "worktree", "prune"], cwd=ROOT, capture_output=True)
+        if tmp.exists():
+            print(f"warning: could not remove the temporary folder {tmp}; delete it by hand")
+
+
+def build_single(course_js, icons, prism, contents, version):
     tpl = (SRC / "templates" / "index.html").read_text(encoding="utf-8")
     css = fonts_css(True) + (SRC / "templates" / "styles.css").read_text(encoding="utf-8")
     parts = ['<script>window.ESP32TOUR_SINGLE=true;</script>']
@@ -157,8 +281,10 @@ def build_single(course_js, icons, version):
             continue                                       # no service worker in the single file
         if s == "icons.js":
             body = icons
+        elif s == "prism.js":                              # "<!--" then "<script" would confuse the HTML parser inline
+            body = prism.replace("<!--", "\\x3C!--").replace("<script", "\\x3Cscript")
         elif s == "course.js":
-            body = course_js
+            body = course_js + "".join(content_js(cid, d) for cid, d in contents.items())   # lessons travel inside the file
         elif s.startswith("../"):
             parts.append('<script id="accounts-data">' + EMPTY_ACCOUNTS + '</script>')
             continue
@@ -174,16 +300,31 @@ def build_single(course_js, icons, version):
 
 
 def main():
-    course_js, course = course_data()
+    ap = argparse.ArgumentParser(description="Build ESP32 Tour; optionally publish the PWA files to the gh-appages branch.")
+    ap.add_argument("--publish", action="store_true", help=f"also update the {PAGES_BRANCH} branch with the PWA files")
+    ap.add_argument("--no-push", action="store_true", help="with --publish: commit on the branch but do not push")
+    ap.add_argument("--message", help="with --publish: the commit message")
+    args = ap.parse_args()
+    sys.dont_write_bytecode = True                              # keep src/tools free of __pycache__
+    sys.path.insert(0, str(SRC / "tools"))
+    import validate_content
+    contents, errors, warnings = validate_content.validate()    # the build stops on any content error
+    for w in warnings:
+        print("warning:", w)
+    if errors:
+        for e in errors:
+            print("ERROR:", e)
+        sys.exit(f"{len(errors)} content error(s): fix them and build again")
+    course_js, course = course_data(contents)
     version = course["app"]["version"]
-    icons = icons_js()
-    build_folder(course, version, icons, course_js)
-    build_site(version)
-    build_single(course_js, icons, version)
-    print(f"version {version}")
+    icons, prism = icons_js(), prism_js()
+    build_folder(course, version, icons, course_js, prism, contents)
+    build_single(course_js, icons, prism, contents, version)
+    print(f"version {version}  ({len(contents)} lesson content file(s))")
     print(f"  folder  {APP}")
-    print(f"  site    {SITE}")
     print(f"  single  {SINGLE}  ({SINGLE.stat().st_size // 1024} KB)")
+    if args.publish:
+        publish(version, args.message or f"Publish ESP32 Tour v{version} (PWA build)", push=not args.no_push)
 
 
 if __name__ == "__main__":
