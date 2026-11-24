@@ -2,7 +2,7 @@
  * - Files listed below: served from the cache first (works with no connection).
  * - Anything else (other origins, online links, POSTs): passed straight through, never touched or blocked.
  * - A new version waits until the person taps "Reload" in the "Update available" message. */
-const CACHE = 'esp32tour-v0.4.0';
+const CACHE = 'esp32tour-v0.5.0';
 const FILES = [
  "./",
  "index.html",
@@ -16,6 +16,7 @@ const FILES = [
  "app/i18n.js",
  "app/icons.js",
  "app/lessons.js",
+ "app/overview.js",
  "app/prism.js",
  "app/pwa.js",
  "app/quiz.js",
@@ -24,6 +25,7 @@ const FILES = [
  "app/ui.js",
  "content/t1.l01.s01.js",
  "content/t1.l01.s02.js",
+ "figures/aquaponics-cycle.webp",
  "fonts/inter-latin-400.woff2",
  "fonts/inter-latin-500.woff2",
  "fonts/inter-latin-600.woff2",
@@ -44,7 +46,7 @@ const FILES = [
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)));   // no skipWaiting: the person decides
+  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES.map((f) => new Request(f, { cache: 'reload' })))));   // 'reload': never an old copy from the browser's own cache; no skipWaiting: the person decides
 });
 
 self.addEventListener('activate', (event) => {

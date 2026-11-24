@@ -249,6 +249,13 @@
     return out;
   }
 
+  // A picture of figures/ (its size and bilingual description come from course.js; the single file carries it inside)
+  function figure(name, cls) {
+    const f = window.ESP32TOUR_COURSE.figures[name];
+    return h('img', { class: cls || 'fig-img', src: (window.ESP32TOUR_FIGURES || {})[name] || 'figures/' + name + '.webp',
+      alt: I18n.pick(f.alt), width: f.w, height: f.h, decoding: 'async' });
+  }
+
   // Syntax-highlighted code (Prism builds escaped markup; unknown languages fall back to plain text)
   function codeBlock(lang, code, caption) {
     const el = h('code', { class: 'language-' + lang });
@@ -264,5 +271,5 @@
       h('pre', { class: 'code-pre', tabindex: '0' }, el));
   }
 
-  window.UI = { h, icon, statusIcon, statusLabel, counter, ring, floatDelta, toast, modal, field, button, langSwitch, logo, reduced, fmt, inline, codeBlock };
+  window.UI = { h, icon, statusIcon, statusLabel, counter, ring, floatDelta, toast, modal, field, button, langSwitch, logo, reduced, fmt, inline, codeBlock, figure };
 })();
