@@ -1,6 +1,6 @@
 /* store.js - accounts, sessions, scoring and device-to-device carrying for ESP32 Tour.
- * Only Dashboard, Basic Concepts (t1) and FreeRTOS/Linking/PlatformIO (t2) exist, so every
- * quiz id, score, mark and percentage is derived from those tabs in course.js. */
+ * Every quiz id, score, mark and percentage is derived from the tabs in course.js. A workspace is a group of tabs
+ * (see overview.js): its totals come from stats(account, its tabs). */
 (function () {
   'use strict';
 
@@ -10,7 +10,7 @@
   const RULES = COURSE.rules, VERSION = COURSE.app.version;
 
   // ------------------------------------------------------------------ course helpers
-  const quizzes = [];                       // every quiz of tabs t1 and t2
+  const quizzes = [];                       // every quiz of every tab
   const quizById = {};
   const lessonList = [];                    // {key:'t1.l01', tab, num, title, subs}
   COURSE.tabs.filter((tb) => tb.lessons).forEach((tb) => {
@@ -357,8 +357,8 @@
       };
     },
 
-    /* Everything the header and Dashboard show, for one account */
-    stats(acc) {
+    /* Everything the header and Dashboard show, for one account. tabs = the tabs counted in total (none = all) */
+    stats(acc, tabs) {
       const blank = () => ({ quizzes: 0, passed: 0, score: 0, mark: 0, max: 0, counts: { new: 0, todo: 0, failed: 0, done: 0 } });
       const out = { total: blank(), tabs: {}, lessons: {} };
       COURSE.tabs.filter((tb) => tb.lessons).forEach((tb) => { out.tabs[tb.id] = blank(); });
@@ -366,7 +366,7 @@
       quizzes.forEach((q) => {
         const res = acc && acc.results[q.qid];
         const st = statusOf(q.kind, res ? res.best : null);
-        [out.total, out.tabs[q.tab]].forEach((b) => {
+        (!tabs || tabs.includes(q.tab) ? [out.total, out.tabs[q.tab]] : [out.tabs[q.tab]]).forEach((b) => {
           b.quizzes++; b.max += q.max; b.counts[st]++;
           if (st === 'done') b.passed++;
           if (res) { b.score += res.best; b.mark += res.latest; }

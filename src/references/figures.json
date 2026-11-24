@@ -1,0 +1,817 @@
+{
+ "about": "Figures the lessons may use. See src/tools/extract_figures.py",
+ "figures": {
+  "aquaponics-cycle": {
+   "image": "Screenshot 2026-11-24 015342.png",
+   "box": [
+    0.14,
+    0.012,
+    0.86,
+    0.99
+   ],
+   "alt": {
+    "en": "The aquaponics cycle: fish tank, biological filter, hydroponics tank, cleaned water back to the fish",
+    "fr": "Le cycle de l’aquaponie : bac à poissons, filtre biologique, bac hydroponique, eau propre qui revient aux poissons"
+   },
+   "w": 1100,
+   "h": 714
+  },
+  "aquaponics-parts": {
+   "image": "Screenshot 2026-11-24 015444.png",
+   "box": [
+    0,
+    0,
+    1,
+    1
+   ],
+   "alt": {
+    "en": "The parts of an aquaponics system: fish tank, sediment tank, water pump, biofilter, hydroponic tank, air pump",
+    "fr": "Les éléments d’un système aquaponique : bac à poissons, décanteur, pompe à eau, biofiltre, bac hydroponique, pompe à air"
+   },
+   "w": 908,
+   "h": 701
+  },
+  "ph4502c-pinout": {
+   "doc": "ph4502c",
+   "file": "ph-sensor-ph-4502c.pdf",
+   "page": 1,
+   "box": [
+    0.1,
+    0.49,
+    0.9,
+    0.92
+   ],
+   "alt": {
+    "en": "The pH board and its pins: TO, DO, PO, GND, GND, VCC, and the BNC probe connector",
+    "fr": "La carte pH et ses broches : TO, DO, PO, GND, GND, VCC, et le connecteur BNC de la sonde"
+   },
+   "w": 1100,
+   "h": 785
+  },
+  "ph4502c-offset": {
+   "doc": "ph4502c",
+   "file": "ph-sensor-ph-4502c.pdf",
+   "page": 2,
+   "box": [
+    0.25,
+    0.59,
+    0.75,
+    0.85
+   ],
+   "alt": {
+    "en": "The BNC connector short-circuited with a wire to imitate pH 7 while setting the offset",
+    "fr": "Le connecteur BNC court-circuité par un fil pour imiter pH 7 pendant le réglage de l’offset"
+   },
+   "w": 1100,
+   "h": 809
+  },
+  "ph4502c-wiring": {
+   "doc": "ph4502c",
+   "file": "ph-sensor-ph-4502c.pdf",
+   "page": 3,
+   "box": [
+    0.19,
+    0.07,
+    0.81,
+    0.325
+   ],
+   "alt": {
+    "en": "The pH board wired to a controller board",
+    "fr": "La carte pH câblée à une carte de commande"
+   },
+   "w": 1100,
+   "h": 629
+  },
+  "ph-buffers": {
+   "doc": "ph4502c",
+   "file": "ph-sensor-ph-4502c.pdf",
+   "page": 4,
+   "box": [
+    0.31,
+    0.69,
+    0.69,
+    0.83
+   ],
+   "alt": {
+    "en": "Bags of pH buffer powder used for calibration",
+    "fr": "Sachets de poudre tampon pH utilisés pour l’étalonnage"
+   },
+   "w": 943,
+   "h": 459
+  },
+  "ds18b20-pinout": {
+   "doc": "ds18b20",
+   "file": "DS18B20.pdf",
+   "page": 1,
+   "box": [
+    0.49,
+    0.42,
+    0.93,
+    0.9
+   ],
+   "alt": {
+    "en": "DS18B20 packages and pins",
+    "fr": "Boîtiers et broches du DS18B20"
+   },
+   "w": 1074,
+   "h": 1437
+  },
+  "ds18b20-block": {
+   "doc": "ds18b20",
+   "file": "DS18B20.pdf",
+   "page": 3,
+   "box": [
+    0.06,
+    0.2,
+    0.94,
+    0.52
+   ],
+   "alt": {
+    "en": "DS18B20 block diagram",
+    "fr": "Schéma fonctionnel du DS18B20"
+   },
+   "w": 1100,
+   "h": 518
+  },
+  "ds18b20-register": {
+   "doc": "ds18b20",
+   "file": "DS18B20.pdf",
+   "page": 4,
+   "box": [
+    0.06,
+    0.078,
+    0.94,
+    0.26
+   ],
+   "alt": {
+    "en": "DS18B20 temperature register, 16 bits",
+    "fr": "Registre de température du DS18B20, 16 bits"
+   },
+   "w": 1100,
+   "h": 290
+  },
+  "ds18b20-power": {
+   "doc": "ds18b20",
+   "file": "DS18B20.pdf",
+   "page": 6,
+   "box": [
+    0.06,
+    0.305,
+    0.94,
+    0.5
+   ],
+   "alt": {
+    "en": "DS18B20 powered by an external supply, with a 4.7 k pull-up on the 1-Wire bus",
+    "fr": "DS18B20 alimenté par une source externe, avec une résistance de tirage de 4,7 k sur le bus 1-Wire"
+   },
+   "w": 1100,
+   "h": 303
+  },
+  "ds18b20-resolution": {
+   "doc": "ds18b20",
+   "file": "DS18B20.pdf",
+   "page": 8,
+   "box": [
+    0.06,
+    0.295,
+    0.94,
+    0.465
+   ],
+   "alt": {
+    "en": "DS18B20 resolution and conversion time table",
+    "fr": "Tableau résolution et temps de conversion du DS18B20"
+   },
+   "w": 1100,
+   "h": 281
+  },
+  "ads1115-pinout": {
+   "doc": "ads1115",
+   "file": "ads1115.pdf",
+   "page": 3,
+   "box": [
+    0.5,
+    0.36,
+    0.92,
+    0.58
+   ],
+   "alt": {
+    "en": "ADS1115 pins, 10-pin package",
+    "fr": "Broches de l’ADS1115, boîtier à 10 broches"
+   },
+   "w": 775,
+   "h": 720
+  },
+  "ads1115-block": {
+   "doc": "ads1115",
+   "file": "ads1115.pdf",
+   "page": 12,
+   "box": [
+    0.22,
+    0.44,
+    0.8,
+    0.645
+   ],
+   "alt": {
+    "en": "ADS1115 block diagram: multiplexer, amplifier, 16-bit ADC, I2C interface",
+    "fr": "Schéma fonctionnel de l’ADS1115 : multiplexeur, amplificateur, CAN 16 bits, interface I2C"
+   },
+   "w": 1100,
+   "h": 635
+  },
+  "ads1115-mux": {
+   "doc": "ads1115",
+   "file": "ads1115.pdf",
+   "page": 13,
+   "box": [
+    0.25,
+    0.205,
+    0.78,
+    0.505
+   ],
+   "alt": {
+    "en": "ADS1115 input multiplexer",
+    "fr": "Multiplexeur d’entrée de l’ADS1115"
+   },
+   "w": 873,
+   "h": 961
+  },
+  "ads1115-fsr": {
+   "doc": "ads1115",
+   "file": "ads1115.pdf",
+   "page": 15,
+   "box": [
+    0.28,
+    0.2,
+    0.72,
+    0.35
+   ],
+   "alt": {
+    "en": "ADS1115 full-scale ranges and the size of one step",
+    "fr": "Plages de mesure de l’ADS1115 et taille d’un pas"
+   },
+   "w": 1062,
+   "h": 456
+  },
+  "ads1115-address": {
+   "doc": "ads1115",
+   "file": "ads1115.pdf",
+   "page": 20,
+   "box": [
+    0.22,
+    0.197,
+    0.8,
+    0.315
+   ],
+   "alt": {
+    "en": "ADS1115 I2C addresses",
+    "fr": "Adresses I2C de l’ADS1115"
+   },
+   "w": 1100,
+   "h": 265
+  },
+  "yfs201-photo": {
+   "doc": "yfs201",
+   "file": "yf-s201_sea.pdf",
+   "page": 1,
+   "box": [
+    0.41,
+    0.1,
+    0.985,
+    0.42
+   ],
+   "alt": {
+    "en": "YF-S201 flow sensor",
+    "fr": "Capteur de débit YF-S201"
+   },
+   "w": 1100,
+   "h": 807
+  },
+  "yfs201-drawing": {
+   "doc": "yfs201",
+   "file": "yf-s201_sea.pdf",
+   "page": 1,
+   "box": [
+    0.24,
+    0.75,
+    0.98,
+    0.98
+   ],
+   "alt": {
+    "en": "YF-S201 dimensions and inside view",
+    "fr": "Dimensions et vue intérieure du YF-S201"
+   },
+   "w": 1100,
+   "h": 411
+  },
+  "yfs201-table": {
+   "doc": "yfs201",
+   "file": "yf-s201_sea.pdf",
+   "page": 1,
+   "box": [
+    0.1,
+    0.502,
+    0.42,
+    0.62
+   ],
+   "alt": {
+    "en": "YF-S201 output frequency for each flow",
+    "fr": "Fréquence de sortie du YF-S201 selon le débit"
+   },
+   "w": 575,
+   "h": 318
+  },
+  "float-photo": {
+   "doc": "floatswitch",
+   "file": "FLS-VS-300_cutsheet.pdf",
+   "page": 1,
+   "box": [
+    0.08,
+    0.09,
+    0.41,
+    0.34
+   ],
+   "alt": {
+    "en": "Vertical float switch with a reed contact",
+    "fr": "Interrupteur à flotteur vertical à contact reed"
+   },
+   "w": 584,
+   "h": 753
+  },
+  "irlz44n-package": {
+   "doc": "irlz44n",
+   "file": "infineon-irlz44n-datasheet-en.pdf",
+   "page": 1,
+   "box": [
+    0.505,
+    0.2,
+    0.94,
+    0.54
+   ],
+   "alt": {
+    "en": "IRLZ44N symbol, main values and TO-220 package",
+    "fr": "Symbole, valeurs principales et boîtier TO-220 de l’IRLZ44N"
+   },
+   "w": 973,
+   "h": 1061
+  },
+  "irlz44n-transfer": {
+   "doc": "irlz44n",
+   "file": "infineon-irlz44n-datasheet-en.pdf",
+   "page": 3,
+   "box": [
+    0.08,
+    0.54,
+    0.5,
+    0.92
+   ],
+   "alt": {
+    "en": "IRLZ44N drain current against gate voltage",
+    "fr": "Courant de drain de l’IRLZ44N selon la tension de grille"
+   },
+   "w": 863,
+   "h": 960
+  },
+  "d1n5819-photo": {
+   "doc": "d1n5819",
+   "file": "1n5817.pdf",
+   "page": 1,
+   "box": [
+    0.08,
+    0.16,
+    0.45,
+    0.3
+   ],
+   "alt": {
+    "en": "1N5819 Schottky diode",
+    "fr": "Diode Schottky 1N5819"
+   },
+   "w": 558,
+   "h": 224
+  },
+  "d1n5819-outline": {
+   "doc": "d1n5819",
+   "file": "1n5817.pdf",
+   "page": 3,
+   "box": [
+    0.4,
+    0.65,
+    0.7,
+    0.9
+   ],
+   "alt": {
+    "en": "1N5819 outline: the band marks the cathode",
+    "fr": "Dessin de la 1N5819 : l’anneau marque la cathode"
+   },
+   "w": 488,
+   "h": 825
+  },
+  "d1n4007-photo": {
+   "doc": "d1n4007",
+   "file": "1n4001.pdf",
+   "page": 1,
+   "box": [
+    0.08,
+    0.15,
+    0.42,
+    0.262
+   ],
+   "alt": {
+    "en": "1N4007 rectifier diode",
+    "fr": "Diode de redressement 1N4007"
+   },
+   "w": 558,
+   "h": 224
+  },
+  "lm2596-typical": {
+   "doc": "lm2596",
+   "file": "lm2596.pdf",
+   "page": 1,
+   "box": [
+    0.18,
+    0.612,
+    0.82,
+    0.722
+   ],
+   "alt": {
+    "en": "LM2596 buck converter, typical circuit",
+    "fr": "Convertisseur abaisseur LM2596, circuit typique"
+   },
+   "w": 1100,
+   "h": 261
+  },
+  "lm2596-pins": {
+   "doc": "lm2596",
+   "file": "lm2596.pdf",
+   "page": 4,
+   "box": [
+    0.1,
+    0.125,
+    0.47,
+    0.245
+   ],
+   "alt": {
+    "en": "LM2596 pins, TO-220 package",
+    "fr": "Broches du LM2596, boîtier TO-220"
+   },
+   "w": 806,
+   "h": 378
+  },
+  "lm2596-block": {
+   "doc": "lm2596",
+   "file": "lm2596.pdf",
+   "page": 11,
+   "box": [
+    0.15,
+    0.245,
+    0.85,
+    0.565
+   ],
+   "alt": {
+    "en": "LM2596 functional block diagram",
+    "fr": "Schéma fonctionnel du LM2596"
+   },
+   "w": 1100,
+   "h": 650
+  },
+  "waterpump-drawing": {
+   "doc": "waterpump",
+   "file": "Pump_Datasheet.pdf",
+   "page": 1,
+   "box": [
+    0.12,
+    0.63,
+    0.84,
+    0.85
+   ],
+   "alt": {
+    "en": "12 V diaphragm water pump, dimensions",
+    "fr": "Pompe à eau 12 V à membrane, dimensions"
+   },
+   "w": 1100,
+   "h": 487
+  },
+  "dosingpump-photo": {
+   "doc": "dosingpump",
+   "file": "Soldered_101844 mini water pump.pdf",
+   "page": 1,
+   "box": [
+    0.03,
+    0.17,
+    0.52,
+    0.385
+   ],
+   "alt": {
+    "en": "Mini water pump used for dosing",
+    "fr": "Mini-pompe à eau utilisée pour le dosage"
+   },
+   "w": 1100,
+   "h": 426
+  },
+  "dosingpump-views": {
+   "doc": "dosingpump",
+   "file": "Soldered_101844 mini water pump.pdf",
+   "page": 2,
+   "box": [
+    0.02,
+    0.11,
+    0.98,
+    0.56
+   ],
+   "alt": {
+    "en": "Mini water pump, three views",
+    "fr": "Mini-pompe à eau, trois vues"
+   },
+   "w": 1100,
+   "h": 662
+  },
+  "sqp-photo": {
+   "doc": "resistor_sqp",
+   "file": "YAGEO-SQP_NSP_DATASHEET.pdf",
+   "page": 2,
+   "box": [
+    0.08,
+    0.09,
+    0.36,
+    0.19
+   ],
+   "alt": {
+    "en": "Cement power resistors",
+    "fr": "Résistances de puissance en ciment"
+   },
+   "w": 611,
+   "h": 236
+  },
+  "sqp-marking": {
+   "doc": "resistor_sqp",
+   "file": "YAGEO-SQP_NSP_DATASHEET.pdf",
+   "page": 7,
+   "box": [
+    0.1,
+    0.64,
+    0.56,
+    0.74
+   ],
+   "alt": {
+    "en": "Marking of a cement resistor",
+    "fr": "Marquage d’une résistance en ciment"
+   },
+   "w": 1022,
+   "h": 214
+  },
+  "sqp-temperature": {
+   "doc": "resistor_sqp",
+   "file": "YAGEO-SQP_NSP_DATASHEET.pdf",
+   "page": 4,
+   "box": [
+    0.09,
+    0.58,
+    0.91,
+    0.83
+   ],
+   "alt": {
+    "en": "Temperature rise of cement resistors with the load",
+    "fr": "Échauffement des résistances en ciment selon la charge"
+   },
+   "w": 1100,
+   "h": 472
+  },
+  "resistor-photo": {
+   "doc": "resistor_cf",
+   "file": "sei-cf_cfm.pdf",
+   "page": 1,
+   "box": [
+    0.77,
+    0.105,
+    0.96,
+    0.2
+   ],
+   "alt": {
+    "en": "Carbon film resistor",
+    "fr": "Résistance à couche de carbone"
+   },
+   "w": 469,
+   "h": 265
+  },
+  "dcjack-photo": {
+   "doc": "dcjack",
+   "file": "pj-102a.pdf",
+   "page": 1,
+   "box": [
+    0.56,
+    0.155,
+    0.97,
+    0.36
+   ],
+   "alt": {
+    "en": "DC power jack",
+    "fr": "Connecteur d’alimentation DC"
+   },
+   "w": 498,
+   "h": 497
+  },
+  "toggle-photo": {
+   "doc": "toggle",
+   "file": "MTS-SMTS-Series.pdf",
+   "page": 5,
+   "box": [
+    0.05,
+    0.255,
+    0.93,
+    0.37
+   ],
+   "alt": {
+    "en": "Miniature toggle switch MTS-102 (SPDT, ON-ON)",
+    "fr": "Interrupteur à levier miniature MTS-102 (SPDT, ON-ON)"
+   },
+   "w": 1100,
+   "h": 208
+  },
+  "fuse-photo": {
+   "doc": "fuse",
+   "file": "Littelfuse ATO.pdf",
+   "page": 1,
+   "box": [
+    0.49,
+    0.175,
+    0.94,
+    0.362
+   ],
+   "alt": {
+    "en": "ATO blade fuses",
+    "fr": "Fusibles à lames ATO"
+   },
+   "w": 1100,
+   "h": 580
+  },
+  "esp32-pins": {
+   "doc": "datasheet",
+   "file": "esp32_datasheet_en.pdf",
+   "page": 12,
+   "box": [
+    0.08,
+    0.14,
+    0.92,
+    0.745
+   ],
+   "alt": {
+    "en": "ESP32 chip pins",
+    "fr": "Broches de la puce ESP32"
+   },
+   "w": 1100,
+   "h": 1182
+  },
+  "esp32-strapping": {
+   "doc": "datasheet",
+   "file": "esp32_datasheet_en.pdf",
+   "page": 23,
+   "box": [
+    0.1,
+    0.24,
+    0.92,
+    0.49
+   ],
+   "alt": {
+    "en": "Strapping pins are read while the chip leaves reset",
+    "fr": "Les broches de configuration sont lues quand la puce sort du reset"
+   },
+   "w": 1100,
+   "h": 739
+  },
+  "esp32-bootflow": {
+   "doc": "datasheet",
+   "file": "esp32_datasheet_en.pdf",
+   "page": 24,
+   "box": [
+    0.02,
+    0.065,
+    0.98,
+    0.56
+   ],
+   "alt": {
+    "en": "ESP32 boot flow",
+    "fr": "Déroulement du démarrage de l’ESP32"
+   },
+   "w": 1100,
+   "h": 940
+  },
+  "hw-power": {
+   "doc": "hwdesign",
+   "file": "esp-hardware-design-guidelines-en-master-esp32.pdf",
+   "page": 9,
+   "box": [
+    0.11,
+    0.17,
+    0.89,
+    0.7
+   ],
+   "alt": {
+    "en": "ESP32 power scheme",
+    "fr": "Schéma d’alimentation de l’ESP32"
+   },
+   "w": 1100,
+   "h": 1075
+  },
+  "hw-reset": {
+   "doc": "hwdesign",
+   "file": "esp-hardware-design-guidelines-en-master-esp32.pdf",
+   "page": 11,
+   "box": [
+    0.15,
+    0.085,
+    0.85,
+    0.265
+   ],
+   "alt": {
+    "en": "ESP32 power-up and reset timing",
+    "fr": "Chronologie de mise sous tension et de reset de l’ESP32"
+   },
+   "w": 1100,
+   "h": 415
+  },
+  "ledc-block": {
+   "doc": "trm",
+   "file": "esp32_technical_reference_manual_en.pdf",
+   "page": 629,
+   "box": [
+    0.08,
+    0.625,
+    0.93,
+    0.825
+   ],
+   "alt": {
+    "en": "LED PWM controller architecture",
+    "fr": "Architecture du contrôleur LED PWM"
+   },
+   "w": 1100,
+   "h": 562
+  },
+  "ledc-signal": {
+   "doc": "trm",
+   "file": "esp32_technical_reference_manual_en.pdf",
+   "page": 632,
+   "box": [
+    0.08,
+    0.285,
+    0.93,
+    0.425
+   ],
+   "alt": {
+    "en": "LED PWM output signal",
+    "fr": "Signal de sortie du LED PWM"
+   },
+   "w": 1100,
+   "h": 337
+  },
+  "ledc-api": {
+   "doc": "idf",
+   "file": "esp-idf-en-v5.3-esp32.pdf",
+   "page": 1318,
+   "box": [
+    0.12,
+    0.08,
+    0.88,
+    0.4
+   ],
+   "alt": {
+    "en": "Key settings of the LED PWM API",
+    "fr": "Réglages principaux de l’API LED PWM"
+   },
+   "w": 1100,
+   "h": 636
+  },
+  "i2c-write": {
+   "doc": "idf",
+   "file": "esp-idf-en-v5.3-esp32.pdf",
+   "page": 1241,
+   "box": [
+    0.12,
+    0.355,
+    0.88,
+    0.45
+   ],
+   "alt": {
+    "en": "I2C master writing to a device",
+    "fr": "Maître I2C qui écrit vers un composant"
+   },
+   "w": 1100,
+   "h": 178
+  },
+  "i2c-read": {
+   "doc": "idf",
+   "file": "esp-idf-en-v5.3-esp32.pdf",
+   "page": 1241,
+   "box": [
+    0.12,
+    0.84,
+    0.88,
+    0.92
+   ],
+   "alt": {
+    "en": "I2C master reading from a device",
+    "fr": "Maître I2C qui lit un composant"
+   },
+   "w": 1100,
+   "h": 152
+  }
+ }
+}

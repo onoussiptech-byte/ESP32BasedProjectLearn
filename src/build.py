@@ -33,7 +33,7 @@ APP = DIST / "ESP32_Tour"
 SINGLE = DIST / "ESP32_Tour_single.html"
 PAGES_BRANCH = "gh-appages"                               # the branch GitHub Pages serves
 # only the app's own files go to the phones: anything else sitting in the folder (docs, a saved copy...) stays out
-PAGES_KEEP = ("app", "content", "data", "fonts", "icons", "licenses", "index.html", "manifest.webmanifest", "sw.js")
+PAGES_KEEP = ("app", "content", "data", "figures", "fonts", "icons", "licenses", "index.html", "manifest.webmanifest", "sw.js")
 EMPTY_ACCOUNTS = 'window.ESP32TOUR_DATA={"format":1,"accounts":[],"deleted":[]};\n'
 
 ICONS = """cpu layout-dashboard book-open workflow user users user-plus log-in log-out settings languages
@@ -41,11 +41,15 @@ key-round download upload trash-2 check x chevron-down eye eye-off shield-check 
 clock rotate-ccw info lock save folder-open sun moon monitor circle-alert sparkles award chart-column
 play hourglass arrow-left arrow-right chevron-right chevron-left menu list corner-up-left link-2
 external-link lightbulb triangle-alert flag refresh-cw circle-check circle-x layers graduation-cap
-file-text list-checks construction rocket book-marked panel-left circle-help""".split()
+file-text list-checks construction rocket book-marked panel-left circle-help
+house fish user-cog arrow-left-right boxes blocks recycle sprout droplets droplet thermometer waves ruler wind
+flask-conical""".split()
+
+FIGURES = ("aquaponics-cycle",)                           # pictures of src/assets/figures/ that the app shows
 
 # Load order. "../data/accounts.js" is the carried-along accounts file (never cache-busted).
 SCRIPTS = ["icons.js", "prism.js", "course.js", "../data/accounts.js", "crypto.js", "i18n.js", "store.js", "ui.js",
-           "auth.js", "dashboard.js", "quiz.js", "lessons.js", "app.js", "pwa.js"]
+           "auth.js", "dashboard.js", "quiz.js", "lessons.js", "overview.js", "app.js", "pwa.js"]
 GENERATED = ("icons.js", "prism.js", "course.js")
 PRISM_FILES = ["core", "clike", "markup", "c", "cpp", "bash", "ini", "json", "powershell", "python"]  # order matters (cpp needs c)
 
@@ -101,6 +105,8 @@ def course_data(contents):
             lesson.setdefault("subs", course["rules"]["min_sublessons"])
     course["rules"].pop("banned_words_tabs_1_2", None)          # author-only
     course["available"] = sorted(contents)                      # ids that have lesson content (t1.l01.s01 ...)
+    figs = json.loads((SRC / "references" / "figures.json").read_text(encoding="utf-8"))["figures"]
+    course["figures"] = {n: {k: figs[n][k] for k in ("alt", "w", "h")} for n in FIGURES}
     js = "window.ESP32TOUR_COURSE=" + js_json(course) + ";\n"
     return js, course
 
@@ -108,6 +114,13 @@ def course_data(contents):
 def content_js(cid, data):
     return ('window.ESP32TOUR_CONTENT=window.ESP32TOUR_CONTENT||{};'
             f'window.ESP32TOUR_CONTENT["{cid}"]=' + js_json(data) + ";\n")
+
+
+def figures_js():
+    """The pictures as data, for the single file only (the folder build has them in figures/)."""
+    data = {n: "data:image/webp;base64," + base64.b64encode((SRC / "assets" / "figures" / f"{n}.webp").read_bytes()).decode()
+            for n in FIGURES}
+    return "window.ESP32TOUR_FIGURES=" + json.dumps(data, separators=(",", ":")) + ";\n"
 
 
 def fonts_css(inline):
@@ -145,10 +158,15 @@ def manifest(course):
 
 
 def build_folder(course, version, icons, course_js, prism, contents):
-    for d in ("app", "fonts", "data", "docs", "licenses", "icons", "content"):
+    for d in ("app", "fonts", "data", "docs", "licenses", "icons", "content", "figures"):
         (APP / d).mkdir(parents=True, exist_ok=True)
     for old in (APP / "content").glob("*.js"):                    # drop content that no longer exists
         old.unlink()
+    for old in (APP / "figures").glob("*.webp"):                  # and pictures no longer used
+        if old.stem not in FIGURES:
+            old.unlink()
+    for n in FIGURES:
+        shutil.copyfile(SRC / "assets" / "figures" / f"{n}.webp", APP / "figures" / f"{n}.webp")
     for cid, data in contents.items():
         (APP / "content" / f"{cid}.js").write_text(content_js(cid, data), encoding="utf-8")
     (APP / "app" / "course.js").write_text(course_js, encoding="utf-8")
@@ -179,7 +197,7 @@ def build_folder(course, version, icons, course_js, prism, contents):
 
     # Service worker: pre-caches exactly the app's own files (not licences, not docs)
     files = ["./", "index.html", "manifest.webmanifest"]
-    for sub in ("app", "content", "fonts", "icons", "data"):
+    for sub in ("app", "content", "figures", "fonts", "icons", "data"):
         files += sorted(p.relative_to(APP).as_posix() for p in (APP / sub).iterdir() if p.is_file())
     sw = (SRC / "templates" / "sw.js").read_text(encoding="utf-8")
     sw = sw.replace("{{VERSION}}", version).replace("{{FILES}}", json.dumps(files, indent=1))
@@ -308,7 +326,7 @@ def build_single(course_js, icons, prism, contents, version):
         elif s == "prism.js":                              # "<!--" then "<script" would confuse the HTML parser inline
             body = prism.replace("<!--", "\\x3C!--").replace("<script", "\\x3Cscript")
         elif s == "course.js":
-            body = course_js + "".join(content_js(cid, d) for cid, d in contents.items())   # lessons travel inside the file
+            body = course_js + figures_js() + "".join(content_js(cid, d) for cid, d in contents.items())   # lessons travel inside the file
         elif s.startswith("../"):
             parts.append('<script id="accounts-data">' + EMPTY_ACCOUNTS + '</script>')
             continue

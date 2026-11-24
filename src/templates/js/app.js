@@ -1,12 +1,12 @@
-/* app.js - shell: header (logo, name, tabs, progress ring, Score, Total mark), routing, account menu, dialogs. */
+/* app.js - shell: workspace header (logo, workspace switch, tabs, progress ring, Score, Total mark), routing, account dialogs. */
 (function () {
   'use strict';
-  const { h, icon, ring, counter, field, button, modal, toast, floatDelta, langSwitch } = UI;
+  const { h, icon, ring, counter, field, button, modal, toast, floatDelta } = UI;
   const root = () => document.getElementById('root');
   const fmt = (n) => I18n.num(n);
 
-  const TABS = [{ id: 'dashboard', icon: 'layout-dashboard' }, { id: 't1', icon: 'book-open' }, { id: 't2', icon: 'workflow' }];
-  let shell = null;               // {header, main, view, route, dash}
+  const TAB_ICONS = { t1: 'book-open', t2: 'workflow', t3: 'boxes', t4: 'blocks' };
+  let shell = null;               // {el, header, main, ws, route, dash, lessons}
 
   // ------------------------------------------------------------------ theme
   function applyTheme() {
@@ -17,17 +17,24 @@
 
   // ------------------------------------------------------------------ routing
   function routeId() {
-    const m = (location.hash || '').match(/^#\/(dashboard|t1|t2)\b/);
-    return m ? m[1] : 'dashboard';
+    const m = (location.hash || '').match(/^#\/(overview|account|settings|dashboard|aquaponics|t[1-4])\b/);
+    return m ? m[1] : 'overview';                             // the Overview is the home page
   }
-  function tabTitle(id) { return id === 'dashboard' ? t('tab.dashboard') : I18n.pick(Course.tab(id).title); }
+  function tabTitle(id) { return Overview.has(id) ? Overview.title(id) : Overview.workspaceOf(id).dash === id ? t('tab.dashboard') : I18n.pick(Course.tab(id).title); }
 
-  // ------------------------------------------------------------------ header
-  function buildHeader() {
-    const a = Store.current();
-    const hi = h('button', { class: 'name-chip', type: 'button', 'aria-haspopup': 'menu', 'aria-expanded': 'false', 'aria-label': t('header.menu') },
-      h('span', { class: 'avatar' }, (a.first.trim()[0] || a.id[0]).toUpperCase()),
-      h('span', { class: 'hi' }, t('header.hi', { name: a.first })), icon('chevron-down'));
+  // ------------------------------------------------------------------ header (one per workspace)
+  // the app icon shows the same page again, fresh
+  function refreshPage() {
+    const again = () => { if (shell.lessons) { shell.lessons.destroy(); shell.lessons = null; } showRoute(); window.scrollTo(0, 0); };
+    if (!document.querySelector('.q-segs .ok, .q-segs .bad') || document.querySelector('.res-hero')) return again();
+    const m = modal({ title: t('quiz.exit.title'), body: h('div', { class: 'confirm' }, h('p', { class: 'sub' }, t('quiz.exit.text')),
+      h('div', { class: 'actions' }, button(t('quiz.exit.stay'), { kind: 'ghost', onclick: () => m.close() }),
+        button(t('quiz.exit.leave'), { kind: 'danger', icon: 'log-out', onclick: () => { m.close(); again(); } }))) });
+  }
+
+  function buildHeader(ws) {
+    const hi = h('button', { class: 'name-chip ws-chip', type: 'button', 'aria-haspopup': 'menu', 'aria-expanded': 'false', 'aria-label': t('ws.switch') },
+      icon('arrow-left-right', 'ws-ic'), h('span', { class: 'hi' }, t('ws.switch')), icon('chevron-down'));
     hi.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(hi); });
 
     const r = ring({ size: 46, stroke: 5, fontSize: 11 });
@@ -37,18 +44,19 @@
     const markBox = h('div', { class: 'metric num-anchor', title: t('dash.mark.sub') }, h('span', { class: 'metric-label' }, icon('target'), t('header.mark')), markVal);
     const progBox = h('div', { class: 'metric prog', title: t('dash.progress.sub') }, r.el, h('span', { class: 'metric-label vert' }, t('header.progress')));
 
-    const tabs = h('nav', { class: 'tabs', role: 'tablist', 'aria-label': t('app.short') },
-      TABS.map((tb) => h('a', { class: 'tab', role: 'tab', href: '#/' + tb.id, 'data-tab': tb.id }, icon(tb.icon), h('span', null, tabTitle(tb.id)))));
+    const tabs = h('nav', { class: 'tabs', role: 'tablist', 'aria-label': t('ws.' + ws.id) },
+      [ws.dash, ...ws.tabs].map((id) => h('a', { class: 'tab', role: 'tab', href: '#/' + id, 'data-tab': id },
+        icon(TAB_ICONS[id] || 'layout-dashboard'), h('span', null, tabTitle(id)))));
 
     const el = h('header', { class: 'topbar' },
-      h('div', { class: 'top-row' }, UI.logo(true), h('div', { class: 'menu-wrap' }, hi), h('span', { class: 'grow' }), h('div', { class: 'metrics' }, progBox, scoreBox, markBox)),
+      h('div', { class: 'top-row' }, h('button', { class: 'brand-btn', type: 'button', title: t('header.refresh'), 'aria-label': t('header.refresh'), onclick: refreshPage }, UI.logo(true)), h('div', { class: 'menu-wrap' }, hi), h('span', { class: 'grow' }), h('div', { class: 'metrics' }, progBox, scoreBox, markBox)),
       tabs);
 
     let first = true;
     return {
       el, hi,
       update() {
-        const s = Store.stats(Store.current()), tot = s.total;
+        const tot = Store.stats(Store.current(), ws.tabs).total;
         r.set(tot.pct, first); sc.set(tot.score, first); mk.set(tot.mark, first); first = false;
         markBox.title = t('dash.mark.sub') + ' — ' + (tot.max ? Math.round((tot.mark / tot.max) * 1000) / 10 : 0) + ' %';
       },
@@ -66,7 +74,7 @@
     };
   }
 
-  // ------------------------------------------------------------------ account menu
+  // ------------------------------------------------------------------ workspace switch (the account stays the same)
   let openMenu = null;
   function closeMenu() {
     if (!openMenu) return;
@@ -78,23 +86,12 @@
 
   function toggleMenu(anchor) {
     if (openMenu) return closeMenu();
-    const item = (ic, label, fn, danger) => h('button', { class: 'menu-item' + (danger ? ' danger' : ''), role: 'menuitem', type: 'button',
-      onclick: () => { closeMenu(); fn(); } }, icon(ic), h('span', null, label));
-    const a = Store.current();
-    const el = h('div', { class: 'menu', role: 'menu' },
-      h('div', { class: 'menu-head' }, h('b', null, a.first + ' ' + a.last), h('small', null, a.id)),
-      item('settings', t('menu.settings'), openSettings),
-      item('users', t('menu.switch'), openSwitch),
-      item('user-plus', t('menu.add'), addAccount),
-      item('key-round', t('menu.password'), openChangePassword),
+    const item = (ic, label, href, current) => h('a', { class: 'menu-item' + (current ? ' on' : ''), role: 'menuitem', href, 'aria-current': current ? 'true' : null },
+      icon(ic), h('span', null, label), current ? icon('check', 'menu-check') : null);
+    const el = h('div', { class: 'menu', role: 'menu', 'aria-label': t('ws.switch') },
+      Overview.WORKSPACES.map((ws) => item(ws.icon, t('ws.' + ws.id), ws.href, ws === shell.ws)),
       h('div', { class: 'menu-sep' }),
-      item('save', t('menu.save'), openSaveToFolder),
-      window.ESP32TOUR_SINGLE ? item('copy', t('menu.appcopy'), downloadAppCopy) : null,
-      item('download', t('menu.export'), () => { Store.exportDownload(); toast(t('export.done')); }),
-      item('upload', t('menu.import'), importFile),
-      h('div', { class: 'menu-sep' }),
-      item('log-out', t('menu.signout'), signOut),
-      item('trash-2', t('menu.delete'), openDelete, true));
+      item('house', t('ov.title'), '#/overview'));
     anchor.parentNode.appendChild(el);
     anchor.setAttribute('aria-expanded', 'true');
     openMenu = { el, anchor };
@@ -124,24 +121,17 @@
 
   // ------------------------------------------------------------------ dialogs
   function signOut() { Store.signOut(); Auth.show('signin', authOpts()); }
-  function authOpts() { return { onDone: enter }; }
+  function authOpts() { return { onDone: goHome }; }
 
-  function addAccount() { Auth.show('signup', { adding: true, onDone: enter, onCancel: enter }); }
+  function addAccount() { Auth.show('signup', { adding: true, onDone: goHome, onCancel: enter }); }
 
-  function openSettings() {
-    const a = Store.current();
-    const themeSeg = h('div', { class: 'seg wide', role: 'group' }, ['auto', 'light', 'dark'].map((v) => h('button', {
-      type: 'button', class: 'seg-btn' + (a.theme === v ? ' on' : ''), 'aria-pressed': String(a.theme === v),
-      onclick: () => { Store.setPrefs(a.uid, { theme: v }); m.close(); openSettings(); }
-    }, icon(v === 'auto' ? 'monitor' : v === 'light' ? 'sun' : 'moon'), t('settings.theme.' + v))));
-    const langs = h('div', { class: 'seg wide', role: 'group', 'aria-label': t('settings.language') }, ['en', 'fr'].map((l) => h('button', {
-      type: 'button', class: 'seg-btn' + (I18n.lang === l ? ' on' : ''), 'aria-pressed': String(I18n.lang === l),
-      onclick: () => { Store.setPrefs(a.uid, { lang: l }); I18n.set(l); m.close(); render(); openSettings(); }
-    }, icon('languages'), l === 'en' ? 'English' : 'Français')));
-    const m = modal({ title: t('settings.title'), body: h('div', { class: 'settings' },
-      h('div', { class: 'set-row' }, h('h3', null, t('settings.language')), langs, h('p', { class: 'note' }, t('settings.language.hint'))),
-      h('div', { class: 'set-row' }, h('h3', null, t('settings.theme')), themeSeg)) });
-  }
+  // what the Account management and Settings pages can do
+  const ACTIONS = {
+    switchAccount: openSwitch, add: addAccount, password: openChangePassword, save: openSaveToFolder, appCopy: downloadAppCopy,
+    importFile, signOut, del: openDelete,
+    setTheme(v) { Store.setPrefs(Store.current().uid, { theme: v }); showRoute(); },
+    setLang(l) { Store.setPrefs(Store.current().uid, { lang: l }); I18n.set(l); render(); }
+  };
 
   function openSwitch() {
     const cur = Store.current();
@@ -167,7 +157,7 @@
           const ok = await Store.verifyAccount(a.uid, f.value);
           if (ok && ok.wait) err.textContent = t('err.wait', { s: ok.wait });
           else if (!ok) err.textContent = t('err.login');
-          else { m.close(); Store.startSession(a.uid, false); enter(); }
+          else { m.close(); Store.startSession(a.uid, false); goHome(); }
         } finally { go.setBusy(false); }
       });
       body.replaceChildren(form); f.input.focus();
@@ -238,7 +228,7 @@
     const input = h('input', { type: 'file', accept: '.js,.json,.txt', class: 'sr-only' });
     input.addEventListener('change', async () => {
       const f = input.files && input.files[0]; if (!f) return;
-      try { const r = Store.importText(await f.text()); toast(t('auth.imported', { n: r.added, m: r.merged })); refresh(); }
+      try { const r = Store.importText(await f.text()); toast(t('auth.imported', { n: r.added, m: r.merged })); goHome(); }
       catch (e) { toast(t('auth.import.bad'), 'error'); }
       input.remove();
     });
@@ -247,22 +237,30 @@
 
   // ------------------------------------------------------------------ views
   function placeholder(id) {
-    const title = tabTitle(id);
     return h('section', { class: 'placeholder' },
-      h('div', { class: 'big-icon' }, icon(id === 't1' ? 'book-open' : 'workflow')),
-      h('h1', null, t('ph.title')), h('p', null, t('ph.text', { title })),
-      h('a', { class: 'btn primary', href: '#/dashboard' }, icon('layout-dashboard'), h('span', null, t('ph.back'))));
+      h('div', { class: 'big-icon' }, icon(TAB_ICONS[id])),
+      h('h1', null, t('ph.title')), h('p', null, t('ph.text', { title: tabTitle(id) })),
+      h('a', { class: 'btn primary', href: shell.ws.href }, icon('layout-dashboard'), h('span', null, t('ph.back'))));
   }
 
   function showRoute() {
     if (!shell) return;
     const id = routeId();
+    const ws = Overview.workspaceOf(id);
     shell.route = id;
+    if (ws && ws !== shell.ws) {                               // another workspace: its own tabs, progress, Score and Total mark
+      const old = shell.header;
+      shell.ws = ws; shell.header = buildHeader(ws);
+      old.el.replaceWith(shell.header.el); shell.header.update();
+    }
     shell.header.setActive(id);
     document.title = tabTitle(id) + ' · ' + t('app.short');
     if (id !== 't1' && shell.lessons) { shell.lessons.destroy(); shell.lessons = null; }
-    if (id === 'dashboard') {
-      shell.dash = Dashboard.mount({ onChangePassword: openChangePassword });
+    closeMenu();
+    shell.el.classList.toggle('bare', Overview.has(id));       // the Overview pages have no workspace header
+    if (Overview.has(id)) { shell.dash = null; shell.main.replaceChildren(Overview.mount(id, ACTIONS)); }
+    else if (id === ws.dash) {
+      shell.dash = Dashboard.mount(ws);
       shell.main.replaceChildren(shell.dash.el); shell.dash.update();
     } else if (id === 't1') {
       shell.dash = null;
@@ -283,16 +281,22 @@
   // Build the whole signed-in screen
   function render() {
     closeMenu();
-    const header = buildHeader();
+    const ws = Overview.workspaceOf(routeId()) || Overview.WORKSPACES[0], header = buildHeader(ws);
     const main = h('main', { class: 'main', id: 'main', tabindex: '-1' });
-    shell = { header, main, route: null, dash: null, lessons: null };
-    root().replaceChildren(h('div', { class: 'app' }, header.el, main,
+    const el = h('div', { class: 'app' }, header.el, main,
       h('footer', { class: 'foot' }, t('footer.version', { v: Store.VERSION }),
-        Store.versionNote ? ' · ' + t('update.note', { v: Store.versionNote }) : '')));
+        Store.versionNote ? ' · ' + t('update.note', { v: Store.versionNote }) : ''));
+    shell = { el, header, main, ws, route: null, dash: null, lessons: null };
+    root().replaceChildren(el);
     header.update(); showRoute();
   }
 
   function enter() { applyTheme(); render(); }
+  // after sign in, sign up, account switch and import: open the Overview
+  function goHome() {
+    try { history.replaceState(null, '', '#/overview'); } catch (e) { location.hash = '#/overview'; }
+    enter();
+  }
 
   const App = {
     boot() {

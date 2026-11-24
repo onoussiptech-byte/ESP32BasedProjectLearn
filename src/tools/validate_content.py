@@ -11,6 +11,7 @@ reference indexes (src/references/index.json and arduino_index.json), adding pag
 """
 import json
 import re
+from urllib.parse import quote
 import sys
 from pathlib import Path
 
@@ -119,7 +120,7 @@ def pdf_page_text(ref, page):
         if "pypdf" not in NOTES:
             NOTES.append("pypdf")
         return None
-    path = ROOT.parent / ref["file"]
+    path = ROOT / "docs" / ref["file"]
     if not path.exists():
         return None
     if path not in _PDFS:
@@ -136,11 +137,8 @@ def squash(s):
 
 def resolve_source(c, where, src, refs):
     doc = src.get("doc")
-    if doc in ("datasheet", "trm", "idf"):
+    if doc != "arduino" and "sections" in refs.get(doc, {}):          # one of the PDFs in docs/
         ref = refs.get(doc)
-        if not ref:
-            c.err(where, f"reference index for '{doc}' not found")
-            return None
         hits = [s for s in ref["sections"] if s["title"].strip().lower() == src.get("section", "").strip().lower()]
         if "page" in src:
             hits = [s for s in hits if s["page"] == src["page"]]
@@ -152,11 +150,12 @@ def resolve_source(c, where, src, refs):
             return None
         s = hits[0]
         page = src.get("pdf_page", s["page"])                   # "pdf_page" corrects a wrong page in the index
-        text = pdf_page_text(ref, page)
+        text = None if s.get("manual") else pdf_page_text(ref, page)   # hand-made titles were checked by pdf_index.py
         if text is not None and squash(re.sub(r"^[\d.]+\s*", "", s["title"])) not in squash(text):
             c.err(where, f"heading {s['title']!r} is not on PDF page {page} (the index says {s['page']}): "
                          f"look it up and add \"pdf_page\": N to this source")
-        return {"doc": doc, "section": s["title"], "page": page, "url": f"{ref['url']}#page={page}"}
+        return {"doc": doc, "section": s["title"], "page": page,
+                "url": f"{ref['url'] or 'docs/' + quote(ref['file'])}#page={page}"}
     if doc == "arduino":
         ref = refs.get("arduino")
         page = next((p for p in (ref or {}).get("pages", []) if p["path"] == src.get("page")), None)

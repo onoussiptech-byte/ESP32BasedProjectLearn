@@ -18,5 +18,10 @@
   "version": "0.460.0",
   "url": "https://registry.npmjs.org/lucide-static/-/lucide-static-0.460.0.tgz",
   "sha256": "24ec818481591e6795c48cd5d8466d1632c02050aa317801c207f91de9747ae4"
+ },
+ "pdfjs-dist": {
+  "version": "4.10.38",
+  "url": "https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-4.10.38.tgz",
+  "sha256": "1011b38553532d7078c59f26b15a471f8dae00f101b60e2add9b8511737a1ce0"
  }
 }

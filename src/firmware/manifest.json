@@ -1,0 +1,210 @@
+{
+ "platformio.ini": {
+  "lines": 48,
+  "sha256": "9593cb35061e03633399e85540e3fd6b6aba6258b3eb7b23e17867eba19de0ee"
+ },
+ "include/config.h": {
+  "lines": 230,
+  "sha256": "9cd091c24d185c783b4693650c24544f2bd75cb6aabc8285be45f74d8bd86163"
+ },
+ "include/logger.h": {
+  "lines": 17,
+  "sha256": "bd159b49b28ba12e511e301f71115ed862e1b6f0de6f925cc6a7023048ddb079"
+ },
+ "include/types.h": {
+  "lines": 101,
+  "sha256": "c2417a2353d0cabe007bfe805b5975f9561738bcb434ee78efa584e28aff9811"
+ },
+ "src/e1_sensors/Ads1115Bus.cpp": {
+  "lines": 107,
+  "sha256": "fe43c5deab07a78967d4f4dc333e637cbecf8f9d74de3e6c87726a8d945206d4"
+ },
+ "src/e1_sensors/Ads1115Bus.h": {
+  "lines": 16,
+  "sha256": "71c0777f9256f32ae87e34e1aac14fb6b9b061843cc8d06da380cbd8ba290999"
+ },
+ "src/e1_sensors/FlowSensor.cpp": {
+  "lines": 62,
+  "sha256": "3539f1697909cfbe8ed371b42fc7951c0d2a8585631999464f9c27c54085522a"
+ },
+ "src/e1_sensors/FlowSensor.h": {
+  "lines": 28,
+  "sha256": "3eb8c35c066c89b656670ae2308979a1b646a34c2b7c778b629c1a47e16e1e47"
+ },
+ "src/e1_sensors/LevelSwitch.cpp": {
+  "lines": 46,
+  "sha256": "56299dbcc5c8b3099dc75e6500b44788ea1f2d372ce1928e4d34dc6f5ede5f2b"
+ },
+ "src/e1_sensors/LevelSwitch.h": {
+  "lines": 25,
+  "sha256": "70bc3a5f94786f4554a8fe498d2518aafbd0b61cdcb4543404a88c3d31c4cc3d"
+ },
+ "src/e1_sensors/PhSensor.cpp": {
+  "lines": 155,
+  "sha256": "deaef6f207a607a6d1a888b7b9c55e44329bddea38223bda3b5a358d3bddc46c"
+ },
+ "src/e1_sensors/PhSensor.h": {
+  "lines": 44,
+  "sha256": "325f588ab9891542752da579421e6f8224fa8f04656821a14db366e9ce0989eb"
+ },
+ "src/e1_sensors/SignalFilter.h": {
+  "lines": 94,
+  "sha256": "91a29d22d2bb52f17fe10b91407a160ff8b3011cf51e135315b18a155c417cc0"
+ },
+ "src/e1_sensors/SimulatedSensors.cpp": {
+  "lines": 57,
+  "sha256": "673eef492356f6d418cc264e8c3bbc30cee275154793ae9c67ccbb64faee838f"
+ },
+ "src/e1_sensors/SimulatedSensors.h": {
+  "lines": 18,
+  "sha256": "7bf18b4d34135f79c8b1decbdfa4e7d56cca9911e1afd33db99da45626fc1586"
+ },
+ "src/e1_sensors/TemperatureSensor.cpp": {
+  "lines": 60,
+  "sha256": "54ecf9173b0b75b5061f8cd4c4b5f308cc9e95c436e364ff1cd1ce0fb38a0e7e"
+ },
+ "src/e1_sensors/TemperatureSensor.h": {
+  "lines": 31,
+  "sha256": "f635785eb20424d1f2b247c21715fd8e899423354c1481a9a2d7acba824136c5"
+ },
+ "src/e2_core/CommManager.cpp": {
+  "lines": 245,
+  "sha256": "6913d553a62326f63b635a3647cf99828a496ba0c8dbc63c22aac4273daf7b82"
+ },
+ "src/e2_core/CommManager.h": {
+  "lines": 16,
+  "sha256": "5a9c10167a91f993814fa821abc53045951a8e129bf518d5d745e753935082b8"
+ },
+ "src/e2_core/ControlManager.cpp": {
+  "lines": 271,
+  "sha256": "a2eec294592698b711494be24f597804d74472569343f357766508ecf0010f7f"
+ },
+ "src/e2_core/ControlManager.h": {
+  "lines": 16,
+  "sha256": "0d9d71ea658e0b184734dc6efd1effd7e6a359d76b445b266446bdd321b61716"
+ },
+ "src/e2_core/DashboardPage.h": {
+  "lines": 24,
+  "sha256": "cb1dce0b1f3099b7b8399b581fa80e0aed78f1a4b01739362448e98c9590f5ec"
+ },
+ "src/e2_core/JsonProtocol.cpp": {
+  "lines": 147,
+  "sha256": "3b9965fdd9e589bc05bef41404efb9b3b704e008f89ea9458b94e7bfd28c4690"
+ },
+ "src/e2_core/JsonProtocol.h": {
+  "lines": 28,
+  "sha256": "0e01fb1d02410a0958ad7e8eefbbeed9efda7c0dd2f212c13bb5948c8c4ec01a"
+ },
+ "src/e2_core/OutputManager.cpp": {
+  "lines": 109,
+  "sha256": "7c6f95e384f51612c4761b9d09753a4d5ef3f9879110080fab3e54bbadff1623"
+ },
+ "src/e2_core/OutputManager.h": {
+  "lines": 29,
+  "sha256": "c42bbc4bd65aee284eac0d3d9ce3d08ef3c6cf200ed146b5cfea57e5222d2ffe"
+ },
+ "src/e2_core/PidController.h": {
+  "lines": 44,
+  "sha256": "989ec3113452ce9c0b12e8b7ccc10e78784168547596d5edde203f22f4c2cbad"
+ },
+ "src/e2_core/SafetyManager.cpp": {
+  "lines": 60,
+  "sha256": "2caffe42b809bfdc3ed136de0b2e3d88713009921bcecff705ee9ebf25394cab"
+ },
+ "src/e2_core/SafetyManager.h": {
+  "lines": 14,
+  "sha256": "f20280904a5d58ac1a320eb7ad32371f399125b9323ad88e7b4b23428ac48071"
+ },
+ "src/e2_core/SensorManager.cpp": {
+  "lines": 129,
+  "sha256": "e26e48ffbefc0e33ef3a859ce6c29e6d267f03b4ad6b03747c5c3d9992de998f"
+ },
+ "src/e2_core/SensorManager.h": {
+  "lines": 20,
+  "sha256": "f02dad7374c2a649c7a50a78ef1427792152136f9110115e8f8d5c5afb07ddcd"
+ },
+ "src/e2_core/StorageManager.cpp": {
+  "lines": 97,
+  "sha256": "52246932eb278b0f6e23ca35a20a7cf4314c6d79d8f0aa42d9d6166b36005b5b"
+ },
+ "src/e2_core/StorageManager.h": {
+  "lines": 22,
+  "sha256": "9c63340cef5e68ec95ee230418bac795c591ac3a29c1cf7b20313fb11ed078d9"
+ },
+ "src/e2_core/SystemState.cpp": {
+  "lines": 137,
+  "sha256": "520e52415a8f4980c5c69f1ef9d4d15029fff1704e0e3e47b52751a20e93c889"
+ },
+ "src/e2_core/SystemState.h": {
+  "lines": 38,
+  "sha256": "316653407f93ef884c4bf57c82bc120ef3b4d1d2d7a7ef40769115a5f9d0cea2"
+ },
+ "src/e2_core/TaskManager.cpp": {
+  "lines": 108,
+  "sha256": "71ea603920c4921545bc333d6baf5f6174af238b38a77466b700eefb46ac2c9f"
+ },
+ "src/e2_core/TaskManager.h": {
+  "lines": 21,
+  "sha256": "2b6ba57df54e4385b11c76cde769dcf4283a8e8600afa429b1a6fa8b308e56f0"
+ },
+ "src/main.cpp": {
+  "lines": 58,
+  "sha256": "2b5ff03b4418c6eac73e905f49ac49fc57a41de053fdb8cadc1b4b32bb852aa9"
+ },
+ "src/p3_outputs/AeratorDriver.cpp": {
+  "lines": 12,
+  "sha256": "d6518305ea4c947bdc37108bd226738e245f26f74f0a6fe375812f441125f71e"
+ },
+ "src/p3_outputs/AeratorDriver.h": {
+  "lines": 19,
+  "sha256": "c01afccbee6ae6c6f74d96030895fe7a814287f1119e7722b2891f4e0ab1732a"
+ },
+ "src/p3_outputs/DosingPumpDriver.cpp": {
+  "lines": 52,
+  "sha256": "40c11f2603ce28ad14e002a0edd6d285e6cad018a4d789d63d4d6a25278e5321"
+ },
+ "src/p3_outputs/DosingPumpDriver.h": {
+  "lines": 27,
+  "sha256": "b1bcba37e90b01097557259237e45279508bb133b335b07b800d4cf1194fe881"
+ },
+ "src/p3_outputs/HeaterDriver.cpp": {
+  "lines": 12,
+  "sha256": "0f4372c84b762cce65af2d4a26eaba8fd707a7366d942daea7e917062b31ddfa"
+ },
+ "src/p3_outputs/HeaterDriver.h": {
+  "lines": 18,
+  "sha256": "e25cf7a8313b66a9bd677aa3509ea4e137ca854f7df80f45d45b430b215f7266"
+ },
+ "src/p3_outputs/LowSideSwitch.cpp": {
+  "lines": 18,
+  "sha256": "256aad196aee7c922b4cf80bacb56dd98808ae6695cf929ff0b32162bcd9e969"
+ },
+ "src/p3_outputs/LowSideSwitch.h": {
+  "lines": 24,
+  "sha256": "1a741705873c5057b1a08d6b72f31341e0119ce21da3002f0dcc968352b10050"
+ },
+ "src/p3_outputs/PumpDriver.cpp": {
+  "lines": 59,
+  "sha256": "453921de3e8ba5218e767f4f4d4811f1617f0177b1f28e8758807e930f7d9b22"
+ },
+ "src/p3_outputs/PumpDriver.h": {
+  "lines": 27,
+  "sha256": "59f375bf99e1a4dde612a1a220b2f6dc15f40a1a44674b8ebfa87bb7e1db4df1"
+ },
+ "src/p3_outputs/RailMonitor.cpp": {
+  "lines": 53,
+  "sha256": "be70e57cdc82e60cb708a414e7f06d1dd18f412477c000eddaedb57b2def47fd"
+ },
+ "src/p3_outputs/RailMonitor.h": {
+  "lines": 24,
+  "sha256": "42ecb4e1f14bcbae3f773dda5bdb51c04732a68daa4c73c8479302c9fe8fc23c"
+ },
+ "src/p3_outputs/StatusLed.cpp": {
+  "lines": 37,
+  "sha256": "c1dfef8818f8e28efd7ffb8cca648f22b8471f0f2c0a792a07cfc0d215c15704"
+ },
+ "src/p3_outputs/StatusLed.h": {
+  "lines": 22,
+  "sha256": "fa46cccdf132215f705bd5a31590ce90fb49b9757230d1385074514900e41204"
+ }
+}

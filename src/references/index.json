@@ -108,7 +108,7 @@
    {
     "title": "3.3 U0TXD Printing Control",
     "depth": 1,
-    "page": 24
+    "page": 25
    },
    {
     "title": "3.4 Timing Control of SDIO Slave",
@@ -143,7 +143,7 @@
    {
     "title": "4.1.3 External Flash and RAM",
     "depth": 2,
-    "page": 26
+    "page": 27
    },
    {
     "title": "4.1.4 Address Mapping Structure",
@@ -173,7 +173,7 @@
    {
     "title": "4.2.3 Audio PLL Clock",
     "depth": 2,
-    "page": 29
+    "page": 30
    },
    {
     "title": "4.3 RTC and Low-power Management",
@@ -223,7 +223,7 @@
    {
     "title": "4.6.2 2.4 GHz Transmitter",
     "depth": 2,
-    "page": 32
+    "page": 33
    },
    {
     "title": "4.6.3 Clock Generator",
@@ -238,7 +238,7 @@
    {
     "title": "4.6.5 Wi-Fi MAC",
     "depth": 2,
-    "page": 33
+    "page": 34
    },
    {
     "title": "4.7 Bluetooth",
@@ -258,7 +258,7 @@
    {
     "title": "4.7.3 Bluetooth Stack",
     "depth": 2,
-    "page": 34
+    "page": 35
    },
    {
     "title": "4.7.4 Bluetooth Link Controller",
@@ -293,7 +293,7 @@
    {
     "title": "4.8.5 I2S Interface",
     "depth": 2,
-    "page": 37
+    "page": 38
    },
    {
     "title": "4.8.6 Remote Control Peripheral",
@@ -378,7 +378,7 @@
    {
     "title": "5.3 DC Characteristics (3.3 V, 25 °C)",
     "depth": 1,
-    "page": 51
+    "page": 52
    },
    {
     "title": "5.4 RF Current Consumption in Active Mode",
@@ -486,7 +486,7 @@
    {
     "title": "I Microprocessor and Master",
     "depth": 0,
-    "page": 27
+    "page": 28
    },
    {
     "title": "1 ULP Coprocessor (ULP)",
@@ -546,7 +546,7 @@
    {
     "title": "1.4.4 JUMP – Jump to an Absolute Address",
     "depth": 3,
-    "page": 34
+    "page": 35
    },
    {
     "title": "1.4.5 JUMPR – Jump to a Relative Offset (Conditional upon R0)",
@@ -556,7 +556,7 @@
    {
     "title": "1.4.6 JUMPS – Jump to a Relative Address (Conditional upon Stage Count Register)",
     "depth": 3,
-    "page": 35
+    "page": 36
    },
    {
     "title": "1.4.7 HALT – End the Program",
@@ -611,7 +611,7 @@
    {
     "title": "1.6.1 Configuring RTC_I2C",
     "depth": 3,
-    "page": 41
+    "page": 42
    },
    {
     "title": "1.6.2 Using RTC_I2C",
@@ -636,7 +636,7 @@
    {
     "title": "1.6.2.4 Connecting I2C Signals",
     "depth": 4,
-    "page": 43
+    "page": 44
    },
    {
     "title": "1.7 Register Summary",
@@ -776,7 +776,7 @@
    {
     "title": "3.3.2.6 DMA",
     "depth": 4,
-    "page": 69
+    "page": 70
    },
    {
     "title": "3.3.2.7 RTC FAST Memory",
@@ -806,7 +806,7 @@
    {
     "title": "3.3.5.1 Asymmetric PID Controller Peripheral",
     "depth": 4,
-    "page": 73
+    "page": 74
    },
    {
     "title": "3.3.5.2 Non-Contiguous Peripheral Memory Ranges",
@@ -846,7 +846,7 @@
    {
     "title": "4.3.2 MPU/MMU",
     "depth": 3,
-    "page": 75
+    "page": 76
    },
    {
     "title": "4.3.2.1 Embedded Memory",
@@ -916,7 +916,7 @@
    {
     "title": "5.3.3 Software Reading of System Parameters",
     "depth": 3,
-    "page": 97
+    "page": 98
    },
    {
     "title": "5.3.4 The Use of System Parameters by Hardware Modules",
@@ -956,7 +956,7 @@
    {
     "title": "6.2 Peripheral Input via GPIO Matrix",
     "depth": 2,
-    "page": 116
+    "page": 117
    },
    {
     "title": "6.2.1 Summary",
@@ -1196,7 +1196,7 @@
    {
     "title": "7.4 Registers",
     "depth": 2,
-    "page": 171
+    "page": 172
    },
    {
     "title": "8 Interrupt Matrix (INTERRUPT)",
@@ -1221,7 +1221,7 @@
    {
     "title": "8.3.1 Peripheral Interrupt Source",
     "depth": 3,
-    "page": 174
+    "page": 175
    },
    {
     "title": "8.3.2 CPU Interrupt",
@@ -1421,7 +1421,7 @@
    {
     "title": "11.3.2 Operating Procedure",
     "depth": 3,
-    "page": 234
+    "page": 235
    },
    {
     "title": "11.3.3 Write Protection",
@@ -1436,7 +1436,7 @@
    {
     "title": "11.4 Registers",
     "depth": 2,
-    "page": 235
+    "page": 236
    },
    {
     "title": "12 DPort Registers",
@@ -1471,7 +1471,7 @@
    {
     "title": "12.3.3 Interrupt Matrix Register",
     "depth": 3,
-    "page": 237
+    "page": 238
    },
    {
     "title": "12.3.4 DMA Registers",
@@ -1496,7 +1496,7 @@
    {
     "title": "12.4 Register Summary",
     "depth": 2,
-    "page": 238
+    "page": 239
    },
    {
     "title": "12.5 Registers",
@@ -1701,7 +1701,7 @@
    {
     "title": "16.4 Register Summary",
     "depth": 2,
-    "page": 294
+    "page": 295
    },
    {
     "title": "16.5 Registers",
@@ -1726,7 +1726,7 @@
    {
     "title": "17.3 Functional Description",
     "depth": 2,
-    "page": 303
+    "page": 304
    },
    {
     "title": "17.3.1 Key Generator",
@@ -1736,7 +1736,7 @@
    {
     "title": "17.3.2 Flash Encryption Block",
     "depth": 3,
-    "page": 304
+    "page": 305
    },
    {
     "title": "17.3.3 Flash Decryption Block",
@@ -1851,7 +1851,7 @@
    {
     "title": "19.3.7.1 Hardware Flow Control",
     "depth": 4,
-    "page": 315
+    "page": 316
    },
    {
     "title": "19.3.7.2 Software Flow Control",
@@ -1941,7 +1941,7 @@
    {
     "title": "20.3.4 GP-SPI Data Buffer",
     "depth": 3,
-    "page": 357
+    "page": 358
    },
    {
     "title": "20.4 GP-SPI Clock Control",
@@ -2036,12 +2036,12 @@
    {
     "title": "21.3.5 I2C Master Writes to Slave",
     "depth": 3,
-    "page": 392
+    "page": 393
    },
    {
     "title": "21.3.6  Master Reads from Slave",
     "depth": 3,
-    "page": 396
+    "page": 397
    },
    {
     "title": "21.3.7 Interrupts",
@@ -2071,7 +2071,7 @@
    {
     "title": "22.2 Features",
     "depth": 2,
-    "page": 416
+    "page": 417
    },
    {
     "title": "22.3 The Clock of I2S Module",
@@ -2091,7 +2091,7 @@
    {
     "title": "22.4.1.1 Philips Standard",
     "depth": 4,
-    "page": 418
+    "page": 419
    },
    {
     "title": "22.4.1.2 MSB Alignment Standard",
@@ -2126,7 +2126,7 @@
    {
     "title": "22.4.6 I2S Master/Slave Mode",
     "depth": 3,
-    "page": 423
+    "page": 424
    },
    {
     "title": "22.4.7 I2S PDM",
@@ -2166,7 +2166,7 @@
    {
     "title": "22.6.2 DMA Interrupts",
     "depth": 3,
-    "page": 429
+    "page": 430
    },
    {
     "title": "22.7 Register Summary",
@@ -2196,7 +2196,7 @@
    {
     "title": "23.2.1 Architecture",
     "depth": 3,
-    "page": 450
+    "page": 451
    },
    {
     "title": "23.2.2 Counter Channel Inputs",
@@ -2211,7 +2211,7 @@
    {
     "title": "23.2.4 Examples",
     "depth": 3,
-    "page": 452
+    "page": 453
    },
    {
     "title": "23.2.5 Interrupts",
@@ -2221,7 +2221,7 @@
    {
     "title": "23.3 Register Summary",
     "depth": 2,
-    "page": 453
+    "page": 454
    },
    {
     "title": "23.4 Registers",
@@ -2296,7 +2296,7 @@
    {
     "title": "24.3 MAC Interrupt Controller",
     "depth": 2,
-    "page": 466
+    "page": 467
    },
    {
     "title": "24.4 MAC Address Filtering",
@@ -2391,7 +2391,7 @@
    {
     "title": "24.8 Linked List Descriptors",
     "depth": 2,
-    "page": 474
+    "page": 475
    },
    {
     "title": "24.8.1 Transmit Descriptors",
@@ -2441,7 +2441,7 @@
    {
     "title": "25.3.2 TWAI Messages",
     "depth": 3,
-    "page": 526
+    "page": 527
    },
    {
     "title": "25.3.2.1 Data Frames and Remote Frames",
@@ -2501,7 +2501,7 @@
    {
     "title": "25.4.1 Registers Block",
     "depth": 3,
-    "page": 534
+    "page": 535
    },
    {
     "title": "25.4.2 Bit Stream Processor",
@@ -2521,7 +2521,7 @@
    {
     "title": "25.4.5 Acceptance Filter",
     "depth": 3,
-    "page": 536
+    "page": 537
    },
    {
     "title": "25.4.6 Receive FIFO",
@@ -2616,7 +2616,7 @@
    {
     "title": "25.5.4.4 Frame Data",
     "depth": 4,
-    "page": 542
+    "page": 543
    },
    {
     "title": "25.5.5 Receive FIFO and Data Overruns",
@@ -2636,7 +2636,7 @@
    {
     "title": "25.5.6.2 Dual FIlter Mode",
     "depth": 4,
-    "page": 544
+    "page": 545
    },
    {
     "title": "25.5.7 Error Management",
@@ -2651,7 +2651,7 @@
    {
     "title": "25.5.7.2 Error Passive",
     "depth": 4,
-    "page": 545
+    "page": 546
    },
    {
     "title": "25.5.7.3 Bus-Off and Bus-Off Recovery",
@@ -2731,7 +2731,7 @@
    {
     "title": "26.3.5.2 Receiving Packets from SDIO Host",
     "depth": 4,
-    "page": 567
+    "page": 568
    },
    {
     "title": "26.3.6 SDIO Bus Timing",
@@ -2791,7 +2791,7 @@
    {
     "title": "27.3 SD/MMC External Interface Signals",
     "depth": 2,
-    "page": 597
+    "page": 598
    },
    {
     "title": "27.4 Functional Description",
@@ -2841,7 +2841,7 @@
    {
     "title": "27.6 RAM for Receiving and Sending Data",
     "depth": 2,
-    "page": 602
+    "page": 603
    },
    {
     "title": "27.6.1 Transmit RAM Module",
@@ -2871,7 +2871,7 @@
    {
     "title": "27.9.1 DMAC Initialization",
     "depth": 3,
-    "page": 605
+    "page": 606
    },
    {
     "title": "27.9.2 DMAC Transmission Initialization",
@@ -2896,7 +2896,7 @@
    {
     "title": "27.12 Interrupt",
     "depth": 2,
-    "page": 608
+    "page": 609
    },
    {
     "title": "27.13 Register Summary",
@@ -2991,12 +2991,12 @@
    {
     "title": "29.3.1.2 Timer Submodule",
     "depth": 4,
-    "page": 650
+    "page": 651
    },
    {
     "title": "29.3.1.3 Operator Submodule",
     "depth": 4,
-    "page": 651
+    "page": 652
    },
    {
     "title": "29.3.1.4 Fault Detection Submodule",
@@ -3006,7 +3006,7 @@
    {
     "title": "29.3.1.5 Capture Submodule",
     "depth": 4,
-    "page": 653
+    "page": 654
    },
    {
     "title": "29.3.2 PWM Timer Submodule",
@@ -3116,7 +3116,7 @@
    {
     "title": "30.2.3 Clock",
     "depth": 3,
-    "page": 729
+    "page": 730
    },
    {
     "title": "30.2.4 Transmitter",
@@ -3141,7 +3141,7 @@
    {
     "title": "30.4 Registers",
     "depth": 2,
-    "page": 732
+    "page": 733
    },
    {
     "title": "VI Analog Signal Processing",
@@ -4164,7 +4164,7 @@
    {
     "title": "Description of Components",
     "depth": 5,
-    "page": 81
+    "page": 80
    },
    {
     "title": "How to Flash a Board",
@@ -4234,7 +4234,7 @@
    {
     "title": "Header Blocks",
     "depth": 5,
-    "page": 84
+    "page": 85
    },
    {
     "title": "Related Documents",
@@ -4504,7 +4504,7 @@
    {
     "title": "Pin Layout",
     "depth": 5,
-    "page": 101
+    "page": 100
    },
    {
     "title": "Hardware Revision Details",
@@ -25899,7 +25899,7 @@
    {
     "title": "Component Configuration",
     "depth": 2,
-    "page": 2552
+    "page": 2553
    },
    {
     "title": "Preprocessor Definitions",
@@ -27509,7 +27509,7 @@
    {
     "title": "GDB Stub",
     "depth": 2,
-    "page": 2664
+    "page": 2665
    },
    {
     "title": "RTC Watchdog Timeout",
@@ -27654,7 +27654,7 @@
    {
     "title": "Interrupt Priorities",
     "depth": 2,
-    "page": 2673
+    "page": 2674
    },
    {
     "title": "Notes",
@@ -30614,7 +30614,7 @@
    {
     "title": "Secure Boot",
     "depth": 2,
-    "page": 2900
+    "page": 2901
    },
    {
     "title": "Background",
@@ -32955,6 +32955,2077 @@
     "title": "Index",
     "depth": 0,
     "page": 3020
+   }
+  ]
+ },
+ "hwdesign": {
+  "file": "esp-hardware-design-guidelines-en-master-esp32.pdf",
+  "title": "ESP32 Hardware Design Guidelines",
+  "url": null,
+  "pages": 38,
+  "sections": [
+   {
+    "title": "Table of contents",
+    "depth": 0,
+    "page": 2
+   },
+   {
+    "title": "Latest Version of This Document",
+    "depth": 0,
+    "page": 6
+   },
+   {
+    "title": "About This Document",
+    "depth": 1,
+    "page": 6
+   },
+   {
+    "title": "Introduction",
+    "depth": 2,
+    "page": 6
+   },
+   {
+    "title": "Latest Version of This Document",
+    "depth": 2,
+    "page": 6
+   },
+   {
+    "title": "Product Overview",
+    "depth": 1,
+    "page": 6
+   },
+   {
+    "title": "Schematic Checklist",
+    "depth": 1,
+    "page": 7
+   },
+   {
+    "title": "Overview",
+    "depth": 2,
+    "page": 7
+   },
+   {
+    "title": "Power Supply",
+    "depth": 2,
+    "page": 8
+   },
+   {
+    "title": "Digital Power Supply",
+    "depth": 3,
+    "page": 9
+   },
+   {
+    "title": "Analog Power Supply",
+    "depth": 3,
+    "page": 10
+   },
+   {
+    "title": "Chip Power-up and Reset Timing",
+    "depth": 2,
+    "page": 10
+   },
+   {
+    "title": "Flash and PSRAM",
+    "depth": 2,
+    "page": 11
+   },
+   {
+    "title": "In-Package Flash and PSRAM",
+    "depth": 3,
+    "page": 11
+   },
+   {
+    "title": "Off-Package Flash and PSRAM",
+    "depth": 3,
+    "page": 12
+   },
+   {
+    "title": "Clock Source",
+    "depth": 2,
+    "page": 12
+   },
+   {
+    "title": "External Crystal Clock Source (Compulsory)",
+    "depth": 3,
+    "page": 12
+   },
+   {
+    "title": "RTC Clock Source (Optional)",
+    "depth": 3,
+    "page": 13
+   },
+   {
+    "title": "RF",
+    "depth": 2,
+    "page": 14
+   },
+   {
+    "title": "RF Circuit",
+    "depth": 3,
+    "page": 14
+   },
+   {
+    "title": "RF Tuning",
+    "depth": 3,
+    "page": 15
+   },
+   {
+    "title": "UART",
+    "depth": 2,
+    "page": 16
+   },
+   {
+    "title": "SPI",
+    "depth": 2,
+    "page": 16
+   },
+   {
+    "title": "Strapping Pins",
+    "depth": 2,
+    "page": 16
+   },
+   {
+    "title": "GPIO",
+    "depth": 2,
+    "page": 17
+   },
+   {
+    "title": "ADC",
+    "depth": 2,
+    "page": 18
+   },
+   {
+    "title": "External Capacitor",
+    "depth": 2,
+    "page": 19
+   },
+   {
+    "title": "SDIO",
+    "depth": 2,
+    "page": 19
+   },
+   {
+    "title": "Touch Sensor",
+    "depth": 2,
+    "page": 20
+   },
+   {
+    "title": "Ethernet MAC",
+    "depth": 2,
+    "page": 21
+   },
+   {
+    "title": "PCB Layout Design",
+    "depth": 1,
+    "page": 21
+   },
+   {
+    "title": "General Principles of PCB Layout for the Chip",
+    "depth": 2,
+    "page": 22
+   },
+   {
+    "title": "Power Supply",
+    "depth": 2,
+    "page": 22
+   },
+   {
+    "title": "Four-Layer PCB Design",
+    "depth": 3,
+    "page": 22
+   },
+   {
+    "title": "Two-Layer PCB Design",
+    "depth": 3,
+    "page": 24
+   },
+   {
+    "title": "Crystal",
+    "depth": 2,
+    "page": 25
+   },
+   {
+    "title": "RF",
+    "depth": 2,
+    "page": 25
+   },
+   {
+    "title": "RF Layout on Four-layer PCB",
+    "depth": 3,
+    "page": 25
+   },
+   {
+    "title": "RF Layout on Two-layer PCB",
+    "depth": 3,
+    "page": 28
+   },
+   {
+    "title": "Flash and PSRAM",
+    "depth": 2,
+    "page": 28
+   },
+   {
+    "title": "External RC",
+    "depth": 2,
+    "page": 28
+   },
+   {
+    "title": "UART",
+    "depth": 2,
+    "page": 28
+   },
+   {
+    "title": "General Principles of PCB Layout for Modules (Positioning a Module on a Base Board)",
+    "depth": 2,
+    "page": 30
+   },
+   {
+    "title": "SDIO",
+    "depth": 2,
+    "page": 30
+   },
+   {
+    "title": "Touch Sensor",
+    "depth": 2,
+    "page": 31
+   },
+   {
+    "title": "Electrode Pattern",
+    "depth": 3,
+    "page": 31
+   },
+   {
+    "title": "PCB Layout",
+    "depth": 3,
+    "page": 33
+   },
+   {
+    "title": "Typical Layout Problems and Solutions",
+    "depth": 2,
+    "page": 34
+   },
+   {
+    "title": "The voltage ripple is not large, but the TX performance of RF is rather poor.",
+    "depth": 3,
+    "page": 34
+   },
+   {
+    "title": "When ESP32 sends data packages, the voltage ripple is small, but RF TX performance is poor.",
+    "depth": 3,
+    "page": 34
+   },
+   {
+    "title": "When ESP32 sends data packages, the power value is much higher or lower than the target power value, and the EVM is relatively poor.",
+    "depth": 3,
+    "page": 34
+   },
+   {
+    "title": "TX performance is not bad, but the RX sensitivity is low.",
+    "depth": 3,
+    "page": 34
+   },
+   {
+    "title": "Download Guidelines",
+    "depth": 1,
+    "page": 34
+   },
+   {
+    "title": "Related Documentation and Resources",
+    "depth": 1,
+    "page": 35
+   },
+   {
+    "title": "ESP32 Modules",
+    "depth": 2,
+    "page": 35
+   },
+   {
+    "title": "ESP32 Development Boards",
+    "depth": 2,
+    "page": 35
+   },
+   {
+    "title": "Other Related Documentation and Resources",
+    "depth": 2,
+    "page": 36
+   },
+   {
+    "title": "Glossary",
+    "depth": 1,
+    "page": 36
+   },
+   {
+    "title": "Revision History",
+    "depth": 1,
+    "page": 36
+   },
+   {
+    "title": "Disclaimer and Copyright Notice",
+    "depth": 1,
+    "page": 37
+   },
+   {
+    "title": "Terms of Use for Reference Designs",
+    "depth": 2,
+    "page": 38
+   }
+  ]
+ },
+ "ads1115": {
+  "file": "ads1115.pdf",
+  "title": "ADS1115 datasheet (Texas Instruments)",
+  "url": null,
+  "pages": 57,
+  "sections": [
+   {
+    "title": "1 Features",
+    "depth": 0,
+    "page": 1
+   },
+   {
+    "title": "2 Applications",
+    "depth": 0,
+    "page": 1
+   },
+   {
+    "title": "3 Description",
+    "depth": 0,
+    "page": 1
+   },
+   {
+    "title": "Table of Contents",
+    "depth": 0,
+    "page": 2
+   },
+   {
+    "title": "4 Pin Configuration and Functions",
+    "depth": 0,
+    "page": 3
+   },
+   {
+    "title": "5 Specifications",
+    "depth": 0,
+    "page": 4
+   },
+   {
+    "title": "5.1 Absolute Maximum Ratings",
+    "depth": 1,
+    "page": 4
+   },
+   {
+    "title": "5.2 ESD Ratings",
+    "depth": 1,
+    "page": 4
+   },
+   {
+    "title": "5.3 Recommended Operating Conditions",
+    "depth": 1,
+    "page": 4
+   },
+   {
+    "title": "5.4 Thermal Information",
+    "depth": 1,
+    "page": 4
+   },
+   {
+    "title": "5.5 Electrical Characteristics",
+    "depth": 1,
+    "page": 5
+   },
+   {
+    "title": "5.6 Timing Requirements: I2C",
+    "depth": 1,
+    "page": 6
+   },
+   {
+    "title": "5.7 Typical Characteristics",
+    "depth": 1,
+    "page": 7
+   },
+   {
+    "title": "6 Parameter Measurement Information",
+    "depth": 0,
+    "page": 11
+   },
+   {
+    "title": "6.1 Noise Performance",
+    "depth": 1,
+    "page": 11
+   },
+   {
+    "title": "7 Detailed Description",
+    "depth": 0,
+    "page": 12
+   },
+   {
+    "title": "7.1 Overview",
+    "depth": 1,
+    "page": 12
+   },
+   {
+    "title": "7.2 Functional Block Diagrams",
+    "depth": 1,
+    "page": 12
+   },
+   {
+    "title": "7.3 Feature Description",
+    "depth": 1,
+    "page": 13
+   },
+   {
+    "title": "7.3.1 Multiplexer",
+    "depth": 2,
+    "page": 13
+   },
+   {
+    "title": "7.3.2 Analog Inputs",
+    "depth": 2,
+    "page": 14
+   },
+   {
+    "title": "7.3.3 Full-Scale Range (FSR) and LSB Size",
+    "depth": 2,
+    "page": 15
+   },
+   {
+    "title": "7.3.4 Voltage Reference",
+    "depth": 2,
+    "page": 15
+   },
+   {
+    "title": "7.3.5 Oscillator",
+    "depth": 2,
+    "page": 15
+   },
+   {
+    "title": "7.3.6 Output Data Rate and Conversion Time",
+    "depth": 2,
+    "page": 15
+   },
+   {
+    "title": "7.3.7 Digital Comparator (ADS1114 and ADS1115 Only)",
+    "depth": 2,
+    "page": 16
+   },
+   {
+    "title": "7.3.8 Conversion Ready Pin (ADS1114 and ADS1115 Only)",
+    "depth": 2,
+    "page": 17
+   },
+   {
+    "title": "7.3.9 SMbus Alert Response",
+    "depth": 2,
+    "page": 17
+   },
+   {
+    "title": "7.4 Device Functional Modes",
+    "depth": 1,
+    "page": 18
+   },
+   {
+    "title": "7.4.1 Reset and Power-Up",
+    "depth": 2,
+    "page": 18
+   },
+   {
+    "title": "7.4.2 Operating Modes",
+    "depth": 2,
+    "page": 18
+   },
+   {
+    "title": "7.4.2.1 Single-Shot Mode",
+    "depth": 3,
+    "page": 18
+   },
+   {
+    "title": "7.4.2.2 Continuous-Conversion Mode",
+    "depth": 3,
+    "page": 18
+   },
+   {
+    "title": "7.4.3 Duty Cycling For Low Power",
+    "depth": 2,
+    "page": 18
+   },
+   {
+    "title": "7.5 Programming",
+    "depth": 1,
+    "page": 19
+   },
+   {
+    "title": "7.5.1 I2C Interface",
+    "depth": 2,
+    "page": 19
+   },
+   {
+    "title": "7.5.1.1 I2C Address Selection",
+    "depth": 3,
+    "page": 20
+   },
+   {
+    "title": "7.5.1.2 I2C General Call",
+    "depth": 3,
+    "page": 20
+   },
+   {
+    "title": "7.5.1.3 I2C Speed Modes",
+    "depth": 3,
+    "page": 20
+   },
+   {
+    "title": "7.5.2 Target Mode Operations",
+    "depth": 2,
+    "page": 20
+   },
+   {
+    "title": "7.5.2.1 Receive Mode",
+    "depth": 3,
+    "page": 20
+   },
+   {
+    "title": "7.5.2.2 Transmit Mode",
+    "depth": 3,
+    "page": 20
+   },
+   {
+    "title": "7.5.3 Writing To and Reading From the Registers",
+    "depth": 2,
+    "page": 21
+   },
+   {
+    "title": "7.5.4 Data Format",
+    "depth": 2,
+    "page": 23
+   },
+   {
+    "title": "8 Registers",
+    "depth": 0,
+    "page": 24
+   },
+   {
+    "title": "8.1 Register Map",
+    "depth": 1,
+    "page": 24
+   },
+   {
+    "title": "8.1.1 Address Pointer Register (address = N/A) [reset = N/A]",
+    "depth": 2,
+    "page": 24
+   },
+   {
+    "title": "8.1.2 Conversion Register (P[1:0] = 00b) [reset = 0000h]",
+    "depth": 2,
+    "page": 24
+   },
+   {
+    "title": "8.1.3 Config Register (P[1:0] = 01b) [reset = 8583h]",
+    "depth": 2,
+    "page": 25
+   },
+   {
+    "title": "8.1.4 Lo_thresh (P[1:0] = 10b) [reset = 8000h] and Hi_thresh (P[1:0] = 11b) [reset = 7FFFh] Registers",
+    "depth": 2,
+    "page": 27
+   },
+   {
+    "title": "9 Application and Implementation",
+    "depth": 0,
+    "page": 28
+   },
+   {
+    "title": "9.1 Application Information",
+    "depth": 1,
+    "page": 28
+   },
+   {
+    "title": "9.1.1 Basic Connections",
+    "depth": 2,
+    "page": 28
+   },
+   {
+    "title": "9.1.2 Single-Ended Inputs",
+    "depth": 2,
+    "page": 29
+   },
+   {
+    "title": "9.1.3 Input Protection",
+    "depth": 2,
+    "page": 29
+   },
+   {
+    "title": "9.1.4 Unused Inputs and Outputs",
+    "depth": 2,
+    "page": 29
+   },
+   {
+    "title": "9.1.5 Analog Input Filtering",
+    "depth": 2,
+    "page": 30
+   },
+   {
+    "title": "9.1.6 Connecting Multiple Devices",
+    "depth": 2,
+    "page": 31
+   },
+   {
+    "title": "9.1.7 Quick-Start Guide",
+    "depth": 2,
+    "page": 32
+   },
+   {
+    "title": "9.2 Typical Application",
+    "depth": 1,
+    "page": 33
+   },
+   {
+    "title": "9.2.1 Design Requirements",
+    "depth": 2,
+    "page": 33
+   },
+   {
+    "title": "9.2.2 Detailed Design Procedure",
+    "depth": 2,
+    "page": 33
+   },
+   {
+    "title": "9.2.2.1 Shunt Resistor Considerations",
+    "depth": 3,
+    "page": 34
+   },
+   {
+    "title": "9.2.2.2 Operational Amplifier Considerations",
+    "depth": 3,
+    "page": 34
+   },
+   {
+    "title": "9.2.2.3 ADC Input Common-Mode Considerations",
+    "depth": 3,
+    "page": 34
+   },
+   {
+    "title": "9.2.2.4 Resistor (R1, R2, R3, R4) Considerations",
+    "depth": 3,
+    "page": 34
+   },
+   {
+    "title": "9.2.2.5 Noise and Input Impedance Considerations",
+    "depth": 3,
+    "page": 34
+   },
+   {
+    "title": "9.2.2.6 First-Order RC Filter Considerations",
+    "depth": 3,
+    "page": 35
+   },
+   {
+    "title": "9.2.2.7 Circuit Implementation",
+    "depth": 3,
+    "page": 35
+   },
+   {
+    "title": "9.2.2.8 Results Summary",
+    "depth": 3,
+    "page": 36
+   },
+   {
+    "title": "9.2.3 Application Curves",
+    "depth": 2,
+    "page": 36
+   },
+   {
+    "title": "10 Power Supply Recommendations",
+    "depth": 0,
+    "page": 37
+   },
+   {
+    "title": "10.1 Power-Supply Sequencing",
+    "depth": 1,
+    "page": 37
+   },
+   {
+    "title": "10.2 Power-Supply Decoupling",
+    "depth": 1,
+    "page": 37
+   },
+   {
+    "title": "11 Layout",
+    "depth": 0,
+    "page": 38
+   },
+   {
+    "title": "11.1 Layout Guidelines",
+    "depth": 1,
+    "page": 38
+   },
+   {
+    "title": "11.2 Layout Example",
+    "depth": 1,
+    "page": 39
+   },
+   {
+    "title": "12 Device and Documentation Support",
+    "depth": 0,
+    "page": 40
+   },
+   {
+    "title": "12.1 Documentation Support",
+    "depth": 1,
+    "page": 40
+   },
+   {
+    "title": "12.1.1 Related Documentation",
+    "depth": 2,
+    "page": 40
+   },
+   {
+    "title": "12.2 Receiving Notification of Documentation Updates",
+    "depth": 1,
+    "page": 40
+   },
+   {
+    "title": "12.3 Support Resources",
+    "depth": 1,
+    "page": 40
+   },
+   {
+    "title": "12.4 Trademarks",
+    "depth": 1,
+    "page": 40
+   },
+   {
+    "title": "12.5 Electrostatic Discharge Caution",
+    "depth": 1,
+    "page": 40
+   },
+   {
+    "title": "12.6 Glossary",
+    "depth": 1,
+    "page": 40
+   },
+   {
+    "title": "13 Revision History",
+    "depth": 0,
+    "page": 41
+   },
+   {
+    "title": "14 Mechanical, Packaging, and Orderable Information",
+    "depth": 0,
+    "page": 41
+   }
+  ]
+ },
+ "ds18b20": {
+  "file": "DS18B20.pdf",
+  "title": "DS18B20 datasheet (Maxim)",
+  "url": null,
+  "pages": 22,
+  "sections": [
+   {
+    "title": "Description and features",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Pin configurations",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Pin description",
+    "depth": 0,
+    "page": 2,
+    "manual": true
+   },
+   {
+    "title": "Overview",
+    "depth": 0,
+    "page": 2,
+    "manual": true
+   },
+   {
+    "title": "Block diagram",
+    "depth": 0,
+    "page": 3,
+    "manual": true
+   },
+   {
+    "title": "Operation: measuring temperature",
+    "depth": 0,
+    "page": 3,
+    "manual": true
+   },
+   {
+    "title": "Temperature register format",
+    "depth": 0,
+    "page": 4,
+    "manual": true
+   },
+   {
+    "title": "Operation: alarm signaling",
+    "depth": 0,
+    "page": 4,
+    "manual": true
+   },
+   {
+    "title": "Powering the DS18B20",
+    "depth": 0,
+    "page": 5,
+    "manual": true
+   },
+   {
+    "title": "External supply wiring",
+    "depth": 0,
+    "page": 6,
+    "manual": true
+   },
+   {
+    "title": "64-bit lasered ROM code",
+    "depth": 0,
+    "page": 6,
+    "manual": true
+   },
+   {
+    "title": "Memory",
+    "depth": 0,
+    "page": 7,
+    "manual": true
+   },
+   {
+    "title": "Configuration register (resolution)",
+    "depth": 0,
+    "page": 8,
+    "manual": true
+   },
+   {
+    "title": "CRC generation",
+    "depth": 0,
+    "page": 8,
+    "manual": true
+   },
+   {
+    "title": "1-Wire bus system",
+    "depth": 0,
+    "page": 9,
+    "manual": true
+   },
+   {
+    "title": "Hardware configuration",
+    "depth": 0,
+    "page": 9,
+    "manual": true
+   },
+   {
+    "title": "Transaction sequence",
+    "depth": 0,
+    "page": 10,
+    "manual": true
+   },
+   {
+    "title": "ROM commands",
+    "depth": 0,
+    "page": 10,
+    "manual": true
+   },
+   {
+    "title": "Function commands",
+    "depth": 0,
+    "page": 11,
+    "manual": true
+   },
+   {
+    "title": "1-Wire signaling",
+    "depth": 0,
+    "page": 15,
+    "manual": true
+   },
+   {
+    "title": "Read and write time slots",
+    "depth": 0,
+    "page": 15,
+    "manual": true
+   },
+   {
+    "title": "Operation example",
+    "depth": 0,
+    "page": 18,
+    "manual": true
+   },
+   {
+    "title": "Absolute maximum ratings",
+    "depth": 0,
+    "page": 19,
+    "manual": true
+   },
+   {
+    "title": "DC electrical characteristics",
+    "depth": 0,
+    "page": 19,
+    "manual": true
+   },
+   {
+    "title": "AC electrical characteristics",
+    "depth": 0,
+    "page": 20,
+    "manual": true
+   }
+  ]
+ },
+ "ph4502c": {
+  "file": "ph-sensor-ph-4502c.pdf",
+  "title": "PH-4502C probe and board guide",
+  "url": null,
+  "pages": 6,
+  "sections": [
+   {
+    "title": "What the pH board does",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Board pinout",
+    "depth": 0,
+    "page": 2,
+    "manual": true
+   },
+   {
+    "title": "Offset setting (2.5 V at pH 7)",
+    "depth": 0,
+    "page": 2,
+    "manual": true
+   },
+   {
+    "title": "Offset test sketch",
+    "depth": 0,
+    "page": 3,
+    "manual": true
+   },
+   {
+    "title": "pH limit setting",
+    "depth": 0,
+    "page": 4,
+    "manual": true
+   },
+   {
+    "title": "Connecting and calibrating the probe",
+    "depth": 0,
+    "page": 4,
+    "manual": true
+   },
+   {
+    "title": "pH and temperature",
+    "depth": 0,
+    "page": 5,
+    "manual": true
+   },
+   {
+    "title": "pH measurement sketch",
+    "depth": 0,
+    "page": 5,
+    "manual": true
+   },
+   {
+    "title": "Buffer solutions",
+    "depth": 0,
+    "page": 6,
+    "manual": true
+   }
+  ]
+ },
+ "yfs201": {
+  "file": "yf-s201_sea.pdf",
+  "title": "YF-S201 flow sensor datasheet",
+  "url": null,
+  "pages": 1,
+  "sections": [
+   {
+    "title": "Description and features",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Specifications",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Flow and frequency table",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   }
+  ]
+ },
+ "floatswitch": {
+  "file": "FLS-VS-300_cutsheet.pdf",
+  "title": "FLS-VS-300 float switch cut sheet",
+  "url": null,
+  "pages": 1,
+  "sections": [
+   {
+    "title": "Float switch description",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Technical specifications",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   }
+  ]
+ },
+ "irlz44n": {
+  "file": "infineon-irlz44n-datasheet-en.pdf",
+  "title": "IRLZ44N MOSFET datasheet",
+  "url": null,
+  "pages": 10,
+  "sections": [
+   {
+    "title": "Description and package",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Absolute maximum ratings",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Electrical characteristics",
+    "depth": 0,
+    "page": 2,
+    "manual": true
+   },
+   {
+    "title": "Output and transfer curves",
+    "depth": 0,
+    "page": 3,
+    "manual": true
+   },
+   {
+    "title": "Gate charge and safe operating area",
+    "depth": 0,
+    "page": 4,
+    "manual": true
+   },
+   {
+    "title": "Switching time circuit",
+    "depth": 0,
+    "page": 5,
+    "manual": true
+   },
+   {
+    "title": "Package outline",
+    "depth": 0,
+    "page": 8,
+    "manual": true
+   }
+  ]
+ },
+ "d1n5819": {
+  "file": "1n5817.pdf",
+  "title": "1N5817 to 1N5819 Schottky diode datasheet (Vishay)",
+  "url": null,
+  "pages": 4,
+  "sections": [
+   {
+    "title": "Features and primary characteristics",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Maximum ratings",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Electrical characteristics",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Ratings and characteristics curves",
+    "depth": 0,
+    "page": 2,
+    "manual": true
+   },
+   {
+    "title": "Package outline",
+    "depth": 0,
+    "page": 3,
+    "manual": true
+   }
+  ]
+ },
+ "d1n4007": {
+  "file": "1n4001.pdf",
+  "title": "1N4001 to 1N4007 diode datasheet (Vishay)",
+  "url": null,
+  "pages": 5,
+  "sections": [
+   {
+    "title": "Features and primary characteristics",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Maximum ratings",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Electrical characteristics",
+    "depth": 0,
+    "page": 2,
+    "manual": true
+   },
+   {
+    "title": "Ratings and characteristics curves",
+    "depth": 0,
+    "page": 2,
+    "manual": true
+   },
+   {
+    "title": "Package outline",
+    "depth": 0,
+    "page": 4,
+    "manual": true
+   }
+  ]
+ },
+ "lm2596": {
+  "file": "lm2596.pdf",
+  "title": "LM2596 buck converter datasheet (Texas Instruments)",
+  "url": null,
+  "pages": 47,
+  "sections": [
+   {
+    "title": "1 Features",
+    "depth": 0,
+    "page": 1
+   },
+   {
+    "title": "2 Applications",
+    "depth": 0,
+    "page": 1
+   },
+   {
+    "title": "3 Description",
+    "depth": 0,
+    "page": 1
+   },
+   {
+    "title": "Table of Contents",
+    "depth": 0,
+    "page": 2
+   },
+   {
+    "title": "4 Revision History",
+    "depth": 0,
+    "page": 2
+   },
+   {
+    "title": "5 Description (continued)",
+    "depth": 0,
+    "page": 3
+   },
+   {
+    "title": "6 Pin Configuration and Functions",
+    "depth": 0,
+    "page": 4
+   },
+   {
+    "title": "7 Specifications",
+    "depth": 0,
+    "page": 5
+   },
+   {
+    "title": "7.1 Absolute Maximum Ratings",
+    "depth": 1,
+    "page": 5
+   },
+   {
+    "title": "7.2 ESD Ratings",
+    "depth": 1,
+    "page": 5
+   },
+   {
+    "title": "7.3 Operating Conditions",
+    "depth": 1,
+    "page": 5
+   },
+   {
+    "title": "7.4 Thermal Information",
+    "depth": 1,
+    "page": 5
+   },
+   {
+    "title": "7.5 Electrical Characteristics – 3.3-V Version",
+    "depth": 1,
+    "page": 6
+   },
+   {
+    "title": "7.6 Electrical Characteristics – 5-V Version",
+    "depth": 1,
+    "page": 6
+   },
+   {
+    "title": "7.7 Electrical Characteristics – 12-V Version",
+    "depth": 1,
+    "page": 6
+   },
+   {
+    "title": "7.8 Electrical Characteristics – Adjustable Voltage Version",
+    "depth": 1,
+    "page": 6
+   },
+   {
+    "title": "7.9 Electrical Characteristics – All Output Voltage Versions",
+    "depth": 1,
+    "page": 7
+   },
+   {
+    "title": "7.10 Typical Characteristics",
+    "depth": 1,
+    "page": 8
+   },
+   {
+    "title": "8 Detailed Description",
+    "depth": 0,
+    "page": 11
+   },
+   {
+    "title": "8.1 Overview",
+    "depth": 1,
+    "page": 11
+   },
+   {
+    "title": "8.2 Functional Block Diagram",
+    "depth": 1,
+    "page": 11
+   },
+   {
+    "title": "8.3 Feature Description",
+    "depth": 1,
+    "page": 11
+   },
+   {
+    "title": "8.3.1 Delayed Start-Up",
+    "depth": 2,
+    "page": 11
+   },
+   {
+    "title": "8.3.2 Undervoltage Lockout",
+    "depth": 2,
+    "page": 12
+   },
+   {
+    "title": "8.3.3 Inverting Regulator",
+    "depth": 2,
+    "page": 12
+   },
+   {
+    "title": "8.3.4 Inverting Regulator Shutdown Methods",
+    "depth": 2,
+    "page": 14
+   },
+   {
+    "title": "8.4 Device Functional Modes",
+    "depth": 1,
+    "page": 14
+   },
+   {
+    "title": "8.4.1 Discontinuous Mode Operation",
+    "depth": 2,
+    "page": 14
+   },
+   {
+    "title": "9 Application and Implementation",
+    "depth": 0,
+    "page": 16
+   },
+   {
+    "title": "9.1 Application Information",
+    "depth": 1,
+    "page": 16
+   },
+   {
+    "title": "9.1.1 Input Capacitor (CIN)",
+    "depth": 2,
+    "page": 16
+   },
+   {
+    "title": "9.1.2 Feedforward Capacitor (CFF)",
+    "depth": 2,
+    "page": 17
+   },
+   {
+    "title": "9.1.3 Output Capacitor (COUT)",
+    "depth": 2,
+    "page": 17
+   },
+   {
+    "title": "9.1.4 Catch Diode",
+    "depth": 2,
+    "page": 18
+   },
+   {
+    "title": "9.1.5 Inductor Selection",
+    "depth": 2,
+    "page": 18
+   },
+   {
+    "title": "9.1.6 Output Voltage Ripple and Transients",
+    "depth": 2,
+    "page": 21
+   },
+   {
+    "title": "9.1.7 Open-Core Inductors",
+    "depth": 2,
+    "page": 23
+   },
+   {
+    "title": "9.2 Typical Applications",
+    "depth": 1,
+    "page": 23
+   },
+   {
+    "title": "9.2.1 LM2596 Fixed Output Series Buck Regulator",
+    "depth": 2,
+    "page": 23
+   },
+   {
+    "title": "9.2.1.1 Design Requirements",
+    "depth": 3,
+    "page": 23
+   },
+   {
+    "title": "9.2.1.2 Detailed Design Procedure",
+    "depth": 3,
+    "page": 24
+   },
+   {
+    "title": "9.2.1.2.1 Custom Design with WEBENCH® Tools",
+    "depth": 4,
+    "page": 24
+   },
+   {
+    "title": "9.2.1.2.2 Inductor Selection (L1)",
+    "depth": 4,
+    "page": 24
+   },
+   {
+    "title": "9.2.1.2.3 Output Capacitor Selection (COUT)",
+    "depth": 4,
+    "page": 24
+   },
+   {
+    "title": "9.2.1.2.4 Catch Diode Selection (D1)",
+    "depth": 4,
+    "page": 26
+   },
+   {
+    "title": "9.2.1.2.5 Input Capacitor (CIN)",
+    "depth": 4,
+    "page": 26
+   },
+   {
+    "title": "9.2.1.3 Application Curves",
+    "depth": 3,
+    "page": 27
+   },
+   {
+    "title": "9.2.2 LM2596 Adjustable Output Series Buck Regulator",
+    "depth": 2,
+    "page": 27
+   },
+   {
+    "title": "9.2.2.1 Design Requirements",
+    "depth": 3,
+    "page": 28
+   },
+   {
+    "title": "9.2.2.2 Detailed Design Procedure",
+    "depth": 3,
+    "page": 28
+   },
+   {
+    "title": "9.2.2.2.1 Programming Output Voltage",
+    "depth": 4,
+    "page": 28
+   },
+   {
+    "title": "9.2.2.2.2 Inductor Selection (L1)",
+    "depth": 4,
+    "page": 28
+   },
+   {
+    "title": "9.2.2.2.3 Output Capacitor Selection (COUT)",
+    "depth": 4,
+    "page": 29
+   },
+   {
+    "title": "9.2.2.2.4 Feedforward Capacitor (CFF)",
+    "depth": 4,
+    "page": 29
+   },
+   {
+    "title": "9.2.2.2.5 Catch Diode Selection (D1)",
+    "depth": 4,
+    "page": 30
+   },
+   {
+    "title": "9.2.2.2.6 Input Capacitor (CIN)",
+    "depth": 4,
+    "page": 30
+   },
+   {
+    "title": "9.2.2.3 Application Curves",
+    "depth": 3,
+    "page": 31
+   },
+   {
+    "title": "9.3 Power Supply Recommendations",
+    "depth": 1,
+    "page": 31
+   },
+   {
+    "title": "9.4 Layout",
+    "depth": 1,
+    "page": 31
+   },
+   {
+    "title": "9.4.1 Layout Guidelines",
+    "depth": 2,
+    "page": 31
+   },
+   {
+    "title": "9.4.2 Layout Examples",
+    "depth": 2,
+    "page": 32
+   },
+   {
+    "title": "9.4.3 Thermal Considerations",
+    "depth": 2,
+    "page": 33
+   },
+   {
+    "title": "10 Device and Documentation Support",
+    "depth": 0,
+    "page": 35
+   },
+   {
+    "title": "10.1 Device Support",
+    "depth": 1,
+    "page": 35
+   },
+   {
+    "title": "10.1.1 Third-Party Products Disclaimer",
+    "depth": 2,
+    "page": 35
+   },
+   {
+    "title": "10.1.2 Development Support",
+    "depth": 2,
+    "page": 35
+   },
+   {
+    "title": "10.1.2.1 Custom Design with WEBENCH® Tools",
+    "depth": 3,
+    "page": 35
+   },
+   {
+    "title": "10.2 Receiving Notification of Documentation Updates",
+    "depth": 1,
+    "page": 35
+   },
+   {
+    "title": "10.3 Support Resources",
+    "depth": 1,
+    "page": 35
+   },
+   {
+    "title": "10.4 Trademarks",
+    "depth": 1,
+    "page": 35
+   },
+   {
+    "title": "10.5 Electrostatic Discharge Caution",
+    "depth": 1,
+    "page": 35
+   },
+   {
+    "title": "10.6 Glossary",
+    "depth": 1,
+    "page": 35
+   },
+   {
+    "title": "11 Mechanical, Packaging, and Orderable Information",
+    "depth": 0,
+    "page": 36
+   }
+  ]
+ },
+ "lm317": {
+  "file": "lm317.pdf",
+  "title": "LM317 regulator datasheet (Texas Instruments)",
+  "url": null,
+  "pages": 45,
+  "sections": [
+   {
+    "title": "1 Features",
+    "depth": 0,
+    "page": 1
+   },
+   {
+    "title": "2 Applications",
+    "depth": 0,
+    "page": 1
+   },
+   {
+    "title": "3 Description",
+    "depth": 0,
+    "page": 1
+   },
+   {
+    "title": "Table of Contents",
+    "depth": 0,
+    "page": 3
+   },
+   {
+    "title": "4 Device Comparison Table",
+    "depth": 0,
+    "page": 4
+   },
+   {
+    "title": "5 Pin Configuration and Functions",
+    "depth": 0,
+    "page": 5
+   },
+   {
+    "title": "6 Specifications",
+    "depth": 0,
+    "page": 6
+   },
+   {
+    "title": "6.1 Absolute Maximum Ratings",
+    "depth": 1,
+    "page": 6
+   },
+   {
+    "title": "6.2 ESD Ratings",
+    "depth": 1,
+    "page": 6
+   },
+   {
+    "title": "6.3 Recommended Operating Conditions",
+    "depth": 1,
+    "page": 6
+   },
+   {
+    "title": "6.4 Thermal Information (Legacy Chip)",
+    "depth": 1,
+    "page": 7
+   },
+   {
+    "title": "6.5 Thermal Information (New Chip)",
+    "depth": 1,
+    "page": 7
+   },
+   {
+    "title": "6.6 Electrical Characteristics",
+    "depth": 1,
+    "page": 8
+   },
+   {
+    "title": "6.7 Typical Characteristics",
+    "depth": 1,
+    "page": 9
+   },
+   {
+    "title": "7 Detailed Description",
+    "depth": 0,
+    "page": 13
+   },
+   {
+    "title": "7.1 Overview",
+    "depth": 1,
+    "page": 13
+   },
+   {
+    "title": "7.2 Functional Block Diagram",
+    "depth": 1,
+    "page": 13
+   },
+   {
+    "title": "7.3 Feature Description",
+    "depth": 1,
+    "page": 13
+   },
+   {
+    "title": "7.3.1 NPN Darlington Output Drive",
+    "depth": 2,
+    "page": 13
+   },
+   {
+    "title": "7.3.2 Overload Block",
+    "depth": 2,
+    "page": 13
+   },
+   {
+    "title": "7.3.3 Programmable Feedback",
+    "depth": 2,
+    "page": 13
+   },
+   {
+    "title": "7.4 Device Functional Modes",
+    "depth": 1,
+    "page": 14
+   },
+   {
+    "title": "7.4.1 Normal Operation",
+    "depth": 2,
+    "page": 14
+   },
+   {
+    "title": "7.4.2 Operation With Low Input Voltage",
+    "depth": 2,
+    "page": 14
+   },
+   {
+    "title": "7.4.3 Operation at Light Loads",
+    "depth": 2,
+    "page": 14
+   },
+   {
+    "title": "7.4.4 Operation In Self Protection",
+    "depth": 2,
+    "page": 14
+   },
+   {
+    "title": "8 Application and Implementation",
+    "depth": 0,
+    "page": 15
+   },
+   {
+    "title": "8.1 Application Information",
+    "depth": 1,
+    "page": 15
+   },
+   {
+    "title": "8.2 Typical Application",
+    "depth": 1,
+    "page": 15
+   },
+   {
+    "title": "8.2.1 Design Requirements",
+    "depth": 2,
+    "page": 15
+   },
+   {
+    "title": "8.2.2 Detailed Design Procedure",
+    "depth": 2,
+    "page": 16
+   },
+   {
+    "title": "8.2.3 Application Curves",
+    "depth": 2,
+    "page": 16
+   },
+   {
+    "title": "8.3 System Examples",
+    "depth": 1,
+    "page": 17
+   },
+   {
+    "title": "8.3.1 0V to 30V Regulator Circuit",
+    "depth": 2,
+    "page": 17
+   },
+   {
+    "title": "8.3.2 Adjustable Regulator Circuit With Improved Ripple Rejection",
+    "depth": 2,
+    "page": 18
+   },
+   {
+    "title": "8.3.3 Precision Current-Limiter Circuit",
+    "depth": 2,
+    "page": 18
+   },
+   {
+    "title": "8.3.4 Tracking Preregulator Circuit",
+    "depth": 2,
+    "page": 18
+   },
+   {
+    "title": "8.3.5 1.25V to 20V Regulator Circuit With Minimum Program Current",
+    "depth": 2,
+    "page": 19
+   },
+   {
+    "title": "8.3.6 Battery-Charger Circuit",
+    "depth": 2,
+    "page": 19
+   },
+   {
+    "title": "8.3.7 50mA, Constant-Current, Battery-Charger Circuit",
+    "depth": 2,
+    "page": 20
+   },
+   {
+    "title": "8.3.8 Slow Turn-On 15V Regulator Circuit",
+    "depth": 2,
+    "page": 20
+   },
+   {
+    "title": "8.3.9 AC Voltage-Regulator Circuit",
+    "depth": 2,
+    "page": 20
+   },
+   {
+    "title": "8.3.10 Current-Limited 6V Charger Circuit",
+    "depth": 2,
+    "page": 21
+   },
+   {
+    "title": "8.3.11 Adjustable 4A Regulator Circuit",
+    "depth": 2,
+    "page": 21
+   },
+   {
+    "title": "8.3.12 High-Current Adjustable Regulator Circuit",
+    "depth": 2,
+    "page": 22
+   },
+   {
+    "title": "8.4 Power Supply Recommendations",
+    "depth": 1,
+    "page": 23
+   },
+   {
+    "title": "8.5 Layout",
+    "depth": 1,
+    "page": 23
+   },
+   {
+    "title": "8.5.1 Layout Guidelines",
+    "depth": 2,
+    "page": 23
+   },
+   {
+    "title": "8.5.1.1 Thermal Considerations",
+    "depth": 3,
+    "page": 23
+   },
+   {
+    "title": "8.5.1.1.1 Heat Sink Requirements",
+    "depth": 4,
+    "page": 23
+   },
+   {
+    "title": "8.5.1.1.2 Heat Sinking Surface-Mount Packages",
+    "depth": 4,
+    "page": 24
+   },
+   {
+    "title": "8.5.1.1.2.1 Heatsinking the SOT-223 (DCY) Package",
+    "depth": 5,
+    "page": 24
+   },
+   {
+    "title": "8.5.1.1.2.2 Heat Sinking the TO-263 (KTT) Package",
+    "depth": 5,
+    "page": 25
+   },
+   {
+    "title": "8.5.2 Layout Examples",
+    "depth": 2,
+    "page": 26
+   },
+   {
+    "title": "9 Device and Documentation Support",
+    "depth": 0,
+    "page": 28
+   },
+   {
+    "title": "9.1 Device Support",
+    "depth": 1,
+    "page": 28
+   },
+   {
+    "title": "9.1.1 Device Nomenclature",
+    "depth": 2,
+    "page": 28
+   },
+   {
+    "title": "9.2 Receiving Notification of Documentation Updates",
+    "depth": 1,
+    "page": 28
+   },
+   {
+    "title": "9.3 Support Resources",
+    "depth": 1,
+    "page": 28
+   },
+   {
+    "title": "9.4 Trademarks",
+    "depth": 1,
+    "page": 28
+   },
+   {
+    "title": "9.5 Electrostatic Discharge Caution",
+    "depth": 1,
+    "page": 28
+   },
+   {
+    "title": "9.6 Glossary",
+    "depth": 1,
+    "page": 28
+   },
+   {
+    "title": "10 Revision History",
+    "depth": 0,
+    "page": 29
+   },
+   {
+    "title": "11 Mechanical, Packaging, and Orderable Information",
+    "depth": 0,
+    "page": 29
+   }
+  ]
+ },
+ "cjq4435": {
+  "file": "CJQ4435.pdf",
+  "title": "CJQ4435 P-channel MOSFET datasheet",
+  "url": null,
+  "pages": 3,
+  "sections": [
+   {
+    "title": "Maximum ratings",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Electrical characteristics",
+    "depth": 0,
+    "page": 2,
+    "manual": true
+   },
+   {
+    "title": "Typical curves",
+    "depth": 0,
+    "page": 3,
+    "manual": true
+   }
+  ]
+ },
+ "waterpump": {
+  "file": "Pump_Datasheet.pdf",
+  "title": "12 V water pump datasheet",
+  "url": null,
+  "pages": 1,
+  "sections": [
+   {
+    "title": "Parameter specifications",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Technical requirement and dimensions",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   }
+  ]
+ },
+ "airpump": {
+  "file": "ZR370-02PM_4_4271538a963.pdf",
+  "title": "ZR370-02PM air pump specification",
+  "url": null,
+  "pages": 2,
+  "sections": [
+   {
+    "title": "Performance (voltage, current, flow)",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Reliability test",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Motor terminal and abnormal test",
+    "depth": 0,
+    "page": 2,
+    "manual": true
+   }
+  ]
+ },
+ "dosingpump": {
+  "file": "Soldered_101844 mini water pump.pdf",
+  "title": "Mini water pump datasheet (Soldered 101844)",
+  "url": null,
+  "pages": 2,
+  "sections": [
+   {
+    "title": "Description and features",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Other views",
+    "depth": 0,
+    "page": 2,
+    "manual": true
+   }
+  ]
+ },
+ "resistor_sqp": {
+  "file": "YAGEO-SQP_NSP_DATASHEET.pdf",
+  "title": "SQP cement resistor datasheet (Yageo)",
+  "url": null,
+  "pages": 9,
+  "sections": [
+   {
+    "title": "Ordering information and power rating",
+    "depth": 0,
+    "page": 2,
+    "manual": true
+   },
+   {
+    "title": "Dimensions and derating curve",
+    "depth": 0,
+    "page": 3,
+    "manual": true
+   },
+   {
+    "title": "Temperature curve",
+    "depth": 0,
+    "page": 4,
+    "manual": true
+   },
+   {
+    "title": "Electrical characteristics",
+    "depth": 0,
+    "page": 5,
+    "manual": true
+   },
+   {
+    "title": "Rated working voltage and marking",
+    "depth": 0,
+    "page": 7,
+    "manual": true
+   }
+  ]
+ },
+ "resistor_cf": {
+  "file": "sei-cf_cfm.pdf",
+  "title": "CF carbon film resistor datasheet (Stackpole)",
+  "url": null,
+  "pages": 11,
+  "sections": [
+   {
+    "title": "Features and electrical specifications",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Mechanical specifications",
+    "depth": 0,
+    "page": 2,
+    "manual": true
+   },
+   {
+    "title": "Power derating curve",
+    "depth": 0,
+    "page": 3,
+    "manual": true
+   }
+  ]
+ },
+ "dcjack": {
+  "file": "pj-102a.pdf",
+  "title": "PJ-102A DC power jack datasheet",
+  "url": null,
+  "pages": 3,
+  "sections": [
+   {
+    "title": "Features and specifications",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Mechanical drawing",
+    "depth": 0,
+    "page": 2,
+    "manual": true
+   }
+  ]
+ },
+ "toggle": {
+  "file": "MTS-SMTS-Series.pdf",
+  "title": "MTS/SMTS toggle switch datasheet",
+  "url": null,
+  "pages": 8,
+  "sections": [
+   {
+    "title": "SMTS series",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "MTS series: circuits and ratings",
+    "depth": 0,
+    "page": 4,
+    "manual": true
+   },
+   {
+    "title": "MTS series: models (MTS-102 ON-ON)",
+    "depth": 0,
+    "page": 5,
+    "manual": true
+   }
+  ]
+ },
+ "fuse": {
+  "file": "Littelfuse ATO.pdf",
+  "title": "ATO blade fuse datasheet (Littelfuse)",
+  "url": null,
+  "pages": 1,
+  "sections": [
+   {
+    "title": "Description and electrical characteristics",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Ratings and time-current curves",
+    "depth": 0,
+    "page": 1,
+    "manual": true
    }
   ]
  }

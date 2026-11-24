@@ -8,6 +8,7 @@ Run:  .venv/Scripts/python.exe -I src/tools/fetch_vendor.py
 import hashlib
 import io
 import json
+import sys
 import tarfile
 import urllib.request
 from pathlib import Path
@@ -38,6 +39,13 @@ PACKAGES = {
                                     for s in FONT_SUBSETS for w in FONT_WEIGHTS["jetbrains-mono"]},
                                    "package/LICENSE"),
     "lucide-static": ("0.460.0", {"package/icons/": "icons/lucide/"}, "package/LICENSE"),
+    # PDF viewer for phones (a computer opens the PDFs in the browser itself). Loaded only when a PDF is opened.
+    "pdfjs-dist": ("4.10.38",
+                   {"package/legacy/build/pdf.min.mjs": "vendor/pdfjs/pdf.min.mjs",
+                    "package/legacy/build/pdf.worker.min.mjs": "vendor/pdfjs/pdf.worker.min.mjs",
+                    "package/standard_fonts/": "vendor/pdfjs/standard_fonts/",
+                    "package/cmaps/": "vendor/pdfjs/cmaps/"},
+                   "package/LICENSE"),
 }
 
 
@@ -47,8 +55,11 @@ def tarball_url(name, version):
 
 
 def main():
-    lock = {}
+    only = set(sys.argv[1:])                         # package names to (re)download; none = all
+    lock = json.loads(LOCK.read_text(encoding="utf-8")) if only and LOCK.exists() else {}
     for name, (version, files, lic) in PACKAGES.items():
+        if only and name not in only:
+            continue
         url = tarball_url(name, version)
         data = urllib.request.urlopen(url, timeout=120).read()
         lock[name] = {"version": version, "url": url, "sha256": hashlib.sha256(data).hexdigest()}
@@ -59,7 +70,7 @@ def main():
                     continue
                 dest = None
                 for src, dst in files.items():
-                    if src.endswith("/") and m.name.startswith(src) and m.name.endswith(".svg"):
+                    if src.endswith("/") and m.name.startswith(src) and m.name.endswith((".svg", ".bcmap", ".ttf", ".pfb", "LICENSE", "LICENSE_FOXIT", "LICENSE_LIBERATION")):
                         dest = ASSETS / dst / m.name[len(src):]
                     elif m.name == src:
                         dest = ASSETS / dst
