@@ -2,7 +2,7 @@
  * - Files listed below: served from the cache first (works with no connection).
  * - Anything else (other origins, online links, POSTs): passed straight through, never touched or blocked.
  * - A new version waits until the person taps "Reload" in the "Update available" message. */
-const CACHE = 'esp32tour-v0.5.1';
+const CACHE = 'esp32tour-v0.7.0';
 const DOCS = 'esp32tour-docs-1';        // documents and PDF viewer: kept when the app is updated, not downloaded again
 const FILES = [
  "./",
@@ -28,14 +28,24 @@ const FILES = [
  "content/t1.l01.s01.js",
  "content/t1.l01.s02.js",
  "content/t3.l01.s01.js",
+ "content/t3.l01.s02.js",
  "figures/aquaponics-cycle.webp",
  "figures/aquaponics-parts.webp",
+ "figures/d1n5819-photo.webp",
+ "figures/dcjack-photo.webp",
  "figures/dosingpump-photo.webp",
  "figures/ds18b20-pinout.webp",
  "figures/esp32-pins.webp",
  "figures/float-photo.webp",
+ "figures/fuse-photo.webp",
+ "figures/hw-power.webp",
+ "figures/irlz44n-package.webp",
+ "figures/lm2596-pins.webp",
+ "figures/lm2596-typical.webp",
  "figures/ph4502c-pinout.webp",
+ "figures/resistor-photo.webp",
  "figures/sqp-photo.webp",
+ "figures/toggle-photo.webp",
  "figures/waterpump-drawing.webp",
  "figures/yfs201-photo.webp",
  "fonts/inter-latin-400.woff2",

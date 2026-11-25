@@ -22,7 +22,7 @@
         running = (async () => {
           const c = await caches.open(DOCS), todo = await this.missing();
           for (let i = 0; i < todo.length; i++) {
-            const r = await fetch(abs(todo[i]));
+            const r = await fetch(abs(todo[i]), { cache: 'reload' });   // never an old copy or an old error page
             if (!r.ok) throw new Error(todo[i] + ' ' + r.status);
             await c.put(abs(todo[i]), r);
             if (this.onStep) this.onStep(todo.length - i - 1);
