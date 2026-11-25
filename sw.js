@@ -2,7 +2,8 @@
  * - Files listed below: served from the cache first (works with no connection).
  * - Anything else (other origins, online links, POSTs): passed straight through, never touched or blocked.
  * - A new version waits until the person taps "Reload" in the "Update available" message. */
-const CACHE = 'esp32tour-v0.5.0';
+const CACHE = 'esp32tour-v0.5.1';
+const DOCS = 'esp32tour-docs-1';        // documents and PDF viewer: kept when the app is updated, not downloaded again
 const FILES = [
  "./",
  "index.html",
@@ -17,6 +18,7 @@ const FILES = [
  "app/icons.js",
  "app/lessons.js",
  "app/overview.js",
+ "app/pdfview.js",
  "app/prism.js",
  "app/pwa.js",
  "app/quiz.js",
@@ -25,7 +27,17 @@ const FILES = [
  "app/ui.js",
  "content/t1.l01.s01.js",
  "content/t1.l01.s02.js",
+ "content/t3.l01.s01.js",
  "figures/aquaponics-cycle.webp",
+ "figures/aquaponics-parts.webp",
+ "figures/dosingpump-photo.webp",
+ "figures/ds18b20-pinout.webp",
+ "figures/esp32-pins.webp",
+ "figures/float-photo.webp",
+ "figures/ph4502c-pinout.webp",
+ "figures/sqp-photo.webp",
+ "figures/waterpump-drawing.webp",
+ "figures/yfs201-photo.webp",
  "fonts/inter-latin-400.woff2",
  "fonts/inter-latin-500.woff2",
  "fonts/inter-latin-600.woff2",
@@ -52,7 +64,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k.startsWith('esp32tour-') && k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k.startsWith('esp32tour-') && k !== CACHE && k !== DOCS).map((k) => caches.delete(k))))
       .then(() => self.clients.claim()));
 });
 
@@ -66,6 +78,15 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(req, { ignoreSearch: true }).then((hit) => {
       if (hit) return hit;
+      const path = url.pathname.slice(new URL('./', self.location).pathname.length);
+      if (path.startsWith('docs/') || path.startsWith('pdfjs/')) {                // keep it for the next time
+        return fetch(req).then((res) => {
+          if (res.status !== 200) return res;
+          const copy = res.clone();
+          event.waitUntil(caches.open(DOCS).then((c) => c.put(url.origin + url.pathname, copy)));
+          return res;
+        });
+      }
       return fetch(req).catch(() => (req.mode === 'navigate' ? caches.match('index.html') : Response.error()));
     }));
 });

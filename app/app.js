@@ -255,16 +255,16 @@
     }
     shell.header.setActive(id);
     document.title = tabTitle(id) + ' · ' + t('app.short');
-    if (id !== 't1' && shell.lessons) { shell.lessons.destroy(); shell.lessons = null; }
+    if (shell.lessons && shell.lessons.tab !== id) { shell.lessons.destroy(); shell.lessons = null; }
     closeMenu();
     shell.el.classList.toggle('bare', Overview.has(id));       // the Overview pages have no workspace header
     if (Overview.has(id)) { shell.dash = null; shell.main.replaceChildren(Overview.mount(id, ACTIONS)); }
     else if (id === ws.dash) {
       shell.dash = Dashboard.mount(ws);
       shell.main.replaceChildren(shell.dash.el); shell.dash.update();
-    } else if (id === 't1') {
+    } else if (Lessons.TABS.includes(id)) {
       shell.dash = null;
-      if (!shell.lessons) { shell.lessons = Lessons.mount(); shell.main.replaceChildren(shell.lessons.el); }
+      if (!shell.lessons) { shell.lessons = Lessons.mount(id); shell.main.replaceChildren(shell.lessons.el); }
       else shell.lessons.go(location.hash);                  // the lessons view keeps its own scroll and navigation state
       return;
     } else { shell.dash = null; shell.main.replaceChildren(placeholder(id)); }

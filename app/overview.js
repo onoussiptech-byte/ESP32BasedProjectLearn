@@ -85,7 +85,26 @@
           (v) => [icon(v === 'auto' ? 'monitor' : v === 'light' ? 'sun' : 'moon'), t('settings.theme.' + v)])),
       h('div', { class: 'set-row' }, h('h3', null, t('settings.language')),
         seg('lang', t('settings.language'), ['en', 'fr'], I18n.lang, act.setLang, (l) => [icon('languages'), l === 'en' ? 'English' : 'Français']),
-        h('p', { class: 'note' }, t('settings.language.hint')))));
+        h('p', { class: 'note' }, t('settings.language.hint'))),
+      window.DocStore && DocStore.supported ? docsRow() : null));
+  }
+
+  // phones: are the reference documents stored on this device?
+  function docsRow() {
+    const total = window.ESP32TOUR_COURSE.store.length;
+    const state = h('p', { class: 'note' }, '…');
+    const btn = UI.button(t('settings.docs.btn'), { kind: 'ghost', icon: 'download', onclick: async () => {
+      btn.setBusy(true);
+      try { await DocStore.store(draw); } catch (e) { toast(t('settings.docs.err'), 'error'); }
+      btn.setBusy(false); check();
+    } });
+    function draw(missing) {
+      state.textContent = missing ? t('settings.docs.part', { a: total - missing, b: total }) : t('settings.docs.all');
+      btn.style.display = missing ? '' : 'none';
+    }
+    const check = () => DocStore.missing().then((m) => draw(m.length));
+    check();
+    return h('div', { class: 'set-row' }, h('h3', null, t('settings.docs', { mb: I18n.num(Math.round(window.ESP32TOUR_COURSE.storeBytes / 1e5) / 10) })), state, btn);
   }
 
   const PAGES = { overview: home, account, settings };
