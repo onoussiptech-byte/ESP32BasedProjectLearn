@@ -1,44 +1,45 @@
-/* lessons.js - the "Basic Concepts" tab: vertical lesson tabs (8 main lessons, their sub-lessons and final quiz),
+/* lessons.js - a tab of lessons (TABS): vertical lesson tabs (the main lessons, their sub-lessons and final quiz),
  * lesson pages (1-4 per sub-lesson), concept chips with a Back button, and the quiz page.
  * Sub-lessons without written content show a calm "coming soon" page; nothing is ever locked.
  *
- * Routes (location.hash):
+ * Routes (location.hash), shown for t1:
  *   #/t1                      tab overview            #/t1/l01              main-lesson overview
  *   #/t1/l01/s01              lesson page 1           #/t1/l01/s01/p2/levels  page 2, scrolled to the section "levels"
  *   #/t1/l01/s01/quiz         the quiz                #/t1/l01/final        final quiz of the main lesson */
 (function () {
   'use strict';
   const { h, icon, statusIcon, button, modal } = UI;
-  const TAB = 't1';
+  const TABS = ['t1', 't3'];                                  // the tabs whose lessons are open
+  let TAB = 't1';                                             // the tab on screen (one at a time)
   const L = (x) => (typeof x === 'string' ? x : I18n.pick(x));
   const pad = (n) => String(n).padStart(2, '0');
   const reduced = () => UI.reduced();
 
   // ------------------------------------------------------------------ routes
-  const ROUTE_RE = /^#\/t1(?:\/(l\d\d)(?:\/(s\d\d|final)(?:\/(?:p(\d)|(quiz))(?:\/([a-z0-9-]+))?)?)?)?\/?$/;
+  const ROUTE_RE = /^#\/(t\d)(?:\/(l\d\d)(?:\/(s\d\d|final)(?:\/(?:p(\d)|(quiz))(?:\/([a-z0-9-]+))?)?)?)?\/?$/;
 
   function parse(hash) {
     const m = (hash || '').match(ROUTE_RE);
     const r = { lesson: null, sub: null, n: 0, view: 'tab', page: 1, section: null };
-    if (!m || !m[1]) return r;
-    const l = Course.lessonList.find((x) => x.key === TAB + '.' + m[1]);
+    if (!m || m[1] !== TAB || !m[2]) return r;
+    const l = Course.lessonList.find((x) => x.key === TAB + '.' + m[2]);
     if (!l) return r;
-    r.lesson = m[1];
-    if (!m[2]) { r.view = 'lesson'; return r; }
-    if (m[2] === 'final') { r.sub = 'final'; r.view = 'sub'; return r; }
-    const n = Number(m[2].slice(1));
+    r.lesson = m[2];
+    if (!m[3]) { r.view = 'lesson'; return r; }
+    if (m[3] === 'final') { r.sub = 'final'; r.view = 'sub'; return r; }
+    const n = Number(m[3].slice(1));
     if (n < 1 || n > l.subs) { r.view = 'lesson'; return r; }
-    r.sub = m[2]; r.n = n; r.view = m[4] ? 'quiz' : 'sub'; r.page = m[3] ? Number(m[3]) : 1; r.section = m[5] || null;
+    r.sub = m[3]; r.n = n; r.view = m[5] ? 'quiz' : 'sub'; r.page = m[4] ? Number(m[4]) : 1; r.section = m[6] || null;
     return r;
   }
   function href(lesson, sub, page, section) {
-    return '#/t1' + (lesson ? '/' + lesson + (sub ? '/' + sub + (page === 'quiz' ? '/quiz' : page ? '/p' + page + (section ? '/' + section : '') : '') : '') : '');
+    return '#/' + TAB + (lesson ? '/' + lesson + (sub ? '/' + sub + (page === 'quiz' ? '/quiz' : page ? '/p' + page + (section ? '/' + section : '') : '') : '') : '');
   }
   const lessonOf = (r) => Course.lesson(TAB + '.' + r.lesson);
   const qidOf = (r) => TAB + '.' + r.lesson + '.' + r.sub;
   const subHref = (l, n, page) => href(l.key.split('.')[1], 's' + pad(n), page);
   const lessonHref = (l) => href(l.key.split('.')[1]);
-  const labelOf = (l, n) => '1.' + l.num + (n ? '.' + n : '');
+  const labelOf = (l, n) => TAB.slice(1) + '.' + l.num + (n ? '.' + n : '');
 
   // ------------------------------------------------------------------ results
   const resultOf = (qid) => { const a = Store.current(); return (a && a.results[qid]) || null; };
@@ -80,6 +81,13 @@
         h('div', { class: 'flow-card' }, h('span', { class: 'flow-ic' }, icon(it.icon || 'layers')), h('b', null, L(it.title)), h('p', null, rich(it.text))),
         i < b.items.length - 1 ? h('span', { class: 'flow-arrow', 'aria-hidden': 'true' }, icon('arrow-right')) : null]));
       case 'steps': return h('ol', { class: 'steps' }, b.items.map((it) => h('li', null, h('div', null, h('b', null, L(it.title)), h('p', null, rich(it.text))))));
+      case 'figure': return UI.figureBlock(b.name, rich(b.caption));
+      case 'gallery': return h('div', { class: 'gallery' }, b.items.map((it) => h('section', { class: 'gal-card' },
+        it.name ? UI.figureBlock(it.name, null) : h('div', { class: 'gal-icon' }, icon(it.icon)),
+        h('div', { class: 'gal-text' }, h('b', null, L(it.title)), h('p', null, rich(it.text)),
+          it.ref ? h('p', { class: 'gal-ref' }, icon('file-text'), UI.docLink(t('src.' + it.ref.doc) + ' · ' + t('learn.page.short', { n: it.ref.page }), it.ref.url)) : null))));
+      case 'refs': return h('div', { class: 'refs' }, icon('book-marked'), h('span', { class: 'refs-label' }, t('learn.refs')),
+        b.items.map((s) => h('span', { class: 'ref-chip' }, UI.docLink(t('src.' + s.doc) + ' · ' + s.section + ' · ' + t('learn.page.short', { n: s.page }), s.url))));
       case 'code': return UI.codeBlock(b.lang || 'plain', b.code, b.caption ? L(b.caption) : null);
       default: return null;
     }
@@ -91,14 +99,15 @@
       h('h3', null, icon('book-marked'), h('span', null, t('learn.sources'))),
       h('ul', null, list.map((s) => h('li', null,
         h('span', { class: 'src-doc' }, t('src.' + s.doc)),
-        h('a', { class: 'ext', href: s.url, target: '_blank', rel: 'noopener noreferrer' }, s.section),
+        s.local ? UI.docLink(s.section, s.url) : h('a', { class: 'ext', href: s.url, target: '_blank', rel: 'noopener noreferrer' }, s.section),
         s.page ? h('span', { class: 'src-page' }, t('learn.page.short', { n: s.page })) : null,
-        h('span', { class: 'online-tag' }, t('common.online'))))),
-      h('p', { class: 'note' }, icon('info'), h('span', null, t('learn.sources.note'))));
+        s.local ? null : h('span', { class: 'online-tag' }, t('common.online'))))),
+      h('p', { class: 'note' }, icon('info'), h('span', null, t(list[0].local ? 'learn.sources.local' : 'learn.sources.note'))));
   }
 
   // ================================================================== the view
-  function mount() {
+  function mount(tab) {
+    TAB = tab;
     const el = h('div', { class: 'learn' });
     let route = parse(location.hash), token = 0, quiz = null, pageApi = null;
     let backStack = [], pendingScroll = null;
@@ -146,7 +155,7 @@
         const ls = s.lessons[l.key], open = expanded.has(l.key);
         const lrow = h('div', { class: 'ln-lrow' },
           navLink({ class: 'ln-lesson', href: lessonHref(l), 'data-lesson': l.key },
-            h('span', { class: 'ln-num' }, '1.' + l.num), h('span', { class: 'ln-title' }, L(l.title)),
+            h('span', { class: 'ln-num' }, labelOf(l)), h('span', { class: 'ln-title' }, L(l.title)),
             h('span', { class: 'ln-prog', title: t('learn.passed', { d: ls.subsDone, n: ls.subs }) }, ls.subsDone + '/' + ls.subs)),
           h('button', { class: 'ln-toggle', type: 'button', 'aria-expanded': String(open), 'aria-label': L(l.title) }, icon('chevron-down')));
         const subs = h('ul', { class: 'ln-subs' });
@@ -252,7 +261,7 @@
       const f = firstToDo(), started = !!Object.keys(a.results).some((q) => q.startsWith(TAB + '.'));
       return h('div', { class: 'lview' },
         h('header', { class: 'lhero' },
-          h('div', { class: 'lhero-text' }, h('h1', null, I18n.pick(Course.tab(TAB).title)), h('p', null, t('learn.tab.intro')),
+          h('div', { class: 'lhero-text' }, h('h1', null, I18n.pick(Course.tab(TAB).title)), h('p', null, t(TAB === 't1' ? 'learn.tab.intro' : 'learn.tab.intro5')),
             h('div', { class: 'lhero-stats' }, h('span', { class: 'pill-soft' }, icon('graduation-cap'), t('dash.passed', { n: UI.fmt(tb.passed), m: UI.fmt(tb.quizzes) })))),
           h('div', { class: 'lhero-cta' }, h('p', { class: 'tiny' }, started ? t('learn.continue.text') : t('learn.start.text')),
             navLink({ class: 'btn primary', href: subHref(f.l, f.n) }, icon('rocket'), h('span', null, (started ? t('learn.continue') : t('learn.start')) + ' · ' + labelOf(f.l, f.n))))),
@@ -260,7 +269,7 @@
           const ls = s.lessons[l.key], pct = ls.subs ? (ls.subsDone / ls.subs) * 100 : 0;
           const avail = Array.from({ length: l.subs }, (_, i) => l.key + '.s' + pad(i + 1)).filter((q) => Course.hasContent(q)).length;
           return navLink({ class: 'lcard ' + ls.state, href: lessonHref(l) },
-            h('div', { class: 'lesson-top' }, h('span', { class: 'lesson-num' }, '1.' + l.num), h('span', { class: 'state-chip ' + ls.state }, t('dash.lesson.' + ls.state))),
+            h('div', { class: 'lesson-top' }, h('span', { class: 'lesson-num' }, labelOf(l)), h('span', { class: 'state-chip ' + ls.state }, t('dash.lesson.' + ls.state))),
             h('h3', null, L(l.title)),
             h('div', { class: 'bar thin' }, h('div', { class: 'bar-fill', style: { width: pct + '%' } })),
             h('div', { class: 'lesson-foot' }, h('span', null, t('learn.passed', { d: ls.subsDone, n: ls.subs })),
@@ -284,7 +293,7 @@
       }
       const fq = l.key + '.final', frec = resultOf(fq);
       return h('div', { class: 'lview' }, crumbs(l),
-        h('header', { class: 'lhead' }, h('span', { class: 'lesson-num big' }, '1.' + l.num),
+        h('header', { class: 'lhead' }, h('span', { class: 'lesson-num big' }, labelOf(l)),
           h('div', { class: 'lhead-text' }, h('h1', null, L(l.title)),
             h('div', { class: 'lhead-meta' }, h('span', null, t('learn.passed', { d: ls.subsDone, n: ls.subs })),
               h('div', { class: 'bar thin grow' }, h('div', { class: 'bar-fill', style: { width: pct + '%' } }))))),
@@ -464,14 +473,14 @@
     drawNav();
     render();
     return {
-      el, go,
+      el, go, tab,
       update() {                                              // after a quiz result or a change of accounts
         drawNav();
         if (route.view === 'tab' || route.view === 'lesson') { const y = window.scrollY; viewSlot.replaceChildren(route.view === 'tab' ? tabView() : lessonView()); window.scrollTo(0, y); }
       },
-      destroy() { disposeQuiz(); window.removeEventListener('resize', syncTop); }
+      destroy() { token++; disposeQuiz(); window.removeEventListener('resize', syncTop); }
     };
   }
 
-  window.Lessons = { mount, parse };
+  window.Lessons = { mount, parse, TABS };
 })();

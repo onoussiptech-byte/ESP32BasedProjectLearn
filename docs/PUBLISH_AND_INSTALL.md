@@ -18,7 +18,7 @@ Rebuild **and publish the phone version** with `python -I src\build.py --publish
 1. Copy the **whole** `ESP32_Tour` folder to the computer (anywhere, e.g. `C:\ESP32_Tour`).
 2. Double-click `index.html`. Use Chrome or Edge if you can.
 3. Create an account (first time) or sign in.
-4. To carry your progress with the folder: click your name, then **Save accounts to folder**, and pick the `ESP32_Tour` folder (Chrome/Edge). Other browsers download `accounts.js`: put it in `ESP32_Tour\data\`, replacing the old file.
+4. To carry your progress with the folder: open **Overview**, **Account management**, then **Save accounts to folder**, and pick the `ESP32_Tour` folder (Chrome/Edge). Other browsers download `accounts.js`: put it in `ESP32_Tour\data\`, replacing the old file.
 
 ---
 
@@ -70,7 +70,7 @@ Open the address from step 2 on the phone, and **wait until the toast says "Read
 
 ### Your account on the phone
 Accounts live **on each device**. The installed phone app starts empty (on iPhone, the home-screen app also has separate storage from Safari). To bring your account from the computer:
-1. On the computer: click your name → **Export accounts file** (downloads `accounts.js`).
+1. On the computer: **Overview** → **Account management** → **Export accounts file** (downloads `accounts.js`).
 2. Send that file to the phone (Drive, e-mail, messaging).
 3. On the phone, in the installed app, on the sign-in page tap **Import accounts from another device** and choose the file. Then sign in with your usual ID and password.
 

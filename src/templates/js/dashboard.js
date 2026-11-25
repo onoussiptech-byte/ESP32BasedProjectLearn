@@ -131,7 +131,7 @@
       for (let n = 1; n <= l.subs; n++) {
         const qid = l.key + '.s' + String(n).padStart(2, '0'), res = a.results[qid];
         rows.push(h('li', null, h('span', { class: 'ln-sn' }, l.tab.slice(1) + '.' + l.num + '.' + n),
-          h('span', { class: 'ln-st' }, I18n.pick(Course.subTitle(l.key, n))), statusIcon(Course.statusOf('sub', res ? res.best : null), 'dash:' + qid, 16)));
+          h('span', { class: 'ln-st' }, Lessons.TABS.includes(l.tab) ? h('a', { href: '#/' + qid.replace(/\./g, '/') }, I18n.pick(Course.subTitle(l.key, n))) : I18n.pick(Course.subTitle(l.key, n))), statusIcon(Course.statusOf('sub', res ? res.best : null), 'dash:' + qid, 16)));
       }
       const d = h('details', { class: 'lesson-subs', open: openLists.has(l.key) }, h('summary', null, t('dash.subs', { n: l.subs }), icon('chevron-down')), h('ul', null, rows));
       d.addEventListener('toggle', () => { if (d.open) openLists.add(l.key); else openLists.delete(l.key); });
@@ -172,14 +172,14 @@
 
       // continue card
       const last = attempts[attempts.length - 1];
-      const go = aqua ? { href: '#/' + (last ? last.q.split('.')[0] : ws.tabs[0]) }        // the lessons of tabs 3 and 4 are still to come
-        : { href: last && last.q.startsWith('t1.') ? '#/' + last.q.replace(/\./g, '/') : '#/t1/l01/s01' };
+      const opens = (qid) => Lessons.TABS.includes(qid.split('.')[0]), firstQ = ws.tabs.find((x) => Lessons.TABS.includes(x)) + '.l01.s01';
+      const goHref = '#/' + (last && opens(last.q) ? last.q : firstQ).replace(/\./g, '/');
       cont.replaceChildren(h('h3', { class: 'card-title' }, t('dash.continue')),
         h('div', { class: 'cont-icon' }, icon('play')),
         h('p', { class: 'strong' }, last ? t('dash.continue.last', { q: quizLabel(last.q) }) : t('dash.continue.none')),
         h('p', { class: 'note' }, t('dash.continue.note')),
-        h('a', { class: 'btn primary sm cont-go', href: go.href },
-          icon('arrow-right'), h('span', null, last ? t('dash.continue.go') : aqua ? t('dash.continue.tab', { title: I18n.pick(wsTabs[0].title) }) : t('dash.continue.start'))));
+        h('a', { class: 'btn primary sm cont-go', href: goHref },
+          icon('arrow-right'), h('span', null, last ? t('dash.continue.go') : t('dash.continue.start', { n: quizLabel(firstQ) }))));
 
       // timeline
       timeline.replaceChildren(...wsTabs.map((tb) => {
@@ -189,11 +189,11 @@
           const lessonCard = h('article', { class: 'lesson-card ' + ls.state },
             h('div', { class: 'lesson-top' }, h('span', { class: 'lesson-num' }, tb.id.slice(1) + '.' + l.num),
               h('span', { class: 'state-chip ' + ls.state }, t('dash.lesson.' + ls.state))),
-            h('h4', null, I18n.pick(l.title)),
+            h('h4', null, aqua && opens(l.key) ? h('a', { class: 'lesson-open', href: '#/' + l.key.replace(/\./g, '/') }, I18n.pick(l.title)) : I18n.pick(l.title)),
             h('div', { class: 'bar thin' }, h('div', { class: 'bar-fill', style: { width: pct + '%' } })),
             h('div', { class: 'lesson-foot' }, h('span', null, t('dash.quizzes', { d: ls.subsDone, n: ls.subs })),
               h('span', { class: 'final-st' }, statusIcon(ls.final, 'final:' + l.key, 18), h('span', null, t('dash.final')))), aqua ? subList(a, l) : null);
-          // the Basic Concepts lessons exist now, so their cards open the lesson; FreeRTOS... lessons are still to come
+          // tab 1: the whole card opens the lesson. Aquaponics cards hold a list that opens, so there the title is the link
           return tb.id === 't1' ? h('a', { class: 'lesson-link', href: '#/' + l.key.replace(/\./g, '/') }, lessonCard) : lessonCard;
         });
         return h('div', { class: 'timeline-group' }, h('h4', { class: 'group-title' }, I18n.pick(tb.title)), h('div', { class: 'timeline-grid' + (aqua ? ' roomy' : '') }, cards));

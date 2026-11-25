@@ -3,16 +3,17 @@
  * - Anything else (other origins, online links, POSTs): passed straight through, never touched or blocked.
  * - A new version waits until the person taps "Reload" in the "Update available" message. */
 const CACHE = 'esp32tour-v{{VERSION}}';
+const DOCS = 'esp32tour-docs-1';        // documents and PDF viewer: kept when the app is updated, not downloaded again
 const FILES = {{FILES}};
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)));   // no skipWaiting: the person decides
+  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES.map((f) => new Request(f, { cache: 'reload' })))));   // 'reload': never an old copy from the browser's own cache; no skipWaiting: the person decides
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k.startsWith('esp32tour-') && k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k.startsWith('esp32tour-') && k !== CACHE && k !== DOCS).map((k) => caches.delete(k))))
       .then(() => self.clients.claim()));
 });
 
@@ -26,6 +27,15 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(req, { ignoreSearch: true }).then((hit) => {
       if (hit) return hit;
+      const path = url.pathname.slice(new URL('./', self.location).pathname.length);
+      if (path.startsWith('docs/') || path.startsWith('pdfjs/')) {                // keep it for the next time
+        return fetch(req).then((res) => {
+          if (res.status !== 200) return res;
+          const copy = res.clone();
+          event.waitUntil(caches.open(DOCS).then((c) => c.put(url.origin + url.pathname, copy)));
+          return res;
+        });
+      }
       return fetch(req).catch(() => (req.mode === 'navigate' ? caches.match('index.html') : Response.error()));
     }));
 });

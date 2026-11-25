@@ -42,6 +42,10 @@ A one-page lesson is shown without the page stepper and without "Page 1 of 1".
 | `flow` | `items`: `{icon, title, text}` (2 to 6, drawn with arrows) |
 | `steps` | `items`: `{title, text}` (2 to 6, numbered) |
 | `code` | `lang` = `c cpp bash ini json markup powershell python plain`, `code`, optional `caption` |
+| `code` (from the firmware) | `firmware` = file of `src/firmware`, `start` = text found in its first line (only once in the file), `end` = text of the last line. The build copies the lines, so a lesson never differs from the firmware |
+| `figure` | `name` (a picture of `src/references/figures.json`), `caption` |
+| `gallery` | `items`: `{name or icon, title, text, ref}` (2 to 12 components; `ref` = one source) |
+| `refs` | `items` = sources (as below): links to the exact page, placed next to the idea they explain |
 
 Inline markup inside any text: `**bold**`, `*italic*`, `` `code` ``,
 `[[label|t1.l01.s01/p2#section-id]]` (a concept chip: jumps to that sub-lesson, page and section, with a Back button),
@@ -60,6 +64,9 @@ Each page lists where its facts come from. The build looks up the page number an
 Use the exact section title from `src/references/index.json` (PDFs) or `arduino_index.json` (Arduino core docs).
 If a title appears twice, add `"page": N`. If you have `pypdf` installed, the validator also opens the PDF and checks that the
 heading really is on the page the index gives; when the index is wrong, add `"pdf_page": N` with the real page (done for 4.1.3).
+
+In tabs 3 and 4 every document link opens the PDF of `docs/` carried inside the app (no internet). Their sub-lessons have seven parts:
+1 why, 2 useful concepts, 3 code, 4 development, 5 PlatformIO, 6 pitfalls and safety, 7 conclusion, then the quiz (tab 3: 1 to 4 pages, tab 4: 1 page).
 
 ## Questions (8 per sub-lesson, at least 4 different types, every `explain` required)
 

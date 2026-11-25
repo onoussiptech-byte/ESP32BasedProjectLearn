@@ -1,0 +1,348 @@
+{
+ "id": "t3.l01.s01",
+ "summary": {
+  "en": "Discover how fish and plants share the same water, what AquaNode must watch and drive, and take a first look at the firmware you will build.",
+  "fr": "Découvrez comment les poissons et les plantes partagent la même eau, ce qu’AquaNode doit surveiller et commander, et jetez un premier regard sur le firmware que vous construirez."
+ },
+ "goals": [
+  {"en": "Explain aquaponics and follow the water around the loop.", "fr": "Expliquer l’aquaponie et suivre l’eau tout autour de la boucle."},
+  {"en": "Say why pH, temperature, flow and water level must be watched.", "fr": "Dire pourquoi il faut surveiller le pH, la température, le débit et le niveau d’eau."},
+  {"en": "Name what AquaNode measures, what it drives, and how a phone talks to it.", "fr": "Nommer ce qu’AquaNode mesure, ce qu’il commande et comment un téléphone lui parle."},
+  {"en": "Read the eight start-up steps of the firmware and say why their order matters.", "fr": "Lire les huit étapes de démarrage du firmware et dire pourquoi leur ordre compte."}
+ ],
+ "pages": [
+  {
+   "id": "p1",
+   "title": {"en": "Aquaponics: one water for fish and plants", "fr": "L’aquaponie : une seule eau pour les poissons et les plantes"},
+   "blocks": [
+    {"type": "h", "id": "why", "text": {"en": "1. Why this lesson", "fr": "1. Pourquoi cette leçon"}},
+    {"type": "p", "text": {
+      "en": "You are going to write a complete firmware, file by file. Every line of it exists because **living things depend on the water**. So before any code, you need to know what the machine is for. At the end of this lesson, you will be able to look at a sensor, a pump or a number in the code and say *why it is there*.",
+      "fr": "Vous allez écrire un firmware complet, fichier par fichier. Chaque ligne existe parce que **des êtres vivants dépendent de l’eau**. Avant le code, il faut donc savoir à quoi sert la machine. À la fin de cette leçon, vous pourrez regarder un capteur, une pompe ou un nombre du code et dire *pourquoi il est là*."}},
+    {"type": "facts", "items": [
+      {"value": "4", "label": {"en": "things measured: pH, temperature, flow, water level", "fr": "grandeurs mesurées : pH, température, débit, niveau d’eau"}},
+      {"value": "4", "label": {"en": "loads driven: water pump, air pump, dosing pump, heater demo", "fr": "charges commandées : pompe à eau, pompe à air, pompe de dosage, chauffage de démonstration"}},
+      {"value": "2", "label": {"en": "links to the phone: Wi-Fi and Bluetooth, without internet", "fr": "liaisons avec le téléphone : Wi-Fi et Bluetooth, sans internet"}},
+      {"value": "5", "label": {"en": "alarms that tell you what is wrong", "fr": "alarmes qui disent ce qui ne va pas"}}
+    ]},
+
+    {"type": "h", "id": "aquaponics", "text": {"en": "2. Useful concepts: what aquaponics is", "fr": "2. Notions utiles : ce qu’est l’aquaponie"}},
+    {"type": "p", "text": {
+      "en": "**Aquaponics** joins two ways of producing food:",
+      "fr": "L’**aquaponie** réunit deux façons de produire de la nourriture :"}},
+    {"type": "list", "items": [
+      {"en": "**Aquaculture**: raising fish in a tank. Alone, its water gets dirty and must be changed.", "fr": "L’**aquaculture** : élever des poissons dans un bac. Seule, son eau se salit et il faut la changer."},
+      {"en": "**Hydroponics**: growing plants with their roots in water, without soil. Alone, its water needs added nutrients.", "fr": "L’**hydroponie** : cultiver des plantes dont les racines sont dans l’eau, sans terre. Seule, son eau a besoin de nutriments ajoutés."}
+    ]},
+    {"type": "p", "text": {
+      "en": "Each one solves the problem of the other. The waste of the fish feeds the plants, and the plants clean the water for the fish. **The same water is used again and again.**",
+      "fr": "Chacune résout le problème de l’autre. Les déchets des poissons nourrissent les plantes, et les plantes nettoient l’eau des poissons. **La même eau sert encore et encore.**"}},
+    {"type": "figure", "name": "aquaponics-cycle", "caption": {
+      "en": "The cycle. Start at the fish and follow the blue arrows: fish, biological filter, plants, and back to the fish.",
+      "fr": "Le cycle. Partez des poissons et suivez les flèches bleues : poissons, filtre biologique, plantes, puis retour aux poissons."}},
+
+    {"type": "h", "id": "nitrogen", "text": {"en": "The hidden workers: bacteria", "fr": "Les ouvrières cachées : les bactéries"}},
+    {"type": "p", "text": {
+      "en": "Fish release **ammonia**, which is poisonous for them, and plants cannot live well on it alone. Between the two, invisible **bacteria** do the work. They live on every wet surface, above all in the **biological filter**.",
+      "fr": "Les poissons rejettent de l’**ammoniac**, un poison pour eux, et les plantes ne peuvent pas bien vivre de cela seul. Entre les deux, des **bactéries** invisibles font le travail. Elles vivent sur toutes les surfaces mouillées, surtout dans le **filtre biologique**."}},
+    {"type": "flow", "items": [
+      {"icon": "fish", "title": {"en": "Ammonia", "fr": "Ammoniac"}, "text": {"en": "Comes from the fish. Poisonous.", "fr": "Vient des poissons. Toxique."}},
+      {"icon": "recycle", "title": {"en": "Nitrite", "fr": "Nitrite"}, "text": {"en": "Made by a first kind of bacteria. Still poisonous.", "fr": "Produit par un premier type de bactéries. Encore toxique."}},
+      {"icon": "refresh-cw", "title": {"en": "Nitrate", "fr": "Nitrate"}, "text": {"en": "Made by a second kind. Far less dangerous.", "fr": "Produit par un second type. Bien moins dangereux."}},
+      {"icon": "sprout", "title": {"en": "Plant", "fr": "Plante"}, "text": {"en": "Takes the nitrate in by its roots and grows.", "fr": "Absorbe le nitrate par ses racines et grandit."}}
+    ]},
+    {"type": "callout", "kind": "note", "title": {"en": "The filter needs time", "fr": "Le filtre a besoin de temps"}, "text": {
+      "en": "A new filter has almost no bacteria. They need **weeks** to settle. That is one reason why we first test AquaNode with **plain water and no fish**.",
+      "fr": "Un filtre neuf n’a presque pas de bactéries. Il leur faut des **semaines** pour s’installer. C’est une des raisons pour lesquelles on teste d’abord AquaNode avec **de l’eau claire et sans poissons**."}},
+
+    {"type": "h", "id": "parts", "text": {"en": "The parts of a real system", "fr": "Les éléments d’un vrai système"}},
+    {"type": "figure", "name": "aquaponics-parts", "caption": {
+      "en": "A complete system: fish tank, sediment tank, water pump, biofilter, hydroponic tank and air pump.",
+      "fr": "Un système complet : bac à poissons, décanteur, pompe à eau, biofiltre, bac hydroponique et pompe à air."}},
+    {"type": "table",
+     "head": [{"en": "Part", "fr": "Élément"}, {"en": "Its job", "fr": "Son rôle"}],
+     "rows": [
+      [{"en": "Fish tank", "fr": "Bac à poissons"}, {"en": "The fish live here. Dirty water leaves it.", "fr": "Les poissons y vivent. L’eau sale en sort."}],
+      [{"en": "Sediment tank", "fr": "Décanteur"}, {"en": "Solid waste sinks and stays at the bottom.", "fr": "Les déchets solides coulent et restent au fond."}],
+      [{"en": "Water pump", "fr": "Pompe à eau"}, {"en": "Pushes the water up. **If it stops, the whole loop stops.**", "fr": "Pousse l’eau vers le haut. **Si elle s’arrête, toute la boucle s’arrête.**"}],
+      [{"en": "Biofilter", "fr": "Biofiltre"}, {"en": "Home of the bacteria that make nitrate.", "fr": "La maison des bactéries qui produisent le nitrate."}],
+      [{"en": "Hydroponic tank", "fr": "Bac hydroponique"}, {"en": "The plants feed and clean the water, which falls back to the fish.", "fr": "Les plantes se nourrissent et nettoient l’eau, qui retombe vers les poissons."}],
+      [{"en": "Air pump", "fr": "Pompe à air"}, {"en": "Blows air into both tanks. Fish, roots and bacteria all need oxygen.", "fr": "Souffle de l’air dans les deux bacs. Poissons, racines et bactéries ont tous besoin d’oxygène."}]
+     ]},
+
+    {"type": "h", "id": "balance", "text": {"en": "Why the water must be watched", "fr": "Pourquoi l’eau doit être surveillée"}},
+    {"type": "p", "text": {
+      "en": "Three kinds of life share this water, and each one has its own taste. The **pH** tells how acid the water is, from 0 (very acid) through 7 (neutral) to 14 (very alkaline). The pH board guide gives about 6 for hydroponics and **about 6.8 for aquaponics**: a compromise. Our target in the firmware is also **6.8**.",
+      "fr": "Trois formes de vie partagent cette eau, et chacune a ses préférences. Le **pH** dit si l’eau est acide, de 0 (très acide) à 14 (très alcaline) en passant par 7 (neutre). Le guide de la carte pH donne environ 6 pour l’hydroponie et **environ 6,8 pour l’aquaponie** : un compromis. Notre consigne dans le firmware est aussi **6,8**."}},
+    {"type": "refs", "items": [{"doc": "ph4502c", "section": "What the pH board does"}]},
+    {"type": "table",
+     "head": [{"en": "What changes", "fr": "Ce qui change"}, {"en": "What it does to the living things", "fr": "Effet sur les êtres vivants"}, {"en": "Alarm in AquaNode", "fr": "Alarme dans AquaNode"}],
+     "rows": [
+      ["pH", {"en": "Too low or too high, the bacteria slow down and the fish suffer. The bacteria make the water **more acid with time**, so pH tends to fall.", "fr": "Trop bas ou trop haut, les bactéries ralentissent et les poissons souffrent. Les bactéries rendent l’eau **plus acide avec le temps** : le pH a tendance à baisser."}, {"en": "`PH_RANGE` below 6.0 or above 7.5", "fr": "`PH_RANGE` sous 6,0 ou au-dessus de 7,5"}],
+      [{"en": "Temperature", "fr": "Température"}, {"en": "Cold fish stop eating. Hot water holds less oxygen.", "fr": "Les poissons qui ont froid ne mangent plus. L’eau chaude contient moins d’oxygène."}, {"en": "`TEMP_RANGE` below 20 °C or above 32 °C", "fr": "`TEMP_RANGE` sous 20 °C ou au-dessus de 32 °C"}],
+      [{"en": "Flow", "fr": "Débit"}, {"en": "Without flow, waste stays with the fish and roots go dry.", "fr": "Sans débit, les déchets restent avec les poissons et les racines sèchent."}, {"en": "`NO_FLOW` below 0.5 L/min for 20 s while the pump should run", "fr": "`NO_FLOW` sous 0,5 L/min pendant 20 s alors que la pompe devrait tourner"}],
+      [{"en": "Water level", "fr": "Niveau d’eau"}, {"en": "A leak or evaporation leaves the pump dry: it can burn.", "fr": "Une fuite ou l’évaporation laisse la pompe à sec : elle peut griller."}, {"en": "`LOW_WATER` after about 0.3 s", "fr": "`LOW_WATER` après environ 0,3 s"}]
+     ]},
+    {"type": "callout", "kind": "tip", "title": {"en": "The fifth alarm", "fr": "La cinquième alarme"}, "text": {
+      "en": "`SENSOR_FAULT` means that the pH or the temperature sensor gives no believable value, three times in a row. The machine then knows that it is partly blind.",
+      "fr": "`SENSOR_FAULT` signifie que le capteur de pH ou de température ne donne pas de valeur crédible, trois fois de suite. La machine sait alors qu’elle est en partie aveugle."}}
+   ],
+   "sources": [
+    {"doc": "ph4502c", "section": "What the pH board does"}
+   ]
+  },
+  {
+   "id": "p2",
+   "title": {"en": "AquaNode: the machine that takes care of the water", "fr": "AquaNode : la machine qui prend soin de l’eau"},
+   "blocks": [
+    {"type": "h", "id": "control", "text": {"en": "2. Useful concepts (continued): measure, decide, act", "fr": "2. Notions utiles (suite) : mesurer, décider, agir"}},
+    {"type": "p", "text": {
+      "en": "**AquaNode** is the name of our device: an ESP32 board, its sensors, its pumps, and the program that runs inside. A person who keeps fish looks at the water, thinks, and acts. AquaNode does the same thing, **all day and all night**.",
+      "fr": "**AquaNode** est le nom de notre appareil : une carte ESP32, ses capteurs, ses pompes, et le programme qui tourne à l’intérieur. Une personne qui élève des poissons regarde l’eau, réfléchit et agit. AquaNode fait la même chose, **jour et nuit**."}},
+    {"type": "flow", "items": [
+      {"icon": "thermometer", "title": {"en": "Measure", "fr": "Mesurer"}, "text": {"en": "**Sensors** turn the water into numbers, every second.", "fr": "Les **capteurs** transforment l’eau en nombres, chaque seconde."}},
+      {"icon": "cpu", "title": {"en": "Decide", "fr": "Décider"}, "text": {"en": "The **firmware** compares the numbers with the **setpoints** (the values we want).", "fr": "Le **firmware** compare les nombres aux **consignes** (les valeurs voulues)."}},
+      {"icon": "wind", "title": {"en": "Act", "fr": "Agir"}, "text": {"en": "**Actuators** (pumps, heater) change the water.", "fr": "Les **actionneurs** (pompes, chauffage) modifient l’eau."}},
+      {"icon": "refresh-cw", "title": {"en": "Again", "fr": "Recommencer"}, "text": {"en": "The result is measured again. This circle is a **control loop**.", "fr": "Le résultat est mesuré de nouveau. Ce cercle est une **boucle de commande**."}}
+    ]},
+    {"type": "table",
+     "head": [{"en": "Word", "fr": "Mot"}, {"en": "Meaning", "fr": "Sens"}],
+     "rows": [
+      [{"en": "Microcontroller", "fr": "Microcontrôleur"}, {"en": "A small computer on one chip, made to control things. Ours is the **ESP32**.", "fr": "Un petit ordinateur sur une seule puce, fait pour commander des objets. Le nôtre est l’**ESP32**."}],
+      ["Firmware", {"en": "The program stored in the chip. It starts alone as soon as there is power.", "fr": "Le programme stocké dans la puce. Il démarre seul dès qu’il y a du courant."}],
+      [{"en": "Sensor", "fr": "Capteur"}, {"en": "Turns something physical (temperature, flow) into an electrical signal.", "fr": "Transforme une grandeur physique (température, débit) en signal électrique."}],
+      [{"en": "Actuator, or load", "fr": "Actionneur, ou charge"}, {"en": "Turns electricity into an action: move water, blow air, heat.", "fr": "Transforme l’électricité en action : déplacer l’eau, souffler de l’air, chauffer."}],
+      [{"en": "Setpoint", "fr": "Consigne"}, {"en": "The value we want. Ours at start: pH 6.8, 27 °C, 1.4 L/min.", "fr": "La valeur voulue. Les nôtres au départ : pH 6,8, 27 °C, 1,4 L/min."}],
+      [{"en": "Safe default", "fr": "État sûr par défaut"}, {"en": "What each output does at start or when something is wrong.", "fr": "Ce que fait chaque sortie au démarrage ou quand quelque chose va mal."}]
+     ]},
+
+    {"type": "h", "id": "components", "text": {"en": "The components you will meet", "fr": "Les composants que vous rencontrerez"}},
+    {"type": "p", "text": {
+      "en": "Here is a first look only. Each component gets its own lessons later, with its code. The document links open the exact page inside the app.",
+      "fr": "Voici seulement un premier regard. Chaque composant aura ensuite ses propres leçons, avec son code. Les liens ouvrent la page exacte du document, dans l’application."}},
+    {"type": "gallery", "items": [
+      {"name": "esp32-pins", "title": {"en": "ESP32 (the brain)", "fr": "ESP32 (le cerveau)"}, "text": {"en": "One chip with Wi-Fi and Bluetooth. It reads, decides and commands. Here, its pins.", "fr": "Une seule puce avec Wi-Fi et Bluetooth. Elle lit, décide et commande. Ici, ses broches."}, "ref": {"doc": "datasheet", "section": "2.1 Pin Layout"}},
+      {"name": "ph4502c-pinout", "title": {"en": "PH-4502C board (pH)", "fr": "Carte PH-4502C (pH)"}, "text": {"en": "Turns the tiny signal of the pH probe into a voltage that we can measure.", "fr": "Transforme le minuscule signal de la sonde pH en une tension que l’on peut mesurer."}, "ref": {"doc": "ph4502c", "section": "Board pinout"}},
+      {"name": "ds18b20-pinout", "title": {"en": "DS18B20 (temperature)", "fr": "DS18B20 (température)"}, "text": {"en": "A digital thermometer, accurate to ±0.5 °C from -10 °C to +85 °C, on one data wire.", "fr": "Un thermomètre numérique, précis à ±0,5 °C de -10 °C à +85 °C, sur un seul fil de données."}, "ref": {"doc": "ds18b20", "section": "Description and features"}},
+      {"name": "yfs201-photo", "title": {"en": "YF-S201 (flow)", "fr": "YF-S201 (débit)"}, "text": {"en": "The water turns a small wheel, and the sensor sends pulses. Its range is 1 to 30 L/min.", "fr": "L’eau fait tourner une petite roue et le capteur envoie des impulsions. Sa plage va de 1 à 30 L/min."}, "ref": {"doc": "yfs201", "section": "Specifications"}},
+      {"name": "float-photo", "title": {"en": "Float switch (level)", "fr": "Interrupteur à flotteur (niveau)"}, "text": {"en": "A float that moves with the water and opens or closes a contact.", "fr": "Un flotteur qui bouge avec l’eau et ouvre ou ferme un contact."}, "ref": {"doc": "floatswitch", "section": "Float switch description"}},
+      {"name": "waterpump-drawing", "title": {"en": "12 V water pump", "fr": "Pompe à eau 12 V"}, "text": {"en": "Makes the water go around: about 1.6 L/min, 0.5 A at most.", "fr": "Fait circuler l’eau : environ 1,6 L/min, 0,5 A au maximum."}, "ref": {"doc": "waterpump", "section": "Parameter specifications"}},
+      {"icon": "wind", "title": {"en": "12 V air pump (aerator)", "fr": "Pompe à air 12 V (aérateur)"}, "text": {"en": "Brings oxygen to the water. It must almost never stop.", "fr": "Apporte de l’oxygène à l’eau. Elle ne doit presque jamais s’arrêter."}, "ref": {"doc": "airpump", "section": "Performance (voltage, current, flow)"}},
+      {"name": "dosingpump-photo", "title": {"en": "Mini pump (dosing)", "fr": "Mini-pompe (dosage)"}, "text": {"en": "Adds a small dose of baking soda solution when the pH is too low. It works from 3 to 6 V.", "fr": "Ajoute une petite dose de solution de bicarbonate quand le pH est trop bas. Elle fonctionne de 3 à 6 V."}, "ref": {"doc": "dosingpump", "section": "Description and features"}},
+      {"name": "sqp-photo", "title": {"en": "Cement resistors (heater demo)", "fr": "Résistances ciment (chauffage de démonstration)"}, "text": {"en": "Two 47 Ω, 5 W resistors get warm and stand for a heater: about 6 W at 12 V.", "fr": "Deux résistances de 47 Ω, 5 W chauffent et jouent le rôle du chauffage : environ 6 W sous 12 V."}, "ref": {"doc": "resistor_sqp", "section": "Ordering information and power rating"}}
+    ]},
+
+    {"type": "h", "id": "phone", "text": {"en": "Talking to a phone, without internet", "fr": "Parler à un téléphone, sans internet"}},
+    {"type": "p", "text": {
+      "en": "The ESP32 creates its **own Wi-Fi network**, called `AQUA-NODE`. This is the *access point* mode (Espressif calls it **SoftAP**): the phone connects to the ESP32 directly, like to a small router. An Android phone can also use **Bluetooth**. There is no server and no subscription: it works in a village with no network.",
+      "fr": "L’ESP32 crée son **propre réseau Wi-Fi**, appelé `AQUA-NODE`. C’est le mode *point d’accès* (Espressif l’appelle **SoftAP**) : le téléphone se connecte directement à l’ESP32, comme à une petite box. Un téléphone Android peut aussi utiliser le **Bluetooth**. Pas de serveur, pas d’abonnement : cela marche dans un village sans réseau."}},
+    {"type": "refs", "items": [
+      {"doc": "datasheet", "section": "Features"},
+      {"doc": "datasheet", "section": "4.6.5 Wi-Fi MAC"},
+      {"doc": "datasheet", "section": "4.7 Bluetooth"}
+    ]},
+    {"type": "p", "text": {
+      "en": "Every second, AquaNode describes itself in one short line of text. The format is **JSON**: pairs of *name* and *value* between braces. The phone reads this line and draws its screen.",
+      "fr": "Chaque seconde, AquaNode se décrit en une courte ligne de texte. Le format est **JSON** : des paires *nom* et *valeur* entre accolades. Le téléphone lit cette ligne et dessine son écran."}},
+    {"type": "code", "lang": "json", "caption": {"en": "What AquaNode says (one status message)", "fr": "Ce que dit AquaNode (un message d’état)"},
+     "code": "{\"up\":3600,\"ph\":6.82,\"temp\":26.4,\"flow\":1.4,\"level\":1,\"pump\":87,\"aer\":1,\"dose\":0,\"heat\":0,\"mode\":\"AUTO\",\"alarm\":\"\"}"},
+    {"type": "p", "text": {
+      "en": "Read it aloud: *running for 3600 s, pH 6.82, 26.4 °C, 1.4 L/min, water level OK, pump at 87 %, air pump on, no dosing, no heating, AUTO mode, no alarm.* You now understand the language of the machine.",
+      "fr": "Lisez-la à voix haute : *en marche depuis 3600 s, pH 6,82, 26,4 °C, 1,4 L/min, niveau d’eau correct, pompe à 87 %, pompe à air en marche, pas de dosage, pas de chauffage, mode AUTO, aucune alarme.* Vous comprenez maintenant la langue de la machine."}},
+    {"type": "callout", "kind": "note", "title": {"en": "AUTO and MANUAL", "fr": "AUTO et MANUAL"}, "text": {
+      "en": "In **AUTO**, the firmware decides everything. In **MANUAL**, the phone commands the pump and the air pump, and after **30 minutes** AquaNode goes back to AUTO by itself. Nobody can forget it in MANUAL.",
+      "fr": "En **AUTO**, le firmware décide de tout. En **MANUAL**, le téléphone commande la pompe et la pompe à air, et après **30 minutes** AquaNode revient seul en AUTO. Personne ne peut l’oublier en MANUAL."}},
+    {"type": "callout", "kind": "warn", "title": {"en": "What AquaNode does not measure", "fr": "Ce qu’AquaNode ne mesure pas"}, "text": {
+      "en": "It does not measure nutrients (NPK), dissolved oxygen, ammonia or nitrate. Check the nutrients by hand with a test kit. A value that nobody measures can still be dangerous.",
+      "fr": "Il ne mesure ni les nutriments (NPK), ni l’oxygène dissous, ni l’ammoniac, ni le nitrate. Contrôlez les nutriments à la main avec un kit de test. Une valeur que personne ne mesure peut quand même être dangereuse."}}
+   ],
+   "sources": [
+    {"doc": "datasheet", "section": "Product Overview"},
+    {"doc": "datasheet", "section": "Features"},
+    {"doc": "datasheet", "section": "2.1 Pin Layout"},
+    {"doc": "datasheet", "section": "4.6.5 Wi-Fi MAC"},
+    {"doc": "datasheet", "section": "4.7 Bluetooth"},
+    {"doc": "hwdesign", "section": "Product Overview"},
+    {"doc": "ph4502c", "section": "Board pinout"},
+    {"doc": "ds18b20", "section": "Description and features"},
+    {"doc": "yfs201", "section": "Specifications"},
+    {"doc": "floatswitch", "section": "Float switch description"},
+    {"doc": "waterpump", "section": "Parameter specifications"},
+    {"doc": "airpump", "section": "Performance (voltage, current, flow)"},
+    {"doc": "dosingpump", "section": "Description and features"},
+    {"doc": "resistor_sqp", "section": "Ordering information and power rating"}
+   ]
+  },
+  {
+   "id": "p3",
+   "title": {"en": "A first look at the firmware", "fr": "Un premier regard sur le firmware"},
+   "blocks": [
+    {"type": "h", "id": "reading", "text": {"en": "2. Useful concepts (end): how to read code", "fr": "2. Notions utiles (fin) : comment lire du code"}},
+    {"type": "p", "text": {
+      "en": "The firmware is written in **C++**. You do not need to write any of it today, only to read it. Four rules are enough:",
+      "fr": "Le firmware est écrit en **C++**. Aujourd’hui, vous n’avez rien à écrire, seulement à lire. Quatre règles suffisent :"}},
+    {"type": "list", "items": [
+      {"en": "Text after `//` is a **comment**: it is for people. The chip never runs it.", "fr": "Le texte après `//` est un **commentaire** : il est pour les humains. La puce ne l’exécute jamais."},
+      {"en": "A **function** is a block of instructions with a name. Writing its name with parentheses, such as `begin()`, **calls** it: the chip goes and runs that block, then comes back.", "fr": "Une **fonction** est un bloc d’instructions qui porte un nom. Écrire son nom avec des parenthèses, comme `begin()`, c’est l’**appeler** : la puce va exécuter ce bloc, puis revient."},
+      {"en": "Instructions run **from top to bottom**, one after the other. Each one ends with `;`.", "fr": "Les instructions s’exécutent **de haut en bas**, l’une après l’autre. Chacune se termine par `;`."},
+      {"en": "`setup()` runs **once**, just after power-on. `loop()` then runs again and again.", "fr": "`setup()` s’exécute **une seule fois**, juste après la mise sous tension. `loop()` s’exécute ensuite sans fin."}
+    ]},
+    {"type": "p", "text": {
+      "en": "In `SensorManager::begin()`, the part before `::` is the name of a **module** (a piece of the firmware in its own files), and `begin()` is the function of that module that starts it.",
+      "fr": "Dans `SensorManager::begin()`, la partie avant `::` est le nom d’un **module** (un morceau du firmware dans ses propres fichiers), et `begin()` est la fonction de ce module qui le démarre."}},
+
+    {"type": "h", "id": "code", "text": {"en": "3. The code: how AquaNode wakes up", "fr": "3. Le code : comment AquaNode se réveille"}},
+    {"type": "p", "text": {
+      "en": "This is the real `setup()` of AquaNode. Read the comments on the right first: they tell the story with numbers from 1 to 8.",
+      "fr": "Voici le vrai `setup()` d’AquaNode. Lisez d’abord les commentaires à droite : ils racontent l’histoire avec des numéros de 1 à 8."}},
+    {"type": "code", "firmware": "src/main.cpp", "start": "void setup() {", "end": "}"},
+
+    {"type": "h", "id": "development", "text": {"en": "4. Development: the eight steps explained", "fr": "4. Développement : les huit étapes expliquées"}},
+    {"type": "table",
+     "head": [{"en": "Step", "fr": "Étape"}, {"en": "Module", "fr": "Module"}, {"en": "What it prepares", "fr": "Ce qu’il prépare"}],
+     "rows": [
+      ["1", "`SystemState`", {"en": "The shared memory where the other modules put and take values. All of them need it, so it comes first.", "fr": "La mémoire partagée où les autres modules déposent et prennent des valeurs. Tous en ont besoin : il vient donc en premier."}],
+      ["2", "`OutputManager`", {"en": "The **safe defaults**: air pump ON, water pump rising to 60 %, dosing OFF, heater OFF.", "fr": "Les **états sûrs par défaut** : pompe à air en marche, pompe à eau qui monte à 60 %, dosage arrêté, chauffage arrêté."}],
+      ["3", "`StorageManager`", {"en": "Reads the saved settings from the flash memory, which keeps them without power.", "fr": "Lit les réglages sauvegardés dans la mémoire flash, qui les garde sans courant."}],
+      ["4", "`SensorManager`", {"en": "Starts the sensors. A missing sensor is reported, but the machine goes on.", "fr": "Démarre les capteurs. Un capteur absent est signalé, mais la machine continue."}],
+      ["5", "`ControlManager`", {"en": "Loads the setpoints and enters AUTO mode.", "fr": "Charge les consignes et passe en mode AUTO."}],
+      ["6", "`SafetyManager`", {"en": "Checks the dangers (low water, sensor fault) for the first time.", "fr": "Vérifie les dangers (eau basse, défaut de capteur) pour la première fois."}],
+      ["7", "`CommManager`", {"en": "Opens the Wi-Fi network, the web server and Bluetooth.", "fr": "Ouvre le réseau Wi-Fi, le serveur web et le Bluetooth."}],
+      ["8", "`TaskManager`", {"en": "Starts the **tasks**: jobs that run side by side, such as sensing and safety.", "fr": "Lance les **tâches** : des travaux qui tournent côte à côte, comme la mesure et la sécurité."}]
+     ]},
+    {"type": "callout", "kind": "tip", "title": {"en": "The order is a safety decision", "fr": "L’ordre est une décision de sécurité"}, "text": {
+      "en": "The outputs (step 2) come **before** the sensors, the phone and everything that could be slow or fail. If a sensor is broken, the fish already have air. The phone link comes almost last, because the fish do not need a phone.",
+      "fr": "Les sorties (étape 2) passent **avant** les capteurs, le téléphone et tout ce qui peut être lent ou échouer. Si un capteur est en panne, les poissons ont déjà de l’air. La liaison avec le téléphone vient presque à la fin, car les poissons n’ont pas besoin d’un téléphone."}},
+    {"type": "p", "text": {
+      "en": "Two lines contain `if (!...) fatal(...)`. Read them as: *if this did not work, report it and restart*. Only steps 1 and 8 do it, because without shared memory or without tasks there is no machine at all.",
+      "fr": "Deux lignes contiennent `if (!...) fatal(...)`. Lisez-les ainsi : *si cela n’a pas marché, le signaler et redémarrer*. Seules les étapes 1 et 8 le font, car sans mémoire partagée ou sans tâches, il n’y a plus de machine du tout."}},
+
+    {"type": "h", "id": "platformio", "text": {"en": "5. Where it goes in PlatformIO", "fr": "5. Où cela se place dans PlatformIO"}},
+    {"type": "p", "text": {
+      "en": "**PlatformIO** is the tool that will turn our text files into a firmware and send it to the board. We install it in sub-lesson 3.1.7, so **there is nothing to type or to run yet**. Here is the project that will grow during the course. The file you have just read is marked.",
+      "fr": "**PlatformIO** est l’outil qui transformera nos fichiers texte en firmware et l’enverra à la carte. Nous l’installons à la sous-leçon 3.1.7 : **il n’y a donc encore rien à taper ni à exécuter**. Voici le projet qui grandira pendant le cours. Le fichier que vous venez de lire est indiqué."}},
+    {"type": "code", "lang": "plain", "caption": {"en": "The project folder", "fr": "Le dossier du projet"},
+     "code": "AquaNode_Firmware/\n├─ platformio.ini        settings of the project\n├─ include/              files shared by all modules\n│  ├─ config.h           pins, thresholds, times\n│  ├─ types.h\n│  └─ logger.h\n└─ src/\n   ├─ main.cpp           <-- you are here\n   ├─ e1_sensors/        Tab 3: the sensors\n   ├─ p3_outputs/        Tab 3: the pumps and other outputs\n   └─ e2_core/           Tab 4: the modules that join everything"},
+    {"type": "steps", "items": [
+      {"title": {"en": "In Tab 3", "fr": "Dans l’onglet 3"}, "text": {"en": "You write each module of `e1_sensors` and `p3_outputs`, and test it **alone** with a short program.", "fr": "Vous écrivez chaque module de `e1_sensors` et `p3_outputs`, et vous le testez **seul** avec un court programme."}},
+      {"title": {"en": "In Tab 4", "fr": "Dans l’onglet 4"}, "text": {"en": "You write the modules of `e2_core`, which join the others together.", "fr": "Vous écrivez les modules de `e2_core`, qui réunissent les autres."}},
+      {"title": {"en": "At the very end", "fr": "Tout à la fin"}, "text": {"en": "You write `main.cpp`, the `setup()` of this page, and AquaNode lives.", "fr": "Vous écrivez `main.cpp`, le `setup()` de cette page, et AquaNode prend vie."}}
+    ]}
+   ],
+   "sources": [
+    {"doc": "datasheet", "section": "Product Overview"}
+   ]
+  },
+  {
+   "id": "p4",
+   "title": {"en": "Pitfalls, safety and conclusion", "fr": "Pièges, sécurité et conclusion"},
+   "blocks": [
+    {"type": "h", "id": "pitfalls", "text": {"en": "6. Pitfalls and safety", "fr": "6. Pièges et sécurité"}},
+    {"type": "table",
+     "head": [{"en": "Pitfall", "fr": "Piège"}, {"en": "Why it is a problem", "fr": "Pourquoi c’est un problème"}, {"en": "What to do", "fr": "Que faire"}],
+     "rows": [
+      [{"en": "Adding fish too soon", "fr": "Mettre les poissons trop tôt"}, {"en": "The filter has no bacteria yet: ammonia rises.", "fr": "Le filtre n’a pas encore de bactéries : l’ammoniac monte."}, {"en": "Plain water first. Fish are not needed in this course.", "fr": "D’abord de l’eau claire. Les poissons ne sont pas nécessaires dans ce cours."}],
+      [{"en": "Correcting the pH quickly", "fr": "Corriger le pH trop vite"}, {"en": "A dose needs time to mix. Dosing again too early adds too much.", "fr": "Une dose met du temps à se mélanger. Redoser trop tôt en ajoute trop."}, {"en": "One dose, wait, measure again. The firmware also allows 4 doses per hour at most.", "fr": "Une dose, attendre, mesurer de nouveau. Le firmware limite aussi à 4 doses par heure."}],
+      [{"en": "Trusting one number", "fr": "Croire un seul nombre"}, {"en": "A dry probe or a loose wire can still give a number.", "fr": "Une sonde sèche ou un fil mal serré peut quand même donner un nombre."}, {"en": "Every measurement carries a *valid* flag. Compare with a second instrument.", "fr": "Chaque mesure porte un indicateur de *validité*. Comparez avec un second instrument."}],
+      [{"en": "Forgetting the power cut", "fr": "Oublier la coupure de courant"}, {"en": "No power means no pump and **no air**.", "fr": "Sans courant, plus de pompe et **plus d’air**."}, {"en": "Have a battery air pump before you leave fish alone.", "fr": "Prévoyez une pompe à air sur pile avant de laisser des poissons seuls."}],
+      [{"en": "Running the water pump without rest", "fr": "Faire tourner la pompe à eau sans repos"}, {"en": "Its datasheet says **8 hours per day at most**, with natural cooling.", "fr": "Sa fiche technique indique **8 heures par jour au maximum**, avec refroidissement naturel."}, {"en": "Feel its temperature during tests, and choose another pump for a system that never stops.", "fr": "Surveillez sa température pendant les essais, et choisissez une autre pompe pour un système qui ne s’arrête jamais."}]
+     ]},
+    {"type": "refs", "items": [{"doc": "waterpump", "section": "Technical requirement and dimensions"}]},
+    {"type": "callout", "kind": "warn", "title": {"en": "Water and electricity", "fr": "L’eau et l’électricité"}, "text": {
+      "en": "Our system uses low voltage only (19 V, 12 V, 5 V and 3.3 V), but water is everywhere. **Unplug the adapter before you touch a wire.** Keep the adapter and the box above the water, never on a wet floor. Never connect mains equipment, such as a real aquarium heater, without a residual-current device (RCD).",
+      "fr": "Notre système n’utilise que de basses tensions (19 V, 12 V, 5 V et 3,3 V), mais l’eau est partout. **Débranchez l’adaptateur avant de toucher un fil.** Gardez l’adaptateur et le boîtier au-dessus de l’eau, jamais sur un sol mouillé. Ne branchez jamais un appareil sur le secteur, comme un vrai chauffage d’aquarium, sans disjoncteur différentiel."}},
+    {"type": "callout", "kind": "note", "title": {"en": "A program can fail, so a switch protects the fish", "fr": "Un programme peut échouer : un interrupteur protège les poissons"}, "text": {
+      "en": "The air pump has a **bypass switch**. In the *always on* position, it runs even if the ESP32 has crashed. Good engineering never lets a life depend on one program.",
+      "fr": "La pompe à air possède un **interrupteur de dérivation**. En position *toujours en marche*, elle tourne même si l’ESP32 est planté. Une bonne conception ne laisse jamais une vie dépendre d’un seul programme."}},
+
+    {"type": "h", "id": "conclusion", "text": {"en": "7. Conclusion", "fr": "7. Conclusion"}},
+    {"type": "list", "items": [
+      {"en": "Aquaponics joins fish and plants in **one water that goes around**. Bacteria turn ammonia into nitrite, then nitrate, which feeds the plants.", "fr": "L’aquaponie réunit poissons et plantes dans **une seule eau qui tourne**. Les bactéries changent l’ammoniac en nitrite, puis en nitrate, qui nourrit les plantes."},
+      {"en": "The balance is fragile, so we watch **pH, temperature, flow and level**.", "fr": "L’équilibre est fragile : on surveille donc **le pH, la température, le débit et le niveau**."},
+      {"en": "AquaNode repeats one circle: **measure, decide, act**. It talks to a phone directly, without internet.", "fr": "AquaNode répète un cercle : **mesurer, décider, agir**. Il parle à un téléphone directement, sans internet."},
+      {"en": "Its firmware starts in eight steps, and **the safe outputs come before everything that can fail**.", "fr": "Son firmware démarre en huit étapes, et **les sorties sûres passent avant tout ce qui peut échouer**."}
+    ]},
+    {"type": "p", "text": {
+      "en": "Next, in 3.1.2, we follow the electricity: the adapter, the 12 V and 5 V rails, the sensors and the loads. But first, take the quiz.",
+      "fr": "Ensuite, en 3.1.2, nous suivrons l’électricité : l’adaptateur, les rails 12 V et 5 V, les capteurs et les charges. Mais d’abord, passez le quiz."}}
+   ],
+   "sources": [
+    {"doc": "waterpump", "section": "Technical requirement and dimensions"}
+   ]
+  }
+ ],
+ "quiz": {
+  "questions": [
+   {"id": "q1", "type": "single",
+    "prompt": {"en": "What turns the ammonia of the fish into nitrate that the plants can use?", "fr": "Qu’est-ce qui transforme l’ammoniac des poissons en nitrate utilisable par les plantes ?"},
+    "options": [
+     {"id": "a", "correct": true, "text": {"en": "Bacteria, mostly in the biological filter", "fr": "Des bactéries, surtout dans le filtre biologique"}},
+     {"id": "b", "text": {"en": "The dosing pump", "fr": "La pompe de dosage"}},
+     {"id": "c", "text": {"en": "The ESP32", "fr": "L’ESP32"}},
+     {"id": "d", "text": {"en": "The sediment tank", "fr": "Le décanteur"}}
+    ],
+    "explain": {"en": "Bacteria make nitrite from ammonia, then nitrate from nitrite. The sediment tank only stops solid waste.", "fr": "Des bactéries font du nitrite à partir de l’ammoniac, puis du nitrate. Le décanteur ne fait qu’arrêter les déchets solides."}},
+   {"id": "q2", "type": "order",
+    "prompt": {"en": "Follow the water: put the parts in order, starting from the fish tank.", "fr": "Suivez l’eau : mettez les éléments dans l’ordre, en partant du bac à poissons."},
+    "items": [
+     {"id": "fish", "text": {"en": "Fish tank", "fr": "Bac à poissons"}},
+     {"id": "sed", "text": {"en": "Sediment tank", "fr": "Décanteur"}},
+     {"id": "pump", "text": {"en": "Water pump", "fr": "Pompe à eau"}},
+     {"id": "bio", "text": {"en": "Biofilter", "fr": "Biofiltre"}},
+     {"id": "hydro", "text": {"en": "Hydroponic tank", "fr": "Bac hydroponique"}}
+    ],
+    "explain": {"en": "The solids sink first, the pump lifts the water to the biofilter, then it feeds the plants and falls back to the fish.", "fr": "Les solides coulent d’abord, la pompe monte l’eau au biofiltre, puis elle nourrit les plantes et retombe vers les poissons."}},
+   {"id": "q3", "type": "fill_blank",
+    "prompt": {"en": "Complete the text by tapping a word for each blank.", "fr": "Complétez le texte en touchant un mot pour chaque trou."},
+    "template": {
+     "en": "A {1} turns the water into numbers. The {2} compares them with the {3}, the value we want. Then an {4} changes the water.",
+     "fr": "Un {1} transforme l’eau en nombres. Le {2} les compare à la {3}, la valeur voulue. Puis un {4} modifie l’eau."},
+    "choices": [
+     {"id": "sensor", "text": {"en": "sensor", "fr": "capteur"}},
+     {"id": "firmware", "text": {"en": "firmware", "fr": "firmware"}},
+     {"id": "setpoint", "text": {"en": "setpoint", "fr": "consigne"}},
+     {"id": "actuator", "text": {"en": "actuator", "fr": "actionneur"}},
+     {"id": "alarm", "text": {"en": "alarm", "fr": "alarme"}},
+     {"id": "comment", "text": {"en": "comment", "fr": "commentaire"}}
+    ],
+    "blanks": {"1": "sensor", "2": "firmware", "3": "setpoint", "4": "actuator"},
+    "explain": {"en": "Measure (sensor), decide (firmware and setpoint), act (actuator): this circle is a control loop.", "fr": "Mesurer (capteur), décider (firmware et consigne), agir (actionneur) : ce cercle est une boucle de commande."}},
+   {"id": "q4", "type": "multi",
+    "prompt": {"en": "What does AquaNode measure? Choose all that apply.", "fr": "Que mesure AquaNode ? Choisissez toutes les bonnes réponses."},
+    "options": [
+     {"id": "a", "correct": true, "text": "pH"},
+     {"id": "b", "correct": true, "text": {"en": "Water temperature", "fr": "La température de l’eau"}},
+     {"id": "c", "correct": true, "text": {"en": "Flow", "fr": "Le débit"}},
+     {"id": "d", "correct": true, "text": {"en": "Water level", "fr": "Le niveau d’eau"}},
+     {"id": "e", "text": {"en": "Nutrients (NPK)", "fr": "Les nutriments (NPK)"}},
+     {"id": "f", "text": {"en": "Dissolved oxygen", "fr": "L’oxygène dissous"}}
+    ],
+    "explain": {"en": "AquaNode measures pH, temperature, flow and level. Nutrients are checked by hand with a test kit, and oxygen is not measured.", "fr": "AquaNode mesure le pH, la température, le débit et le niveau. Les nutriments se contrôlent à la main avec un kit de test, et l’oxygène n’est pas mesuré."}},
+   {"id": "q5", "type": "truefalse", "answer": false,
+    "prompt": {"en": "AquaNode needs an internet connection before a phone can talk to it.", "fr": "AquaNode a besoin d’une connexion internet pour qu’un téléphone puisse lui parler."},
+    "explain": {"en": "False. The ESP32 creates its own Wi-Fi network, AQUA-NODE, and also offers Bluetooth.", "fr": "Faux. L’ESP32 crée son propre réseau Wi-Fi, AQUA-NODE, et propose aussi le Bluetooth."}},
+   {"id": "q6", "type": "code_output",
+    "prompt": {"en": "Remember the reading rules. What does this code print?", "fr": "Rappelez-vous les règles de lecture. Qu’affiche ce code ?"},
+    "code": {"lang": "cpp", "text": "void setup() {\n  Serial.begin(115200);\n  Serial.println(\"outputs safe\");\n  // Serial.println(\"sensors\");\n  Serial.println(\"tasks\");\n}"},
+    "options": [
+     {"id": "a", "correct": true, "text": {"en": "outputs safe, then tasks", "fr": "outputs safe, puis tasks"}},
+     {"id": "b", "text": {"en": "outputs safe, then sensors, then tasks", "fr": "outputs safe, puis sensors, puis tasks"}},
+     {"id": "c", "text": {"en": "tasks, then outputs safe", "fr": "tasks, puis outputs safe"}},
+     {"id": "d", "text": {"en": "Nothing at all", "fr": "Rien du tout"}}
+    ],
+    "explain": {"en": "Instructions run from top to bottom, and the line after // is a comment: the chip never runs it.", "fr": "Les instructions s’exécutent de haut en bas, et la ligne après // est un commentaire : la puce ne l’exécute jamais."}},
+   {"id": "q7", "type": "single",
+    "prompt": {"en": "In setup(), why are the outputs started before the sensors?", "fr": "Dans setup(), pourquoi les sorties sont-elles démarrées avant les capteurs ?"},
+    "options": [
+     {"id": "a", "text": {"en": "Because sensors use more electricity", "fr": "Parce que les capteurs consomment plus d’électricité"}},
+     {"id": "b", "correct": true, "text": {"en": "So that the safe defaults hold even if a sensor is slow or broken", "fr": "Pour que les états sûrs soient en place même si un capteur est lent ou en panne"}},
+     {"id": "c", "text": {"en": "Because the phone asks for it", "fr": "Parce que le téléphone le demande"}},
+     {"id": "d", "text": {"en": "The order makes no difference", "fr": "L’ordre ne change rien"}}
+    ],
+    "explain": {"en": "The air pump must run and the dosing pump must stay off as early as possible, whatever happens to the sensors.", "fr": "La pompe à air doit tourner et la pompe de dosage rester arrêtée le plus tôt possible, quoi qu’il arrive aux capteurs."}},
+   {"id": "q8", "type": "truefalse", "answer": true,
+    "prompt": {"en": "Right after a reset, the air pump is ON and the dosing pump is OFF.", "fr": "Juste après une réinitialisation, la pompe à air est en marche et la pompe de dosage est arrêtée."},
+    "explain": {"en": "True. These are the safe defaults, with the water pump rising to 60 % and the heater OFF.", "fr": "Vrai. Ce sont les états sûrs par défaut, avec la pompe à eau qui monte à 60 % et le chauffage arrêté."}}
+  ]
+ }
+}

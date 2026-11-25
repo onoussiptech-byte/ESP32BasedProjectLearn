@@ -256,6 +256,28 @@
       alt: I18n.pick(f.alt), width: f.w, height: f.h, decoding: 'async' });
   }
 
+  // A link to the exact page of a reference document. The documents travel with the app (docs/), except in the single file.
+  function docLink(label, url) {
+    if (window.ESP32TOUR_SINGLE) return h('span', { class: 'doc-name' }, label);
+<<<<<<< Updated upstream
+    return h('a', { class: 'doc-link', href: url, target: '_blank', rel: 'noopener', onclick: (e) => {
+      if (window.PdfView && PdfView.wanted()) { e.preventDefault(); PdfView.open(url, label); }     // phones: inside the app, at that page
+    } }, label);
+=======
+    return h('a', { class: 'doc-link', href: url, target: '_blank', rel: 'noopener' }, label);
+>>>>>>> Stashed changes
+  }
+
+  // A lesson picture with its caption and the page it comes from; a click shows it large
+  function figureBlock(name, caption) {
+    const f = window.ESP32TOUR_COURSE.figures[name];
+    const open = h('button', { class: 'fig-open', type: 'button', 'aria-label': t('fig.enlarge'), title: t('fig.enlarge'), onclick: () => {
+      const m = modal({ title: I18n.pick(f.alt), body: figure(name, 'fig-big') }); m.el.classList.add('modal-wide');
+    } }, figure(name));
+    return h('figure', { class: 'fig' }, open, h('figcaption', null, caption,
+      f.doc ? h('span', { class: 'fig-src' }, docLink(t('src.' + f.doc) + ' · ' + t('learn.page.short', { n: f.page }), f.url)) : null));
+  }
+
   // Syntax-highlighted code (Prism builds escaped markup; unknown languages fall back to plain text)
   function codeBlock(lang, code, caption) {
     const el = h('code', { class: 'language-' + lang });
@@ -271,5 +293,5 @@
       h('pre', { class: 'code-pre', tabindex: '0' }, el));
   }
 
-  window.UI = { h, icon, statusIcon, statusLabel, counter, ring, floatDelta, toast, modal, field, button, langSwitch, logo, reduced, fmt, inline, codeBlock, figure };
+  window.UI = { h, icon, statusIcon, statusLabel, counter, ring, floatDelta, toast, modal, field, button, langSwitch, logo, reduced, fmt, inline, codeBlock, figure, figureBlock, docLink };
 })();

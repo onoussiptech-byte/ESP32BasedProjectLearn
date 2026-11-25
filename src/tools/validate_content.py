@@ -18,7 +18,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 LANGS = ("en", "fr")
-BLOCKS = {"p", "h", "list", "facts", "table", "callout", "flow", "steps", "code"}
+BLOCKS = {"p", "h", "list", "facts", "table", "callout", "flow", "steps", "code", "figure", "gallery", "refs"}
+LOCAL_TABS = ("t3.", "t4.")                              # their document links open the PDFs carried in docs/
 CODE_LANGS = {"c", "cpp", "bash", "ini", "json", "markup", "powershell", "python", "plain"}
 CALLOUTS = {"tip", "note", "warn"}
 QTYPES = {"single", "multi", "truefalse", "code_output", "fill_blank", "order"}
@@ -135,7 +136,41 @@ def squash(s):
     return re.sub(r"[^a-z0-9]+", "", s.lower())
 
 
-def resolve_source(c, where, src, refs):
+def load_figures():
+    return json.loads((SRC / "references" / "figures.json").read_text(encoding="utf-8"))["figures"]
+
+
+def firmware_code(c, where, b, taught):
+    """Fill a code block from src/firmware: {"firmware": "src/main.cpp", "start": "text of the first line", "end": "... last line"}.
+    The lessons can therefore never show code that differs from the firmware. Returns nothing; b gets code, lang, caption."""
+    f = SRC / "firmware" / b["firmware"]
+    if not f.is_file():
+        c.err(where, f"firmware file not found: {b['firmware']}")
+        return
+    lines = f.read_text(encoding="utf-8").replace("\r\n", "\n").rstrip("\n").split("\n")
+    first = [0] if b.get("start") is None else [i for i, x in enumerate(lines) if b["start"] in x]
+    if len(first) != 1:
+        c.err(where, f"'start' must match exactly one line of {b['firmware']} ({len(first)} found)")
+        return
+    a = first[0]
+    z = len(lines) - 1 if b.get("end") is None else next((i for i in range(a, len(lines)) if b["end"] in lines[i]), None)
+    if z is None:
+        c.err(where, f"'end' not found after 'start' in {b['firmware']}")
+        return
+    taught.setdefault(b["firmware"], set()).update(range(a, z + 1))
+    b["code"] = "\n".join(lines[a:z + 1])
+    b.setdefault("lang", "ini" if f.suffix == ".ini" else "cpp")
+<<<<<<< Updated upstream
+    b["caption"] = ({"en": f"{b['firmware']}, line {a + 1}", "fr": f"{b['firmware']}, ligne {a + 1}"} if a == z else
+                    {"en": f"{b['firmware']}, lines {a + 1} to {z + 1}", "fr": f"{b['firmware']}, lignes {a + 1} à {z + 1}"})
+=======
+    b["caption"] = {"en": f"{b['firmware']}, lines {a + 1} to {z + 1}", "fr": f"{b['firmware']}, lignes {a + 1} à {z + 1}"}
+>>>>>>> Stashed changes
+    for k in ("firmware", "start", "end"):
+        b.pop(k, None)
+
+
+def resolve_source(c, where, src, refs, local=False):
     doc = src.get("doc")
     if doc != "arduino" and "sections" in refs.get(doc, {}):          # one of the PDFs in docs/
         ref = refs.get(doc)
@@ -154,6 +189,8 @@ def resolve_source(c, where, src, refs):
         if text is not None and squash(re.sub(r"^[\d.]+\s*", "", s["title"])) not in squash(text):
             c.err(where, f"heading {s['title']!r} is not on PDF page {page} (the index says {s['page']}): "
                          f"look it up and add \"pdf_page\": N to this source")
+        if local:                                                # the PDF travels with the app
+            return {"doc": doc, "section": s["title"], "page": page, "local": True, "url": f"docs/{quote(ref['file'])}#page={page}"}
         return {"doc": doc, "section": s["title"], "page": page,
                 "url": f"{ref['url'] or 'docs/' + quote(ref['file'])}#page={page}"}
     if doc == "arduino":
@@ -172,6 +209,13 @@ def resolve_source(c, where, src, refs):
         return {"doc": doc, "section": page["title"], "page": None, "url": page["url"], "title": page["title"]}
     c.err(where, f"unknown source doc {doc!r}")
     return None
+
+
+def check_figure(c, where, name, figs):
+    if name not in figs:
+        c.err(where, f"unknown picture {name!r} (see src/references/figures.json)")
+    elif not (SRC / "assets" / "figures" / f"{name}.webp").is_file():
+        c.err(where, f"picture file missing: {name}.webp")
 
 
 def check_block(c, where, b, ids):
@@ -226,6 +270,22 @@ def check_block(c, where, b, ids):
             bilingual(c, f"{where}.items[{k}].text", it.get("text"))
             if t == "flow" and it.get("icon") and it["icon"] not in build_icons():
                 c.err(f"{where}.items[{k}]", f"icon {it['icon']!r} is not in ICONS in src/build.py (add it there)")
+    if t == "figure":
+        check_figure(c, where, b.get("name"), load_figures())
+        bilingual(c, where + ".caption", b.get("caption"))
+    if t == "gallery":
+        items = b.get("items", [])
+        if not 2 <= len(items) <= 12:
+            c.err(where, "gallery needs 2 to 12 items")
+        for k, it in enumerate(items):
+            if it.get("name"):
+                check_figure(c, f"{where}.items[{k}]", it["name"], load_figures())
+            elif it.get("icon") not in build_icons():
+                c.err(f"{where}.items[{k}]", "needs a picture 'name', or an 'icon' of src/build.py")
+            bilingual(c, f"{where}.items[{k}].title", it.get("title"))
+            bilingual(c, f"{where}.items[{k}].text", it.get("text"))
+    if t == "refs" and not b.get("items"):
+        c.err(where, "refs needs 'items'")
     if t == "code":
         if b.get("lang", "plain") not in CODE_LANGS:
             c.err(where, f"code lang must be one of {sorted(CODE_LANGS)}")
@@ -320,7 +380,7 @@ def validate(verbose=False):
         for ls in tb.get("lessons", []):
             lessons[f"{tb['id']}.{ls['id']}"] = ls
     files = sorted((SRC / "content").rglob("*.json")) if (SRC / "content").exists() else []
-    contents, known = {}, set()
+    contents, known, taught = {}, set(), {}
     for f in files:
         rel = f.relative_to(SRC / "content").with_suffix("")
         parts = rel.parts
@@ -370,12 +430,22 @@ def validate(verbose=False):
             if not p.get("blocks"):
                 c.err(pw, "page has no blocks")
             ids = set()
+            local = cid.startswith(LOCAL_TABS)
             for k, b in enumerate(p.get("blocks", [])):
+                bw = f"{pw}.blocks[{k}]"
+                if b.get("type") == "code" and b.get("firmware"):
+                    firmware_code(c, bw, b, taught)
+                if b.get("type") == "refs":
+                    b["items"] = [r for r in (resolve_source(c, bw, s, refs, local) for s in b.get("items", [])) if r]
+                if b.get("type") == "gallery":
+                    for it in b.get("items", []):
+                        if it.get("ref"):
+                            it["ref"] = resolve_source(c, bw, it["ref"], refs, local)
                 check_block(c, f"{pw}.blocks[{k}]", b, ids)
             sections[p.get("id")] = ids
             resolved = []
             for k, s in enumerate(p.get("sources", [])):
-                r = resolve_source(c, f"{pw}.sources[{k}]", s, refs)
+                r = resolve_source(c, f"{pw}.sources[{k}]", s, refs, local)
                 if r:
                     resolved.append(r)
             if not p.get("sources"):
@@ -420,6 +490,9 @@ def validate(verbose=False):
                 c.err(cid, f"banned words found: {hits}")
         if verbose:
             print(f"  {cid}: {len(pages)} pages, {len(qs)} questions, types {sorted(types)}")
+    if taught:
+        man = json.loads((SRC / "firmware" / "manifest.json").read_text(encoding="utf-8"))
+        NOTES.append(f"firmware shown in the lessons so far: {sum(map(len, taught.values()))} of {sum(m['lines'] for m in man.values())} lines")
     return contents, c.errors, c.warnings
 
 
@@ -427,6 +500,9 @@ def main():
     contents, errors, warnings = validate(verbose=True)
     for w in warnings:
         print("warning:", w)
+    for n in NOTES:
+        if n != "pypdf":
+            print("note:", n)
     if "pypdf" in NOTES:
         print("note: pypdf is not installed here, so cited page numbers were not checked against the PDFs "
               "(pip install pypdf to enable the check)")

@@ -25,6 +25,11 @@ import sys
 import tempfile
 import time
 from pathlib import Path
+<<<<<<< Updated upstream
+from urllib.parse import quote, unquote
+=======
+from urllib.parse import quote
+>>>>>>> Stashed changes
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
@@ -33,7 +38,7 @@ APP = DIST / "ESP32_Tour"
 SINGLE = DIST / "ESP32_Tour_single.html"
 PAGES_BRANCH = "gh-appages"                               # the branch GitHub Pages serves
 # only the app's own files go to the phones: anything else sitting in the folder (docs, a saved copy...) stays out
-PAGES_KEEP = ("app", "content", "data", "figures", "fonts", "icons", "licenses", "index.html", "manifest.webmanifest", "sw.js")
+PAGES_KEEP = ("app", "content", "data", "figures", "fonts", "icons", "licenses", "pdfjs", "index.html", "manifest.webmanifest", "sw.js")
 EMPTY_ACCOUNTS = 'window.ESP32TOUR_DATA={"format":1,"accounts":[],"deleted":[]};\n'
 
 ICONS = """cpu layout-dashboard book-open workflow user users user-plus log-in log-out settings languages
@@ -43,13 +48,13 @@ play hourglass arrow-left arrow-right chevron-right chevron-left menu list corne
 external-link lightbulb triangle-alert flag refresh-cw circle-check circle-x layers graduation-cap
 file-text list-checks construction rocket book-marked panel-left circle-help
 house fish user-cog arrow-left-right boxes blocks recycle sprout droplets droplet thermometer waves ruler wind
-flask-conical""".split()
+flask-conical zoom-in zoom-out plug zap""".split()
 
-FIGURES = ("aquaponics-cycle",)                           # pictures of src/assets/figures/ that the app shows
+DASH_FIGURES = ("aquaponics-cycle",)                      # pictures shown outside the lessons (the lessons name their own)
 
 # Load order. "../data/accounts.js" is the carried-along accounts file (never cache-busted).
 SCRIPTS = ["icons.js", "prism.js", "course.js", "../data/accounts.js", "crypto.js", "i18n.js", "store.js", "ui.js",
-           "auth.js", "dashboard.js", "quiz.js", "lessons.js", "overview.js", "app.js", "pwa.js"]
+           "auth.js", "dashboard.js", "quiz.js", "pdfview.js", "lessons.js", "overview.js", "app.js", "pwa.js"]
 GENERATED = ("icons.js", "prism.js", "course.js")
 PRISM_FILES = ["core", "clike", "markup", "c", "cpp", "bash", "ini", "json", "powershell", "python"]  # order matters (cpp needs c)
 
@@ -68,6 +73,44 @@ FONTS_LINK = '<link rel="stylesheet" href="app/fonts.css">'
 STYLES_LINK = '<link rel="stylesheet" href="app/styles.css?v={{VERSION}}">'
 
 
+def used_figures(contents):
+    """Pictures the app shows: those of the lessons and of the Dashboard."""
+    names = set(DASH_FIGURES)
+    for d in contents.values():
+        for p in d["pages"]:
+            for b in p["blocks"]:
+                if b["type"] == "figure":
+                    names.add(b["name"])
+                elif b["type"] == "gallery":
+                    names.update(it["name"] for it in b["items"] if it.get("name"))
+    return sorted(names)
+
+
+<<<<<<< Updated upstream
+def cited_docs(contents):
+    """The documents the lessons and their pictures link to: the phones carry these (the PC build carries all of them)."""
+    urls = []
+    for d in contents.values():
+        for p in d["pages"]:
+            urls += [s["url"] for s in p["sources"] if s.get("local")]
+            for b in p["blocks"]:
+                if b["type"] == "refs":
+                    urls += [s["url"] for s in b["items"]]
+                elif b["type"] == "gallery":
+                    urls += [it["ref"]["url"] for it in b["items"] if it.get("ref")]
+    figs = json.loads((SRC / "references" / "figures.json").read_text(encoding="utf-8"))["figures"]
+    names = {unquote(u.split("#")[0])[len("docs/"):] for u in urls}
+    names |= {figs[n]["file"] for n in used_figures(contents) if figs[n].get("doc")}
+    return sorted(names)
+
+
+def pdfjs_files():
+    root = SRC / "assets" / "vendor" / "pdfjs"
+    return sorted(p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file())
+
+
+=======
+>>>>>>> Stashed changes
 def icons_js():
     out = {}
     for name in ICONS:
@@ -106,7 +149,18 @@ def course_data(contents):
     course["rules"].pop("banned_words_tabs_1_2", None)          # author-only
     course["available"] = sorted(contents)                      # ids that have lesson content (t1.l01.s01 ...)
     figs = json.loads((SRC / "references" / "figures.json").read_text(encoding="utf-8"))["figures"]
-    course["figures"] = {n: {k: figs[n][k] for k in ("alt", "w", "h")} for n in FIGURES}
+    course["figures"] = {}
+    for n in used_figures(contents):
+        f = course["figures"][n] = {k: figs[n][k] for k in ("alt", "w", "h")}
+        if figs[n].get("doc"):                                   # a picture taken from a document: link to its page
+            f.update(doc=figs[n]["doc"], page=figs[n]["page"], url=f"docs/{quote(figs[n]['file'])}#page={figs[n]['page']}")
+<<<<<<< Updated upstream
+    docs, viewer = cited_docs(contents), pdfjs_files()            # what a phone stores for reading documents offline
+    course["store"] = ["docs/" + quote(n) for n in docs] + ["pdfjs/" + n for n in viewer]
+    course["storeBytes"] = (sum((ROOT / "docs" / n).stat().st_size for n in docs)
+                            + sum((SRC / "assets" / "vendor" / "pdfjs" / n).stat().st_size for n in viewer))
+=======
+>>>>>>> Stashed changes
     js = "window.ESP32TOUR_COURSE=" + js_json(course) + ";\n"
     return js, course
 
@@ -116,10 +170,10 @@ def content_js(cid, data):
             f'window.ESP32TOUR_CONTENT["{cid}"]=' + js_json(data) + ";\n")
 
 
-def figures_js():
+def figures_js(contents):
     """The pictures as data, for the single file only (the folder build has them in figures/)."""
     data = {n: "data:image/webp;base64," + base64.b64encode((SRC / "assets" / "figures" / f"{n}.webp").read_bytes()).decode()
-            for n in FIGURES}
+            for n in used_figures(contents)}
     return "window.ESP32TOUR_FIGURES=" + json.dumps(data, separators=(",", ":")) + ";\n"
 
 
@@ -163,9 +217,9 @@ def build_folder(course, version, icons, course_js, prism, contents):
     for old in (APP / "content").glob("*.js"):                    # drop content that no longer exists
         old.unlink()
     for old in (APP / "figures").glob("*.webp"):                  # and pictures no longer used
-        if old.stem not in FIGURES:
+        if old.stem not in used_figures(contents):
             old.unlink()
-    for n in FIGURES:
+    for n in used_figures(contents):
         shutil.copyfile(SRC / "assets" / "figures" / f"{n}.webp", APP / "figures" / f"{n}.webp")
     for cid, data in contents.items():
         (APP / "content" / f"{cid}.js").write_text(content_js(cid, data), encoding="utf-8")
@@ -194,6 +248,22 @@ def build_folder(course, version, icons, course_js, prism, contents):
         acc.write_text(EMPTY_ACCOUNTS, encoding="utf-8")
     for lic in (ROOT / "licenses").glob("*.txt"):
         shutil.copy(lic, APP / "licenses" / lic.name)
+
+<<<<<<< Updated upstream
+    if (APP / "pdfjs").exists():
+        remove_tree(APP / "pdfjs")
+    copy_plain(SRC / "assets" / "vendor" / "pdfjs", APP / "pdfjs")
+
+=======
+>>>>>>> Stashed changes
+    # The reference documents (PDF) travel with the PC build: lesson links open their exact page with no internet
+    refs = json.loads((SRC / "references" / "index.json").read_text(encoding="utf-8"))
+    for ref in refs.values():
+        src, dst = ROOT / "docs" / ref["file"], APP / "docs" / ref["file"]
+        if not src.exists():
+            sys.exit(f"missing document: {src}")
+        if not dst.exists() or dst.stat().st_size != src.stat().st_size:
+            shutil.copyfile(src, dst)
 
     # Service worker: pre-caches exactly the app's own files (not licences, not docs)
     files = ["./", "index.html", "manifest.webmanifest"]
@@ -225,9 +295,9 @@ def remove_tree(path):
     shutil.rmtree(path, onerror=clear_flag_and_retry)
 
 
-def fill_pwa(dest):
-    """Write the phone/PWA version into dest: the app's own files (PAGES_KEEP), an EMPTY accounts file and
-    .nojekyll. Anything else in dest (such as a .git folder) is left alone."""
+def fill_pwa(dest, contents):
+    """Write the phone/PWA version into dest: the app's own files (PAGES_KEEP), the documents the lessons link to,
+    an EMPTY accounts file and .nojekyll. Anything else in dest (such as a .git folder) is left alone."""
     for name in PAGES_KEEP:
         src, target = APP / name, dest / name
         if not src.exists():
@@ -237,11 +307,16 @@ def fill_pwa(dest):
         elif target.exists():
             target.unlink()
         copy_plain(src, target)
+    if (dest / "docs").exists():
+        remove_tree(dest / "docs")
+    (dest / "docs").mkdir()
+    for n in cited_docs(contents):
+        shutil.copyfile(ROOT / "docs" / n, dest / "docs" / n)
     (dest / "data" / "accounts.js").write_text(EMPTY_ACCOUNTS, encoding="utf-8")   # never publish anyone's accounts
     (dest / ".nojekyll").write_text("", encoding="utf-8")
 
 
-def export_pwa(dest):
+def export_pwa(dest, contents):
     """--pwa-into: put the phone files into a folder you name (normally the gh-appages checkout). No git is run:
     you commit and push yourself. Refuses a folder that holds the source (src/), so it can never overwrite main."""
     dest = Path(dest).resolve()
@@ -249,7 +324,7 @@ def export_pwa(dest):
         sys.exit(f"{dest} is not a folder")
     if dest == APP.resolve() or (dest / "src").exists():
         sys.exit(f"{dest} holds the source or the PC build: pick the folder where the {PAGES_BRANCH} branch is checked out")
-    fill_pwa(dest)
+    fill_pwa(dest, contents)
     n = sum(1 for p in dest.rglob("*") if p.is_file() and ".git" not in p.relative_to(dest).parts)
     print(f"  pwa     {dest}  ({n} files, empty accounts file; no git command was run)")
 
@@ -261,7 +336,7 @@ def git(*args, cwd=ROOT):
     return r.stdout.strip()
 
 
-def publish(version, message, push):
+def publish(version, message, push, contents):
     """Put the PWA files on the gh-appages branch. The branch is checked out into a temporary work folder (so the
     project folder and main are never touched), its content is replaced by the app's own files with an EMPTY
     accounts file, then committed and pushed. Nothing is written to dist/ for the phones."""
@@ -283,7 +358,7 @@ def publish(version, message, push):
         for p in work.iterdir():                                 # the branch holds the app files and nothing else
             if p.name != ".git":
                 shutil.rmtree(p) if p.is_dir() else p.unlink()
-        fill_pwa(work)
+        fill_pwa(work, contents)
         git("add", "-A", cwd=work)
         if not git("status", "--porcelain", cwd=work):
             print(f"  publish {PAGES_BRANCH}: already up to date, nothing to commit")
@@ -319,14 +394,14 @@ def build_single(course_js, icons, prism, contents, version):
     css = fonts_css(True) + (SRC / "templates" / "styles.css").read_text(encoding="utf-8")
     parts = ['<script>window.ESP32TOUR_SINGLE=true;</script>']
     for s in SCRIPTS:
-        if s == "pwa.js":
-            continue                                       # no service worker in the single file
+        if s in ("pwa.js", "pdfview.js"):
+            continue                                       # no service worker and no documents in the single file
         if s == "icons.js":
             body = icons
         elif s == "prism.js":                              # "<!--" then "<script" would confuse the HTML parser inline
             body = prism.replace("<!--", "\\x3C!--").replace("<script", "\\x3Cscript")
         elif s == "course.js":
-            body = course_js + figures_js() + "".join(content_js(cid, d) for cid, d in contents.items())   # lessons travel inside the file
+            body = course_js + figures_js(contents) + "".join(content_js(cid, d) for cid, d in contents.items())   # lessons travel inside the file
         elif s.startswith("../"):
             parts.append('<script id="accounts-data">' + EMPTY_ACCOUNTS + '</script>')
             continue
@@ -363,13 +438,16 @@ def main():
     icons, prism = icons_js(), prism_js()
     build_folder(course, version, icons, course_js, prism, contents)
     build_single(course_js, icons, prism, contents, version)
+    for n in validate_content.NOTES:
+        if n != "pypdf":
+            print("note:", n)
     print(f"version {version}  ({len(contents)} lesson content file(s))")
     print(f"  folder  {APP}")
     print(f"  single  {SINGLE}  ({SINGLE.stat().st_size // 1024} KB)")
     if args.pwa_into:
-        export_pwa(args.pwa_into)
+        export_pwa(args.pwa_into, contents)
     if args.publish:
-        publish(version, args.message or f"Publish ESP32 Tour v{version} (PWA build)", push=not args.no_push)
+        publish(version, args.message or f"Publish ESP32 Tour v{version} (PWA build)", push=not args.no_push, contents=contents)
 
 
 if __name__ == "__main__":
