@@ -33934,6 +33934,32 @@
    }
   ]
  },
+ "dfrobotph": {
+  "file": "DFRobot_SEN0161-V2_pH_sensor.pdf",
+  "title": "DFRobot SEN0161-V2 pH sensor page",
+  "url": null,
+  "pages": 3,
+  "sections": [
+   {
+    "title": "Specification",
+    "depth": 0,
+    "page": 1,
+    "manual": true
+   },
+   {
+    "title": "Pinout",
+    "depth": 0,
+    "page": 2,
+    "manual": true
+   },
+   {
+    "title": "FAQ",
+    "depth": 0,
+    "page": 2,
+    "manual": true
+   }
+  ]
+ },
  "yfs201": {
   "file": "yf-s201_sea.pdf",
   "title": "YF-S201 flow sensor datasheet",

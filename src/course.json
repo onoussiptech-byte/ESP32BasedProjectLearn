@@ -3,7 +3,7 @@
   "short_name": "ESP32 Tour",
   "long_name": {"en": "ESP32 Tutorial Guide: From Beginner to Professional",
                 "fr": "Guide tutoriel ESP32 : du débutant au professionnel"},
-  "version": "0.7.1",
+  "version": "0.7.2",
   "languages": ["en", "fr"],
   "arduino_core_taught": "3.3.x (what PlatformIO espressif32 installs); notes where 4.0 differs"
  },

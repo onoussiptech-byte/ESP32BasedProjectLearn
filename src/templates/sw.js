@@ -1,13 +1,19 @@
 /* ESP32 Tour service worker. It only makes the app's OWN files available offline.
  * - Files listed below: served from the cache first (works with no connection).
  * - Anything else (other origins, online links, POSTs): passed straight through, never touched or blocked.
- * - A new version waits until the person taps "Reload" in the "Update available" message. */
+ * - A new version waits until the app asks for it: at start, or when the person taps "Reload". Versions up to 0.7.1
+ *   only had the message, so a new version takes over from them by itself. */
 const CACHE = 'esp32tour-v{{VERSION}}';
 const DOCS = 'esp32tour-docs-1';        // documents and PDF viewer: kept when the app is updated, not downloaded again
 const FILES = {{FILES}};
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES.map((f) => new Request(f, { cache: 'reload' })))));   // 'reload': never an old copy from the browser's own cache; no skipWaiting: the person decides
+  event.waitUntil((async () => {
+    const c = await caches.open(CACHE);
+    await c.addAll(FILES.map((f) => new Request(f, { cache: 'reload' })));   // 'reload': never an old copy from the browser's own cache
+    const keys = await caches.keys();
+    if (keys.some((k) => /^esp32tour-v0\.([0-6]\.\d+|7\.[01])$/.test(k))) await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate', (event) => {
