@@ -2,7 +2,7 @@
  * - Files listed below: served from the cache first (works with no connection).
  * - Anything else (other origins, online links, POSTs): passed straight through, never touched or blocked.
  * - A new version waits until the person taps "Reload" in the "Update available" message. */
-const CACHE = 'esp32tour-v0.7.0';
+const CACHE = 'esp32tour-v0.7.1';
 const DOCS = 'esp32tour-docs-1';        // documents and PDF viewer: kept when the app is updated, not downloaded again
 const FILES = [
  "./",
