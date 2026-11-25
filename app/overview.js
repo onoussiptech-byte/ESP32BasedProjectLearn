@@ -86,7 +86,23 @@
       h('div', { class: 'set-row' }, h('h3', null, t('settings.language')),
         seg('lang', t('settings.language'), ['en', 'fr'], I18n.lang, act.setLang, (l) => [icon('languages'), l === 'en' ? 'English' : 'Français']),
         h('p', { class: 'note' }, t('settings.language.hint'))),
-      window.DocStore && DocStore.supported ? docsRow() : null));
+      window.DocStore && DocStore.supported ? docsRow() : null,
+      window.AppUpdate && AppUpdate.supported ? updateRow() : null));
+  }
+
+  // installed app: which version is this, and is there a newer one?
+  function updateRow() {
+    const state = h('p', { class: 'note' }, t('settings.update.version', { v: Store.VERSION }));
+    const btn = UI.button(t('settings.update.btn'), { kind: 'ghost', icon: 'refresh-cw', onclick: async () => {
+      btn.setBusy(true); state.textContent = t('settings.update.checking');
+      try {
+        const r = await AppUpdate.check();
+        state.textContent = t('settings.update.' + r, { v: Store.VERSION });
+        if (r === 'found') await AppUpdate.apply();
+      } catch (e) { state.textContent = t('settings.update.err', { site: location.host }); }
+      btn.setBusy(false);
+    } });
+    return h('div', { class: 'set-row' }, h('h3', null, t('settings.update')), state, btn);
   }
 
   // phones: are the reference documents stored on this device?
