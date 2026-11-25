@@ -25,11 +25,7 @@ import sys
 import tempfile
 import time
 from pathlib import Path
-<<<<<<< Updated upstream
 from urllib.parse import quote, unquote
-=======
-from urllib.parse import quote
->>>>>>> Stashed changes
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
@@ -86,7 +82,6 @@ def used_figures(contents):
     return sorted(names)
 
 
-<<<<<<< Updated upstream
 def cited_docs(contents):
     """The documents the lessons and their pictures link to: the phones carry these (the PC build carries all of them)."""
     urls = []
@@ -109,8 +104,6 @@ def pdfjs_files():
     return sorted(p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file())
 
 
-=======
->>>>>>> Stashed changes
 def icons_js():
     out = {}
     for name in ICONS:
@@ -154,13 +147,10 @@ def course_data(contents):
         f = course["figures"][n] = {k: figs[n][k] for k in ("alt", "w", "h")}
         if figs[n].get("doc"):                                   # a picture taken from a document: link to its page
             f.update(doc=figs[n]["doc"], page=figs[n]["page"], url=f"docs/{quote(figs[n]['file'])}#page={figs[n]['page']}")
-<<<<<<< Updated upstream
     docs, viewer = cited_docs(contents), pdfjs_files()            # what a phone stores for reading documents offline
     course["store"] = ["docs/" + quote(n) for n in docs] + ["pdfjs/" + n for n in viewer]
     course["storeBytes"] = (sum((ROOT / "docs" / n).stat().st_size for n in docs)
                             + sum((SRC / "assets" / "vendor" / "pdfjs" / n).stat().st_size for n in viewer))
-=======
->>>>>>> Stashed changes
     js = "window.ESP32TOUR_COURSE=" + js_json(course) + ";\n"
     return js, course
 
@@ -249,13 +239,10 @@ def build_folder(course, version, icons, course_js, prism, contents):
     for lic in (ROOT / "licenses").glob("*.txt"):
         shutil.copy(lic, APP / "licenses" / lic.name)
 
-<<<<<<< Updated upstream
     if (APP / "pdfjs").exists():
         remove_tree(APP / "pdfjs")
     copy_plain(SRC / "assets" / "vendor" / "pdfjs", APP / "pdfjs")
 
-=======
->>>>>>> Stashed changes
     # The reference documents (PDF) travel with the PC build: lesson links open their exact page with no internet
     refs = json.loads((SRC / "references" / "index.json").read_text(encoding="utf-8"))
     for ref in refs.values():

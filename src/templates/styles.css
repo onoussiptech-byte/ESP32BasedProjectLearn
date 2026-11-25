@@ -443,7 +443,6 @@ button.chip-link:hover { background: var(--blue-100); transform: translateY(-1px
 .doc-link { color: var(--blue-600); font-weight: 600; text-decoration: none; } .doc-link:hover { text-decoration: underline; } .doc-name { font-weight: 600; }
 .refs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0 16px; font-size: 13px; color: var(--muted); } .refs > .ic { color: var(--blue-500); width: 16px; height: 16px; } .refs-label { font-weight: 600; }
 .ref-chip { background: var(--blue-50); border: 1px solid var(--blue-100); border-radius: 999px; padding: 3px 11px; } .ref-chip .doc-link { font-weight: 500; }
-<<<<<<< Updated upstream
 .pdf-open, .pdf-open body { overflow: hidden; }
 .pdf-view { position: fixed; inset: 0; z-index: 95; display: flex; flex-direction: column; background: var(--bg); animation: fade-in .18s both; }
 .pdf-head, .pdf-foot { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--card); border-bottom: 1px solid var(--line); } .pdf-head { padding-top: calc(8px + env(safe-area-inset-top)); } .pdf-foot { border: 0; border-top: 1px solid var(--line); padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
@@ -452,8 +451,6 @@ button.chip-link:hover { background: var(--blue-100); transform: translateY(-1px
 .pdf-num { font-weight: 600; font-size: 13.5px; min-width: 92px; text-align: center; font-variant-numeric: tabular-nums; }
 .pdf-body { flex: 1; overflow: auto; padding: 8px; outline: none; } .pdf-page { display: block; margin: 0 auto; background: #fff; box-shadow: var(--shadow); }
 .pdf-err { max-width: 420px; margin: 16vh auto 0; padding: 0 16px; text-align: center; color: var(--muted); } .pdf-err .ic { width: 40px; height: 40px; color: var(--amber); }
-=======
->>>>>>> Stashed changes
 .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 14px; margin: 16px 0; }
 .gal-card { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
 .gal-card .fig { margin: 0; } .gal-card .fig-open { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; height: 160px; display: grid; place-items: center; } .gal-card .fig-img { max-height: 138px; } .gal-card figcaption { display: none; }

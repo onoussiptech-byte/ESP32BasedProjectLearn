@@ -160,12 +160,8 @@ def firmware_code(c, where, b, taught):
     taught.setdefault(b["firmware"], set()).update(range(a, z + 1))
     b["code"] = "\n".join(lines[a:z + 1])
     b.setdefault("lang", "ini" if f.suffix == ".ini" else "cpp")
-<<<<<<< Updated upstream
     b["caption"] = ({"en": f"{b['firmware']}, line {a + 1}", "fr": f"{b['firmware']}, ligne {a + 1}"} if a == z else
                     {"en": f"{b['firmware']}, lines {a + 1} to {z + 1}", "fr": f"{b['firmware']}, lignes {a + 1} à {z + 1}"})
-=======
-    b["caption"] = {"en": f"{b['firmware']}, lines {a + 1} to {z + 1}", "fr": f"{b['firmware']}, lignes {a + 1} à {z + 1}"}
->>>>>>> Stashed changes
     for k in ("firmware", "start", "end"):
         b.pop(k, None)
 

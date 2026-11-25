@@ -2,14 +2,9 @@
 
 Status: built: the Overview, Account management, Settings, the workspace switch, the app icon refresh, separate scores, and
 the Aquaponics Realisation workspace with its Dashboard (Tabs 3 and 4: titles only). Not built yet: removal of the recovery
-<<<<<<< Updated upstream
-code, the other lessons and quizzes of Tabs 3 and 4. Lessons 3.1.1 and 3.1.2 are written (version 0.7.0), with pictures,
+code, the other lessons and quizzes of Tabs 3 and 4. Lessons 3.1.1 and 3.1.2 are written (version 0.7.1), with pictures,
 firmware code blocks, and document links that open offline (in the browser on a computer, in the PDF viewer on phones).
 Tabs 1 and 2 stay in the app; their content is paused.
-=======
-code, the other lessons and quizzes of Tabs 3 and 4, the PDF viewer for phones. Lesson 3.1.1 is written (version 0.5.1), with
-pictures, firmware code blocks, and document links that open offline on a computer. Tabs 1 and 2 stay in the app; their content is paused.
->>>>>>> Stashed changes
 
 ## 1. Overview page (home and menu in one)
 

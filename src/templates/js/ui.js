@@ -259,13 +259,9 @@
   // A link to the exact page of a reference document. The documents travel with the app (docs/), except in the single file.
   function docLink(label, url) {
     if (window.ESP32TOUR_SINGLE) return h('span', { class: 'doc-name' }, label);
-<<<<<<< Updated upstream
     return h('a', { class: 'doc-link', href: url, target: '_blank', rel: 'noopener', onclick: (e) => {
       if (window.PdfView && PdfView.wanted()) { e.preventDefault(); PdfView.open(url, label); }     // phones: inside the app, at that page
     } }, label);
-=======
-    return h('a', { class: 'doc-link', href: url, target: '_blank', rel: 'noopener' }, label);
->>>>>>> Stashed changes
   }
 
   // A lesson picture with its caption and the page it comes from; a click shows it large
