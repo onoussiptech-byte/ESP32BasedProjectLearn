@@ -812,6 +812,210 @@
    },
    "w": 1100,
    "h": 152
+  },
+  "fao-components": {
+   "doc": "fao_aquaponics",
+   "file": "Small Scale aquaponic Systems  Guide.pdf",
+   "page": 33,
+   "box": [
+    0.12,
+    0.588,
+    0.88,
+    0.846
+   ],
+   "alt": {
+    "en": "Fish, plants and bacteria in one aquaponic unit: waste from the fish, bacteria that make nitrate, plants that clean the water, air pump",
+    "fr": "Poissons, plantes et bactéries dans une unité aquaponique : déchets des poissons, bactéries qui produisent le nitrate, plantes qui nettoient l’eau, pompe à air"
+   },
+   "w": 1100,
+   "h": 561
+  },
+  "fao-nitrification": {
+   "doc": "fao_aquaponics",
+   "file": "Small Scale aquaponic Systems  Guide.pdf",
+   "page": 36,
+   "box": [
+    0.12,
+    0.218,
+    0.88,
+    0.343
+   ],
+   "alt": {
+    "en": "Nitrification: fish make ammonia, bacteria turn it into nitrite, then into nitrate for the plants",
+    "fr": "La nitrification : les poissons produisent de l’ammoniac, des bactéries le changent en nitrite, puis en nitrate pour les plantes"
+   },
+   "w": 1100,
+   "h": 297
+  },
+  "fao-mediabed": {
+   "doc": "fao_aquaponics",
+   "file": "Small Scale aquaponic Systems  Guide.pdf",
+   "page": 57,
+   "box": [
+    0.125,
+    0.54,
+    0.79,
+    0.765
+   ],
+   "alt": {
+    "en": "A small media bed unit: fish tank, sump and plant growing area",
+    "fr": "Une petite unité à lit de substrat : bac à poissons, puisard et zone de culture"
+   },
+   "w": 1100,
+   "h": 513
+  },
+  "fao-nft": {
+   "doc": "fao_aquaponics",
+   "file": "Small Scale aquaponic Systems  Guide.pdf",
+   "page": 59,
+   "box": [
+    0.11,
+    0.152,
+    0.79,
+    0.356
+   ],
+   "alt": {
+    "en": "A small nutrient film technique (NFT) unit: fish tank, filters, grow pipes",
+    "fr": "Une petite unité NFT (film nutritif) : bac à poissons, filtres, tuyaux de culture"
+   },
+   "w": 1100,
+   "h": 484
+  },
+  "fao-dwc": {
+   "doc": "fao_aquaponics",
+   "file": "Small Scale aquaponic Systems  Guide.pdf",
+   "page": 60,
+   "box": [
+    0.21,
+    0.15,
+    0.875,
+    0.36
+   ],
+   "alt": {
+    "en": "A small deep water culture (DWC) unit: fish tank, filters, floating rafts",
+    "fr": "Une petite unité en culture sur eau profonde (DWC) : bac à poissons, filtres, radeaux flottants"
+   },
+   "w": 1100,
+   "h": 494
+  },
+  "fao-separator": {
+   "doc": "fao_aquaponics",
+   "file": "Small Scale aquaponic Systems  Guide.pdf",
+   "page": 67,
+   "box": [
+    0.5,
+    0.145,
+    0.875,
+    0.325
+   ],
+   "alt": {
+    "en": "Diagram of a mechanical solids separator",
+    "fr": "Schéma d’un séparateur mécanique des solides"
+   },
+   "w": 920,
+   "h": 627
+  },
+  "fao-biofilter": {
+   "doc": "fao_aquaponics",
+   "file": "Small Scale aquaponic Systems  Guide.pdf",
+   "page": 68,
+   "box": [
+    0.125,
+    0.16,
+    0.5,
+    0.365
+   ],
+   "alt": {
+    "en": "Diagram of a biofilter for small units",
+    "fr": "Schéma d’un biofiltre pour petites unités"
+   },
+   "w": 919,
+   "h": 709
+  },
+  "fao-airpump": {
+   "doc": "fao_aquaponics",
+   "file": "Small Scale aquaponic Systems  Guide.pdf",
+   "page": 73,
+   "box": [
+    0.5,
+    0.505,
+    0.875,
+    0.675
+   ],
+   "alt": {
+    "en": "A small air pump",
+    "fr": "Une petite pompe à air"
+   },
+   "w": 919,
+   "h": 587
+  },
+  "fao-airstone": {
+   "doc": "fao_aquaponics",
+   "file": "Small Scale aquaponic Systems  Guide.pdf",
+   "page": 73,
+   "box": [
+    0.5,
+    0.74,
+    0.875,
+    0.89
+   ],
+   "alt": {
+    "en": "An air stone makes fine bubbles",
+    "fr": "Un diffuseur (pierre à air) fait de fines bulles"
+   },
+   "w": 919,
+   "h": 526
+  },
+  "fao-sump": {
+   "doc": "fao_aquaponics",
+   "file": "Small Scale aquaponic Systems  Guide.pdf",
+   "page": 75,
+   "box": [
+    0.5,
+    0.168,
+    0.875,
+    0.325
+   ],
+   "alt": {
+    "en": "A sump tank buried so that water returns to it by gravity",
+    "fr": "Un puisard enterré pour que l’eau y revienne par gravité"
+   },
+   "w": 919,
+   "h": 544
+  },
+  "srac-biofilter": {
+   "doc": "srac5007",
+   "file": "principles-of-small-scale-aquaponics-srac-5007.pdf",
+   "page": 4,
+   "box": [
+    0.52,
+    0.055,
+    0.915,
+    0.43
+   ],
+   "alt": {
+    "en": "A biofilter tank",
+    "fr": "Une cuve de biofiltre"
+   },
+   "w": 1001,
+   "h": 1223
+  },
+  "srac-dwc": {
+   "doc": "srac5007",
+   "file": "principles-of-small-scale-aquaponics-srac-5007.pdf",
+   "page": 3,
+   "box": [
+    0.52,
+    0.31,
+    0.915,
+    0.54
+   ],
+   "alt": {
+    "en": "Deep water culture: plants on floating rafts",
+    "fr": "Culture sur eau profonde : plantes sur radeaux flottants"
+   },
+   "w": 1005,
+   "h": 749
   }
  }
 }

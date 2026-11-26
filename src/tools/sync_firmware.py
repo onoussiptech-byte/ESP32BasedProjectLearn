@@ -47,8 +47,8 @@ def main():
             shutil.rmtree(DEST / part)
     for n, t in files.items():
         (DEST / n).parent.mkdir(parents=True, exist_ok=True)
-        (DEST / n).write_bytes(t.encode("utf-8"))
-    mf.write_bytes((json.dumps(manifest, indent=1) + "\n").encode("utf-8"))
+        (DEST / n).write_bytes(t.replace("\n", "\r\n").encode("utf-8"))   # CRLF, as git checks text files out here
+    mf.write_bytes((json.dumps(manifest, indent=1) + "\n").replace("\n", "\r\n").encode("utf-8"))
     print(f"{len(files)} files, {sum(m['lines'] for m in manifest.values())} lines copied to {DEST}")
 
 

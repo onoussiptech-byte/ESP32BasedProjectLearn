@@ -107,8 +107,8 @@ constexpr float VALID_MAX         = 14.0f;     // highest physically possible pH
 constexpr float ALARM_LOW         = 6.0f;      // PH_RANGE alarm below this
 constexpr float ALARM_HIGH        = 7.5f;      // PH_RANGE alarm above this
 constexpr float SETPOINT_DEFAULT  = 6.8f;      // default pH target
-constexpr float SETPOINT_MIN      = 5.5f;      // lowest pH setpoint accepted from the phone
-constexpr float SETPOINT_MAX      = 8.0f;      // highest pH setpoint accepted from the phone
+constexpr float SETPOINT_MIN      = 6.0f;      // lowest pH setpoint accepted from the phone (= ALARM_LOW; FAO 2014: 6-7)
+constexpr float SETPOINT_MAX      = 7.5f;      // highest pH setpoint accepted (= ALARM_HIGH; SRAC-5007: 6.5-7.5)
 constexpr float DOSE_DEADBAND     = 0.2f;      // dose only when pH < setpoint - deadband
 constexpr float DOSE_MIN_PH       = 5.0f;      // never dose below this: probe in a buffer or faulty, not tank water
 constexpr float COMPENSATION_FALLBACK_C = 25.0f; // temperature used if the DS18B20 is invalid
@@ -124,7 +124,7 @@ constexpr uint8_t MAX_FAILS       = 3;         // consecutive failures before re
 constexpr float ALARM_LOW         = 20.0f;     // TEMP_RANGE alarm below this
 constexpr float ALARM_HIGH        = 32.0f;     // TEMP_RANGE alarm above this
 constexpr float SETPOINT_DEFAULT  = 27.0f;     // default water temperature target
-constexpr float SETPOINT_MIN      = 18.0f;     // lowest temperature setpoint accepted
+constexpr float SETPOINT_MIN      = 20.0f;     // lowest temperature setpoint accepted (= ALARM_LOW, inside the bacteria 17-34 C)
 constexpr float SETPOINT_MAX      = 32.0f;     // highest temperature setpoint accepted
 constexpr float HYSTERESIS        = 0.5f;      // heater on/off band, +/- deg C
 }  // namespace temp
@@ -139,6 +139,15 @@ constexpr float NO_FLOW_LPM       = 0.5f;      // below this the pipe is conside
 constexpr uint32_t NO_FLOW_DELAY_MS = 20000;   // NO_FLOW after this long: longer than the PID boot hold, so the
                                                // PID can first raise a 60 % duty that is too slow for the sensor
 }  // namespace flow
+
+// ---- Water of the rig (FAO 2014, section 4.2.4: move the whole volume 1 to 2 times per hour)
+namespace water {                              // water volume and turnover
+constexpr float SYSTEM_VOLUME_L     = 40.0f;   // all the water of the rig, litres: two ~20 L buckets (measure yours)
+constexpr float MIN_TURNOVERS_PER_H = 1.0f;    // FAO: once per hour at low fish density (twice when densely stocked)
+constexpr float TURNOVERS_PER_H     = flow::SETPOINT_LPM * 60.0f / SYSTEM_VOLUME_L; // what the AUTO flow target gives
+static_assert(TURNOVERS_PER_H >= MIN_TURNOVERS_PER_H,
+              "flow target too low for this water volume: raise flow::SETPOINT_LPM or use less water");
+}  // namespace water
 
 // ---- Float switch (plan E1) --------------------------------------------------
 namespace level {                              // low-water switch constants
@@ -180,6 +189,7 @@ constexpr uint8_t MAX_DOSES_PER_HOUR = 4;      // hard limit against overdosing
 // ---- Operating modes (ICD 4.6) -----------------------------------------------
 namespace mode {                               // mode constants
 constexpr uint32_t MANUAL_TIMEOUT_MS = 30UL * 60UL * 1000UL; // manual override expires after 30 min
+constexpr uint32_t AERATOR_MAX_OFF_MS = 10UL * 60UL * 1000UL; // MANUAL: air pump back ON after 10 min off (oxygen)
 }  // namespace mode
 
 // ---- Sensor fault detection ---------------------------------------------------
@@ -226,5 +236,18 @@ constexpr float TOLERANCE_5V      = 0.1f;      // P3 acceptance: 5.0 V +/- 0.1 V
 namespace diag {                               // diagnostics constants
 constexpr uint32_t HEALTH_LOG_PERIOD_MS = 60000; // print free heap once a minute (24 h test)
 }  // namespace diag
+
+// ---- Design checks: the build stops if an edit makes these values disagree ----
+static_assert(ph::SETPOINT_MIN >= ph::ALARM_LOW && ph::SETPOINT_MAX <= ph::ALARM_HIGH,
+              "a pH setpoint accepted from the phone would raise PH_RANGE all the time");
+static_assert(ph::SETPOINT_DEFAULT >= ph::SETPOINT_MIN && ph::SETPOINT_DEFAULT <= ph::SETPOINT_MAX,
+              "default pH setpoint outside the accepted range");
+static_assert(ph::ALARM_LOW >= 6.0f && ph::ALARM_HIGH <= 8.5f,
+              "pH alarm band outside the tolerance of the nitrifying bacteria (FAO 2014, table 2.1: 6-8.5)");
+static_assert(temp::SETPOINT_MIN >= temp::ALARM_LOW && temp::SETPOINT_MAX <= temp::ALARM_HIGH,
+              "a temperature setpoint accepted from the phone would raise TEMP_RANGE all the time");
+static_assert(temp::ALARM_LOW >= 17.0f && temp::ALARM_HIGH <= 34.0f,
+              "temperature alarm band outside the tolerance of the nitrifying bacteria (FAO 2014, table 2.1: 17-34 C)");
+static_assert(mode::AERATOR_MAX_OFF_MS <= mode::MANUAL_TIMEOUT_MS, "the air pump limit must be shorter than MANUAL");
 
 }  // namespace cfg

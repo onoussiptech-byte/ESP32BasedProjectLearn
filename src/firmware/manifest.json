@@ -4,8 +4,8 @@
   "sha256": "9593cb35061e03633399e85540e3fd6b6aba6258b3eb7b23e17867eba19de0ee"
  },
  "include/config.h": {
-  "lines": 230,
-  "sha256": "9cd091c24d185c783b4693650c24544f2bd75cb6aabc8285be45f74d8bd86163"
+  "lines": 253,
+  "sha256": "1508bee82346e4764a7060609423dce54ed3591713c212ff7a89bb857e0f0c4f"
  },
  "include/logger.h": {
   "lines": 17,
@@ -76,8 +76,8 @@
   "sha256": "5a9c10167a91f993814fa821abc53045951a8e129bf518d5d745e753935082b8"
  },
  "src/e2_core/ControlManager.cpp": {
-  "lines": 271,
-  "sha256": "a2eec294592698b711494be24f597804d74472569343f357766508ecf0010f7f"
+  "lines": 283,
+  "sha256": "4177d81c240bc59a464b71a44fdad00202b7f3f81d12cebc54d49cfd5be05b75"
  },
  "src/e2_core/ControlManager.h": {
   "lines": 16,

@@ -32,6 +32,7 @@ uint8_t g_autoPumpDuty = cfg::pump::BOOT_DUTY; // last AUTO pump duty
 uint8_t g_manualPumpDuty = cfg::pump::BOOT_DUTY; // MANUAL pump duty from the phone
 bool g_manualAerator = true;                   // MANUAL aerator state from the phone
 uint32_t g_manualSinceMs = 0;                  // last manual action (30 min timeout)
+uint32_t g_aerOffSinceMs = 0;                  // when MANUAL switched the air pump off (10 min limit)
 
 bool g_heaterOn = false;                       // hysteresis memory
 
@@ -84,6 +85,7 @@ void enterManual(uint32_t now) {               // switch to MANUAL keeping the o
   const ActuatorSnapshot act = SystemState::getActuators(); // present output state
   g_manualPumpDuty = act.pumpDuty;             // start from the current duty
   g_manualAerator = act.aerator;               // and the current aerator state
+  g_aerOffSinceMs = now;                       // if it is off, the oxygen limit starts now
   g_manualSinceMs = now;                       // start the 30 min timer
   SystemState::setMode(Mode::Manual);          // publish the mode
   LOGI(TAG, "mode MANUAL (expires in %lu min)", (unsigned long)(cfg::mode::MANUAL_TIMEOUT_MS / 60000UL));
@@ -99,7 +101,11 @@ void handleCommand(const Command& c, uint32_t now) {
         break;                                 // ignore
       }
       if (c.hasPump) g_manualPumpDuty = c.pumpDuty;   // new pump duty
-      if (c.hasAerator) g_manualAerator = c.aerator;  // new aerator state
+      if (c.hasAerator) {                      // new aerator state
+        if (g_manualAerator && !c.aerator) g_aerOffSinceMs = now; // switched off now: start the oxygen limit
+        g_manualAerator = c.aerator;           // apply it
+        if (!c.aerator) LOGW(TAG, "air pump OFF: back ON after %lu min at most", (unsigned long)(cfg::mode::AERATOR_MAX_OFF_MS / 60000UL));
+      }
       g_manualSinceMs = now;                   // any manual action restarts the timeout
       LOGI(TAG, "manual pump=%u%% aer=%u", g_manualPumpDuty, g_manualAerator ? 1 : 0);
       break;
@@ -179,7 +185,11 @@ void updatePump(Mode mode, const SensorSnapshot& s, uint8_t alarms, uint32_t now
   OutputManager::requestPumpDuty(g_autoPumpDuty); // send the request
 }
 
-void updateAerator(Mode mode) {
+void updateAerator(Mode mode, uint32_t now) {
+  if (mode == Mode::Manual && !g_manualAerator && now - g_aerOffSinceMs >= cfg::mode::AERATOR_MAX_OFF_MS) {
+    g_manualAerator = true;                    // fish and bacteria need dissolved oxygen (FAO 2014, 4.2.5)
+    LOGW(TAG, "air pump back ON: off for %lu min", (unsigned long)(cfg::mode::AERATOR_MAX_OFF_MS / 60000UL));
+  }
   OutputManager::requestAerator(mode == Mode::Manual ? g_manualAerator : true); // ON in AUTO
 }
 
@@ -238,6 +248,8 @@ bool begin() {
   holdDosing(g_lastCycleMs, cfg::dosing::BOOT_HOLD_MS); // the probe settles first; a reset loop cannot overdose
   LOGI(TAG, "AUTO, setpoints pH=%.2f temp=%.1f, mixing wait %lu s", sp.ph, sp.tempC,
        (unsigned long)(cfg::dosing::MIX_WAIT_MS / 1000UL));
+  LOGI(TAG, "flow target %.1f L/min = %.1f turnovers per hour of %.0f L", cfg::flow::SETPOINT_LPM,
+       cfg::water::TURNOVERS_PER_H, cfg::water::SYSTEM_VOLUME_L);
   return true;                                 // ready
 }
 
@@ -263,7 +275,7 @@ void runCycle() {
   const uint8_t alarms = SystemState::getAlarms(); // all alarms incl. LOW_WATER and SENSOR_FAULT
   const Mode mode = SystemState::getMode();    // mode after command handling
   updatePump(mode, s, alarms, now, dtS);       // circulation pump
-  updateAerator(mode);                         // air pump
+  updateAerator(mode, now);                    // air pump (10 min limit when OFF in MANUAL)
   updateHeater(s, sp);                         // heater demo
   updateDosing(mode, s, sp, alarms, now);      // pH correction
 }

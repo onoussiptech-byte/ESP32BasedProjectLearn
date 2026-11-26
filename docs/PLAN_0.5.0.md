@@ -2,7 +2,7 @@
 
 Status: built: the Overview, Account management, Settings, the workspace switch, the app icon refresh, separate scores, and
 the Aquaponics Realisation workspace with its Dashboard (Tabs 3 and 4: titles only). Not built yet: removal of the recovery
-code, the other lessons and quizzes of Tabs 3 and 4. Lessons 3.1.1 and 3.1.2 are written (version 0.7.2), with pictures,
+code, the other lessons and quizzes of Tabs 3 and 4. Lessons 3.1.1, 3.1.2 and 3.1.3 are written (version 0.8.0), with pictures,
 firmware code blocks, and document links that open offline (in the browser on a computer, in the PDF viewer on phones).
 Tabs 1 and 2 stay in the app; their content is paused.
 
@@ -57,7 +57,7 @@ the code goes. The build checks that every firmware line is taught somewhere.
 |---|---|---|---|
 | 1 | What aquaponics is and what AquaNode does | config.h: pins and namespaces | I2C and the ADS1115: Ads1115Bus.h |
 | 2 | Power, rails, sensors and loads | config.h: thresholds and build flags | Ads1115Bus.cpp: reading volts ▶ |
-| 3 | The work packages and code folders | types.h: shared data types | pH, the probe board and the divider: PhSensor.h |
+| 3 | Aquaponics Structure and Code folders packages structure | types.h: shared data types | pH, the probe board and the divider: PhSensor.h |
 | 4 | The pin map and pins to avoid | logger.h: messages on serial ▶ | PhSensor.cpp: sampling and median |
 | 5 | Messages, alarms and safe defaults | The float switch: LevelSwitch.h | PhSensor.cpp: volts to pH and temperature ▶ |
 | 6 | Safety around water | LevelSwitch.cpp: debounce ▶ | PhSensor.cpp: two-point calibration ▶ |
@@ -112,6 +112,7 @@ the code goes. The build checks that every firmware line is taught somewhere.
 | Component | Document key | Pictures (`figures.json`) | Lessons |
 |---|---|---|---|
 | Aquaponics (project pictures) | `Images/` | aquaponics-cycle, aquaponics-parts | 3.1.1 to 3.1.3 |
+| Aquaponic units and their parts | fao_aquaponics, srac5007 | fao-components, fao-nitrification, fao-mediabed, fao-nft, fao-dwc, fao-separator, fao-biofilter, fao-airpump, fao-airstone, fao-sump, srac-biofilter, srac-dwc | 3.1.3, 3.1.6, 3.3 (pH), 3.2 (temperature) |
 | ESP32 chip | datasheet, trm, idf, hwdesign | esp32-pins, esp32-strapping, esp32-bootflow, hw-power, hw-reset | 3.1.2, 3.1.4, 3.5.6 |
 | LM2596 | lm2596 | lm2596-typical, lm2596-pins, lm2596-block | 3.1.2, 3.5.4 |
 | DC jack, fuse, toggle | dcjack, fuse, toggle | dcjack-photo, fuse-photo, toggle-photo | 3.1.2, 3.1.6, 3.4.5 |
@@ -128,10 +129,29 @@ the code goes. The build checks that every firmware line is taught somewhere.
 | Dosing pump | dosingpump | dosingpump-photo, dosingpump-views | 3.5.1 to 3.5.3 |
 | Dividers | resistor_cf, ads1115 | resistor-photo | 3.3.3, 3.5.4 |
 
-Not used by AquaNode, kept as reference only: LM317, CJQ4435, and the DFRobot pH page (another pH board; the saved page also
-carries trackers, so it is not put in the app).
+Not used by AquaNode, kept as reference only: LM317, CJQ4435, and the DFRobot SEN0161-V2 page, kept as the PDF
+`docs/DFRobot_SEN0161-V2_pH_sensor.pdf` (another pH board).
 
-## 8. Order of work
+Large documents on phones: a document over 8 MB (FAO manual 59 MB, ESP-IDF guide 39 MB, TRM 10 MB) goes to the phones as a
+light copy built by `build.py`: the same number of pages, so every link opens the same page, but only the cited pages and
+the page after each keep their content. The computer version always carries the full documents.
+
+## 8. Sub-lesson 3.1.3 (written in 0.8.0) "Aquaponics Structure and Code folders packages structure"
+
+FR: "Structure de l'aquaponie et structure des dossiers et paquets du code". Written in 0.8.0 from this plan. Prepared before: the title (EN/FR),
+the two documents indexed with exact pages (`fao_aquaponics`, `srac5007` in `src/references/index.json`), 12 pictures.
+Planned pages (1 to 4), with the 7 parts:
+
+| Page | Parts | Content | References (doc key: section) | Pictures |
+|---|---|---|---|---|
+| 1 | 1 Why, 2 concepts | The three living parts (fish, plants, bacteria) and the nitrification steps; balance between feed, fish and plants | fao: 2.1, 2.1.1, 2.2, 2.4; srac: Introduction | fao-components, fao-nitrification |
+| 2 | 2 concepts | The physical structure: fish tank, solids removal, biofilter, plant unit, sump, water movement, aeration, plumbing; the three plant units (media bed, NFT, DWC) and how to choose; where AquaNode's sensors and loads sit in this structure | fao: 4.2 to 4.2.8, 4.3, 4.4, 4.5, 4.6; srac: Fish unit, Plant unit, Solids removal, Biofiltration, Movement of water | fao-mediabed, fao-nft, fao-dwc, fao-separator, fao-biofilter, fao-sump, fao-airpump, fao-airstone, srac-dwc, srac-biofilter |
+| 3 | 3 code, 4 development | The work packages E1, P3, E2, E4 and the folders `e1_sensors/`, `p3_outputs/`, `e2_core/`, `include/`; header (.h) and source (.cpp); how `#include "e2_core/..."` finds a file (`-I src`) | firmware: `src/main.cpp` includes (`#include "config.h"` to `#include "e2_core/TaskManager.h"`), `platformio.ini` line `-I src` | (folder tree as a code block) |
+| 4 | 5 PlatformIO, 6 pitfalls, 7 conclusion | Where each folder lives in the PlatformIO project (nothing to run yet, PlatformIO comes in 3.1.7); pitfalls: mixing modules across folders, wrong include path, units in the manuals (gallons, inches: give litres, cm) | fao: Appendix 6; srac: Management, Water quality | - |
+
+Quiz: 8 questions, at least 4 types (order of the water path, match folder to work package, include path code output...).
+
+## 9. Order of work
 
 1. Overview, Account, Settings, workspace switch, separate scores, recovery code removed, Tabs 3 and 4 with all titles (EN/FR).
 2. Offline documents, PDF viewer, figure block.

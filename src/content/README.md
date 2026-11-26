@@ -65,7 +65,7 @@ Use the exact section title from `src/references/index.json` (PDFs) or `arduino_
 If a title appears twice, add `"page": N`. If you have `pypdf` installed, the validator also opens the PDF and checks that the
 heading really is on the page the index gives; when the index is wrong, add `"pdf_page": N` with the real page (done for 4.1.3).
 
-In tabs 3 and 4 every document link opens the PDF of `docs/` carried inside the app (no internet). Their sub-lessons have seven parts:
+In tabs 3 and 4 every document link opens the PDF of `docs/` carried inside the app (no internet). Documents over 8 MB reach the phones as light copies (same pages, only the cited ones filled), so cite exact pages. Their sub-lessons have seven parts:
 1 why, 2 useful concepts, 3 code, 4 development, 5 PlatformIO, 6 pitfalls and safety, 7 conclusion, then the quiz (tab 3: 1 to 4 pages, tab 4: 1 page).
 
 ## Questions (8 per sub-lesson, at least 4 different types, every `explain` required)

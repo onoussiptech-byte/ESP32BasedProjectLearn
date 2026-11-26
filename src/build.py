@@ -99,6 +99,48 @@ def cited_docs(contents):
     return sorted(names)
 
 
+LIGHT_OVER = 8_000_000                                     # phones get a light copy of documents larger than this
+_LIGHT = {}
+
+
+def doc_pages(contents, name):
+    """The PDF pages of one document that the lessons (and their pictures) link to."""
+    pages = set()
+    for d in contents.values():
+        for p in d["pages"]:
+            refs = [s for s in p["sources"] if s.get("local")]
+            for b in p["blocks"]:
+                refs += b["items"] if b["type"] == "refs" else [it["ref"] for it in b.get("items", []) if b["type"] == "gallery" and it.get("ref")]
+            pages |= {s["page"] for s in refs if unquote(s["url"].split("#")[0]) == "docs/" + name}
+    figs = json.loads((SRC / "references" / "figures.json").read_text(encoding="utf-8"))["figures"]
+    pages |= {figs[n]["page"] for n in used_figures(contents) if figs[n].get("file") == name}
+    return pages
+
+
+def phone_doc(contents, name):
+    """The file a phone gets for docs/<name>. A large document becomes a light copy: the same number of pages, so every
+    link still opens the right page, but only the cited pages (and the page after each) keep their content."""
+    src = ROOT / "docs" / name
+    if src.stat().st_size <= LIGHT_OVER:
+        return src
+    if name not in _LIGHT:
+        import pymupdf                                         # pip install pymupdf (see requirements-dev.txt)
+        keep = {n for p in doc_pages(contents, name) for n in (p, p + 1)}
+        out = Path(tempfile.mkdtemp(prefix="esp32tour-light-")) / name
+        with pymupdf.open(src) as doc, pymupdf.open() as light:
+            for i in range(len(doc)):
+                if i + 1 in keep:
+                    light.insert_pdf(doc, from_page=i, to_page=i)
+                else:
+                    pg = light.new_page(width=doc[i].rect.width, height=doc[i].rect.height)
+                    pg.insert_textbox(pymupdf.Rect(60, 80, pg.rect.width - 60, 300), (
+                        f"Page {i + 1}: not in the phone copy of this document. Open the full document on a computer.\n\n"
+                        f"Page {i + 1} : absente de la copie pour téléphone. Ouvrez le document complet sur un ordinateur."), fontsize=11)
+            light.save(out, garbage=4, deflate=True)
+        _LIGHT[name] = out
+    return _LIGHT[name]
+
+
 def pdfjs_files():
     root = SRC / "assets" / "vendor" / "pdfjs"
     return sorted(p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file())
@@ -149,7 +191,7 @@ def course_data(contents):
             f.update(doc=figs[n]["doc"], page=figs[n]["page"], url=f"docs/{quote(figs[n]['file'])}#page={figs[n]['page']}")
     docs, viewer = cited_docs(contents), pdfjs_files()            # what a phone stores for reading documents offline
     course["store"] = ["docs/" + quote(n) for n in docs] + ["pdfjs/" + n for n in viewer]
-    course["storeBytes"] = (sum((ROOT / "docs" / n).stat().st_size for n in docs)
+    course["storeBytes"] = (sum(phone_doc(contents, n).stat().st_size for n in docs)
                             + sum((SRC / "assets" / "vendor" / "pdfjs" / n).stat().st_size for n in viewer))
     js = "window.ESP32TOUR_COURSE=" + js_json(course) + ";\n"
     return js, course
@@ -298,7 +340,7 @@ def fill_pwa(dest, contents):
         remove_tree(dest / "docs")
     (dest / "docs").mkdir()
     for n in cited_docs(contents):
-        shutil.copyfile(ROOT / "docs" / n, dest / "docs" / n)
+        shutil.copyfile(phone_doc(contents, n), dest / "docs" / n)
     (dest / "data" / "accounts.js").write_text(EMPTY_ACCOUNTS, encoding="utf-8")   # never publish anyone's accounts
     (dest / ".nojekyll").write_text("", encoding="utf-8")
 
