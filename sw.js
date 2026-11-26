@@ -3,7 +3,7 @@
  * - Anything else (other origins, online links, POSTs): passed straight through, never touched or blocked.
  * - A new version waits until the app asks for it: at start, or when the person taps "Reload". Versions up to 0.7.1
  *   only had the message, so a new version takes over from them by itself. */
-const CACHE = 'esp32tour-v0.7.2';
+const CACHE = 'esp32tour-v0.8.0';
 const DOCS = 'esp32tour-docs-1';        // documents and PDF viewer: kept when the app is updated, not downloaded again
 const FILES = [
  "./",
@@ -30,6 +30,7 @@ const FILES = [
  "content/t1.l01.s02.js",
  "content/t3.l01.s01.js",
  "content/t3.l01.s02.js",
+ "content/t3.l01.s03.js",
  "figures/aquaponics-cycle.webp",
  "figures/aquaponics-parts.webp",
  "figures/d1n5819-photo.webp",
@@ -37,6 +38,16 @@ const FILES = [
  "figures/dosingpump-photo.webp",
  "figures/ds18b20-pinout.webp",
  "figures/esp32-pins.webp",
+ "figures/fao-airpump.webp",
+ "figures/fao-airstone.webp",
+ "figures/fao-biofilter.webp",
+ "figures/fao-components.webp",
+ "figures/fao-dwc.webp",
+ "figures/fao-mediabed.webp",
+ "figures/fao-nft.webp",
+ "figures/fao-nitrification.webp",
+ "figures/fao-separator.webp",
+ "figures/fao-sump.webp",
  "figures/float-photo.webp",
  "figures/fuse-photo.webp",
  "figures/hw-power.webp",
@@ -46,6 +57,7 @@ const FILES = [
  "figures/ph4502c-pinout.webp",
  "figures/resistor-photo.webp",
  "figures/sqp-photo.webp",
+ "figures/srac-biofilter.webp",
  "figures/toggle-photo.webp",
  "figures/waterpump-drawing.webp",
  "figures/yfs201-photo.webp",

@@ -155,7 +155,7 @@
     'src.idf': 'ESP-IDF Programming Guide', 'src.arduino': 'ESP32 Arduino Core docs',
 
     'src.hwdesign': 'ESP32 Hardware Design Guidelines', 'src.ads1115': 'ADS1115 datasheet', 'src.ds18b20': 'DS18B20 datasheet',
-    'src.dfrobotph': 'DFRobot SEN0161-V2 page', 'src.ph4502c': 'PH-4502C guide', 'src.yfs201': 'YF-S201 datasheet', 'src.floatswitch': 'Float switch data sheet',
+    'src.fao_aquaponics': 'FAO aquaponics manual', 'src.srac5007': 'SRAC-5007 fact sheet', 'src.dfrobotph': 'DFRobot SEN0161-V2 page', 'src.ph4502c': 'PH-4502C guide', 'src.yfs201': 'YF-S201 datasheet', 'src.floatswitch': 'Float switch data sheet',
     'src.irlz44n': 'IRLZ44N datasheet', 'src.d1n5819': '1N5819 datasheet', 'src.d1n4007': '1N4007 datasheet',
     'src.lm2596': 'LM2596 datasheet', 'src.lm317': 'LM317 datasheet', 'src.cjq4435': 'CJQ4435 datasheet',
     'src.waterpump': 'Water pump datasheet', 'src.airpump': 'Air pump specification', 'src.dosingpump': 'Dosing pump datasheet',
@@ -364,7 +364,7 @@
     'src.idf': 'Guide de programmation ESP-IDF', 'src.arduino': 'Documentation du cœur Arduino ESP32',
 
     'src.hwdesign': 'Guide de conception matérielle ESP32', 'src.ads1115': 'Fiche technique ADS1115', 'src.ds18b20': 'Fiche technique DS18B20',
-    'src.dfrobotph': 'Page DFRobot SEN0161-V2', 'src.ph4502c': 'Guide PH-4502C', 'src.yfs201': 'Fiche technique YF-S201', 'src.floatswitch': 'Fiche de l’interrupteur à flotteur',
+    'src.fao_aquaponics': 'Manuel d’aquaponie de la FAO', 'src.srac5007': 'Fiche SRAC-5007', 'src.dfrobotph': 'Page DFRobot SEN0161-V2', 'src.ph4502c': 'Guide PH-4502C', 'src.yfs201': 'Fiche technique YF-S201', 'src.floatswitch': 'Fiche de l’interrupteur à flotteur',
     'src.irlz44n': 'Fiche technique IRLZ44N', 'src.d1n5819': 'Fiche technique 1N5819', 'src.d1n4007': 'Fiche technique 1N4007',
     'src.lm2596': 'Fiche technique LM2596', 'src.lm317': 'Fiche technique LM317', 'src.cjq4435': 'Fiche technique CJQ4435',
     'src.waterpump': 'Fiche technique de la pompe à eau', 'src.airpump': 'Spécification de la pompe à air', 'src.dosingpump': 'Fiche technique de la pompe de dosage',
