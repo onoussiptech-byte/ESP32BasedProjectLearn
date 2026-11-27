@@ -46,6 +46,18 @@ PACKAGES = {
                     "package/standard_fonts/": "vendor/pdfjs/standard_fonts/",
                     "package/cmaps/": "vendor/pdfjs/cmaps/"},
                    "package/LICENSE"),
+    # Code-drawn diagrams (pin maps, circuits, block diagrams). Loaded only by lessons that show a diagram.
+    "@svgdotjs/svg.js": ("3.2.8", {"package/dist/svg.min.js": "vendor/svgjs/svg.min.js"}, "package/LICENSE.txt"),
+    # Extra diagram tools, loaded only by a diagram file that asks for them (see src/diagrams/README.md):
+    # maths formulas, timing waveforms, interactive graphs/curves, block diagrams written as text.
+    "katex": ("0.16.11", {"package/dist/katex.min.js": "vendor/katex/katex.min.js",
+                          "package/dist/katex.min.css": "vendor/katex/katex.min.css",
+                          "package/dist/fonts/": "vendor/katex/fonts/"}, "package/LICENSE"),
+    "wavedrom": ("3.5.0", {"package/wavedrom.min.js": "vendor/wavedrom/wavedrom.min.js",
+                           "package/skins/default.js": "vendor/wavedrom/default.js"}, "package/LICENSE"),
+    "jsxgraph": ("1.10.1", {"package/distrib/jsxgraphcore.js": "vendor/jsxgraph/jsxgraphcore.js",
+                            "package/distrib/jsxgraph.css": "vendor/jsxgraph/jsxgraph.css"}, "package/LICENSE.MIT"),
+    "mermaid": ("11.4.1", {"package/dist/mermaid.min.js": "vendor/mermaid/mermaid.min.js"}, "package/LICENSE"),
 }
 
 
@@ -70,7 +82,7 @@ def main():
                     continue
                 dest = None
                 for src, dst in files.items():
-                    if src.endswith("/") and m.name.startswith(src) and m.name.endswith((".svg", ".bcmap", ".ttf", ".pfb", "LICENSE", "LICENSE_FOXIT", "LICENSE_LIBERATION")):
+                    if src.endswith("/") and m.name.startswith(src) and m.name.endswith((".svg", ".woff2", ".bcmap", ".ttf", ".pfb", "LICENSE", "LICENSE_FOXIT", "LICENSE_LIBERATION")):
                         dest = ASSETS / dst / m.name[len(src):]
                     elif m.name == src:
                         dest = ASSETS / dst

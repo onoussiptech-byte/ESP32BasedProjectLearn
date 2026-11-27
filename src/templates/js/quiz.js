@@ -206,6 +206,7 @@
         h('div', { class: 'q-top' }, h('span', { class: 'q-type' }, icon(TYPE_ICON[q.type]), t('quiz.type.' + q.type)),
           h('span', { class: 'q-count' }, t('quiz.qn', { n: idx + 1, m: total }))),
         prompt,
+        q.diagram ? Diagrams.block(q.diagram.name, q.diagram.caption ? h('span', null, rich(q.diagram.caption)) : null, { quiz: true }) : null,
         q.type === 'code_output' && q.code ? UI.codeBlock(q.code.lang || 'cpp', q.code.text) : null,
         hint ? h('p', { class: 'q-hint' }, icon('info'), h('span', null, hint)) : null,
         body.el, fbBox, h('div', { class: 'q-actions' }, primary));
@@ -298,6 +299,7 @@
       const review = state.recs.map((r, i) => h('details', { class: 'rev ' + (r.ok ? 'ok' : 'bad'), open: !r.ok },
         h('summary', null, icon(r.ok ? 'circle-check' : 'circle-x'), h('span', { class: 'rev-n' }, String(i + 1)), h('span', { class: 'rev-q' }, rich(r.q.prompt)), icon('chevron-down')),
         h('div', { class: 'rev-body' },
+          r.q.diagram ? Diagrams.block(r.q.diagram.name, r.q.diagram.caption ? h('span', null, rich(r.q.diagram.caption)) : null) : null,
           r.q.type === 'code_output' && r.q.code ? UI.codeBlock(r.q.code.lang || 'cpp', r.q.code.text) : null,
           h('p', null, h('span', { class: 'lbl' }, t('quiz.fb.yours')), ' ', h('span', { class: r.ok ? 'ans ok' : 'ans bad' }, r.user)),
           r.ok ? null : h('p', null, h('span', { class: 'lbl' }, t('quiz.fb.answer')), ' ', h('span', { class: 'ans ok' }, r.right)),

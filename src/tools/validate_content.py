@@ -18,7 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 LANGS = ("en", "fr")
-BLOCKS = {"p", "h", "list", "facts", "table", "callout", "flow", "steps", "code", "figure", "gallery", "refs"}
+BLOCKS = {"p", "h", "list", "facts", "table", "callout", "flow", "steps", "code", "figure", "gallery", "refs", "diagram"}
 LOCAL_TABS = ("t3.", "t4.")                              # their document links open the PDFs carried in docs/
 CODE_LANGS = {"c", "cpp", "bash", "ini", "json", "markup", "powershell", "python", "plain"}
 CALLOUTS = {"tip", "note", "warn"}
@@ -280,6 +280,20 @@ def check_block(c, where, b, ids):
                 c.err(f"{where}.items[{k}]", "needs a picture 'name', or an 'icon' of src/build.py")
             bilingual(c, f"{where}.items[{k}].title", it.get("title"))
             bilingual(c, f"{where}.items[{k}].text", it.get("text"))
+    if t == "diagram":
+        name = b.get("name", "")
+        if not re.fullmatch(r"[a-z0-9-]+", name):
+            c.err(where, "diagram needs a 'name' like 'esp32-pins'")
+        elif not (SRC / "diagrams" / f"{name}.js").is_file():
+            c.err(where, f"diagram file missing: src/diagrams/{name}.js")
+        else:
+            code = (SRC / "diagrams" / f"{name}.js").read_text(encoding="utf-8")
+            if f"ESP32TOUR_DIAGRAMS['{name}']" not in code and f'ESP32TOUR_DIAGRAMS["{name}"]' not in code:
+                c.err(where, f"src/diagrams/{name}.js must register ESP32TOUR_DIAGRAMS['{name}']")
+            if "</script" in code.lower():
+                c.err(where, f"src/diagrams/{name}.js contains '</script'")
+        if b.get("caption") is not None:
+            bilingual(c, where + ".caption", b["caption"])
     if t == "refs" and not b.get("items"):
         c.err(where, "refs needs 'items'")
     if t == "code":
@@ -302,6 +316,8 @@ def check_question(c, where, q, ids):
         return
     bilingual(c, where + ".prompt", q.get("prompt"))
     bilingual(c, where + ".explain", q.get("explain"))
+    if q.get("diagram") is not None:                 # a question may show a diagram (explanations hidden until the review)
+        check_block(c, where + ".diagram", {"type": "diagram", **q["diagram"]}, set())
     opts = q.get("options", [])
     if t in ("single", "multi", "code_output"):
         oid = [o.get("id") for o in opts]

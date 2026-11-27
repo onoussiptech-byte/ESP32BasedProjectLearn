@@ -30,6 +30,8 @@ self.addEventListener('message', (event) => {
 self.addEventListener('fetch', (event) => {
   const req = event.request, url = new URL(req.url);
   if (req.method !== 'GET' || url.origin !== self.location.origin) return;   // not ours: pass through
+  const path0 = url.pathname.slice(new URL('./', self.location).pathname.length);
+  if (req.cache === 'reload' && (path0.startsWith('docs/') || path0.startsWith('pdfjs/'))) return;   // DocStore refreshing a changed copy: network only
   event.respondWith(
     caches.match(req, { ignoreSearch: true }).then((hit) => {
       if (hit) return hit;

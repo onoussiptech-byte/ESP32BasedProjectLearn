@@ -3,7 +3,7 @@
   "short_name": "ESP32 Tour",
   "long_name": {"en": "ESP32 Tutorial Guide: From Beginner to Professional",
                 "fr": "Guide tutoriel ESP32 : du débutant au professionnel"},
-  "version": "0.8.0",
+  "version": "0.9.0",
   "languages": ["en", "fr"],
   "arduino_core_taught": "3.3.x (what PlatformIO espressif32 installs); notes where 4.0 differs"
  },
@@ -127,7 +127,7 @@
      ["What aquaponics is and what AquaNode does", "L'aquaponie et le rôle d'AquaNode"],
      ["Power, rails, sensors and loads", "Alimentation, rails, capteurs et charges"],
      ["Aquaponics Structure and Code folders packages structure", "Structure de l'aquaponie et structure des dossiers et paquets du code"],
-     ["The pin map and pins to avoid", "Le plan des broches et les broches à éviter"],
+     ["ESP32 pins and the Aquaponic project circuit", "Les broches de l'ESP32 et le circuit du projet aquaponique"],
      ["Messages, alarms and safe defaults", "Messages, alarmes et états sûrs par défaut"],
      ["Safety around water", "La sécurité près de l'eau"],
      ["Installing PlatformIO, creating the project", "Installer PlatformIO, créer le projet"],

@@ -9,11 +9,26 @@
   const list = () => window.ESP32TOUR_COURSE.store || [];
   const abs = (p) => new URL(p, document.baseURI).href;
   let running = null;
+  const SIZE_HEADER = 'x-esp32tour-size';
+  const labelled = (blob, r) => new Response(blob, { headers: { 'Content-Type': r.headers.get('Content-Type') || 'application/octet-stream', [SIZE_HEADER]: String(blob.size) } });
   window.DocStore = {
     supported: secure && 'caches' in window && 'serviceWorker' in navigator && !window.ESP32TOUR_SINGLE && list().length > 0,
+    // Missing = not stored, or stored but with another size than this version's copy (a phone copy grows when a
+    // lesson cites new pages of a document, under the same name). Each stored copy keeps its size in a header.
     async missing() {
-      const c = await caches.open(DOCS), out = [];
-      for (const p of list()) if (!(await c.match(abs(p)))) out.push(p);
+      const c = await caches.open(DOCS), size = window.ESP32TOUR_COURSE.storeSize || {}, out = [];
+      for (const p of list()) {
+        const r = await c.match(abs(p));
+        if (!r) { out.push(p); continue; }
+        if (size[p] == null) continue;
+        let got = r.headers.get(SIZE_HEADER);
+        if (got == null) {                                   // stored by an older version: measure it once, then label it
+          const b = await r.blob();
+          got = b.size;
+          if (got === size[p]) await c.put(abs(p), labelled(b, r));
+        }
+        if (+got !== size[p]) out.push(p);
+      }
       return out;
     },
     // Store what is not there yet. Returns true when everything is stored.
@@ -24,7 +39,7 @@
           for (let i = 0; i < todo.length; i++) {
             const r = await fetch(abs(todo[i]), { cache: 'reload' });   // never an old copy or an old error page
             if (!r.ok) throw new Error(todo[i] + ' ' + r.status);
-            await c.put(abs(todo[i]), r);
+            await c.put(abs(todo[i]), labelled(await r.blob(), r));
             if (this.onStep) this.onStep(todo.length - i - 1);
           }
           return todo.length;

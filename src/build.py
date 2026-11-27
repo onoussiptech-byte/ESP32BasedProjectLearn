@@ -34,7 +34,7 @@ APP = DIST / "ESP32_Tour"
 SINGLE = DIST / "ESP32_Tour_single.html"
 PAGES_BRANCH = "gh-appages"                               # the branch GitHub Pages serves
 # only the app's own files go to the phones: anything else sitting in the folder (docs, a saved copy...) stays out
-PAGES_KEEP = ("app", "content", "data", "figures", "fonts", "icons", "licenses", "pdfjs", "index.html", "manifest.webmanifest", "sw.js")
+PAGES_KEEP = ("app", "content", "data", "diagrams", "figures", "fonts", "icons", "licenses", "pdfjs", "index.html", "manifest.webmanifest", "sw.js")
 EMPTY_ACCOUNTS = 'window.ESP32TOUR_DATA={"format":1,"accounts":[],"deleted":[]};\n'
 
 ICONS = """cpu layout-dashboard book-open workflow user users user-plus log-in log-out settings languages
@@ -50,7 +50,7 @@ DASH_FIGURES = ("aquaponics-cycle",)                      # pictures shown outsi
 
 # Load order. "../data/accounts.js" is the carried-along accounts file (never cache-busted).
 SCRIPTS = ["icons.js", "prism.js", "course.js", "../data/accounts.js", "crypto.js", "i18n.js", "store.js", "ui.js",
-           "auth.js", "dashboard.js", "quiz.js", "pdfview.js", "lessons.js", "overview.js", "app.js", "pwa.js"]
+           "auth.js", "dashboard.js", "quiz.js", "pdfview.js", "diagrams.js", "lessons.js", "overview.js", "app.js", "pwa.js"]
 GENERATED = ("icons.js", "prism.js", "course.js")
 PRISM_FILES = ["core", "clike", "markup", "c", "cpp", "bash", "ini", "json", "powershell", "python"]  # order matters (cpp needs c)
 
@@ -99,7 +99,8 @@ def cited_docs(contents):
     return sorted(names)
 
 
-LIGHT_OVER = 8_000_000                                     # phones get a light copy of documents larger than this
+LIGHT_OVER = 2_000_000                                     # phones get a light copy of documents larger than this
+LIGHT_DPI, LIGHT_JPEG = 130, 70                            # its kept pages become pictures: readable, and much smaller
 _LIGHT = {}
 
 
@@ -119,7 +120,8 @@ def doc_pages(contents, name):
 
 def phone_doc(contents, name):
     """The file a phone gets for docs/<name>. A large document becomes a light copy: the same number of pages, so every
-    link still opens the right page, but only the cited pages (and the page after each) keep their content."""
+    link still opens the right page, but only the cited pages (and the page after each) keep their content, as pictures
+    at LIGHT_DPI (heavy vector drawings and fonts would otherwise keep most of the size)."""
     src = ROOT / "docs" / name
     if src.stat().st_size <= LIGHT_OVER:
         return src
@@ -130,13 +132,17 @@ def phone_doc(contents, name):
         with pymupdf.open(src) as doc, pymupdf.open() as light:
             for i in range(len(doc)):
                 if i + 1 in keep:
-                    light.insert_pdf(doc, from_page=i, to_page=i)
+                    page = doc[i]
+                    pg = light.new_page(width=page.rect.width, height=page.rect.height)
+                    pix = page.get_pixmap(dpi=LIGHT_DPI)
+                    pg.insert_image(pg.rect, stream=pix.tobytes("jpg", jpg_quality=LIGHT_JPEG))
                 else:
                     pg = light.new_page(width=doc[i].rect.width, height=doc[i].rect.height)
                     pg.insert_textbox(pymupdf.Rect(60, 80, pg.rect.width - 60, 300), (
                         f"Page {i + 1}: not in the phone copy of this document. Open the full document on a computer.\n\n"
                         f"Page {i + 1} : absente de la copie pour téléphone. Ouvrez le document complet sur un ordinateur."), fontsize=11)
-            light.save(out, garbage=4, deflate=True)
+            light.set_metadata({})                       # no date: the same input always gives the same file
+            light.save(out, garbage=4, deflate=True, no_new_id=True)
         _LIGHT[name] = out
     return _LIGHT[name]
 
@@ -144,6 +150,57 @@ def phone_doc(contents, name):
 def pdfjs_files():
     root = SRC / "assets" / "vendor" / "pdfjs"
     return sorted(p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file())
+
+
+def used_diagrams(contents):
+    """The diagram files (src/diagrams/<name>.js) the lessons and their quiz questions show."""
+    names = {b["name"] for d in contents.values() for p in d["pages"] for b in p["blocks"] if b["type"] == "diagram"}
+    names |= {q["diagram"]["name"] for d in contents.values() for q in d.get("quiz", {}).get("questions", []) if q.get("diagram")}
+    return sorted(names)
+
+
+# Extra diagram tools (src/assets/vendor/<tool>/): files copied to app/lib/<tool>/ when a diagram file says
+#   ESP32TOUR_DIAGRAMS['name'].uses = ['katex', 'wavedrom', 'jsxgraph', 'mermaid'];
+DG_LIBS = {
+    "katex": (["katex.min.js"], ["katex.min.css"]),
+    "wavedrom": (["default.js", "wavedrom.min.js"], []),
+    "jsxgraph": (["jsxgraphcore.js"], ["jsxgraph.css"]),
+    "mermaid": (["mermaid.min.js"], []),
+}
+
+
+def used_libs(contents):
+    found = set()
+    for n in used_diagrams(contents):
+        m = re.search(r"\.uses\s*=\s*\[([^\]]*)\]", (SRC / "diagrams" / f"{n}.js").read_text(encoding="utf-8"))
+        if m:
+            for tool in re.findall(r"['\"]([a-z]+)['\"]", m.group(1)):
+                if tool not in DG_LIBS:
+                    sys.exit(f"src/diagrams/{n}.js uses an unknown tool: {tool}")
+                found.add(tool)
+    return sorted(found)
+
+
+def lib_files(tool):
+    """(source, path under app/lib/) of one tool; KaTeX keeps only its woff2 fonts (every browser here reads woff2)."""
+    root = SRC / "assets" / "vendor" / tool
+    js, css = DG_LIBS[tool]
+    out = [(root / f, f"{tool}/{f}") for f in js + css]
+    if tool == "katex":
+        out += [(f, f"katex/fonts/{f.name}") for f in sorted((root / "fonts").glob("*.woff2"))]
+    return out
+
+
+def katex_css_inline():
+    """KaTeX CSS with its woff2 fonts as data: URLs, for the single file."""
+    root = SRC / "assets" / "vendor" / "katex"
+    css = (root / "katex.min.css").read_text(encoding="utf-8")
+
+    def font(m):
+        f = root / "fonts" / m.group(1)
+        return "url(data:font/woff2;base64," + base64.b64encode(f.read_bytes()).decode() + ") format(\"woff2\")"
+    css = re.sub(r"url\(fonts/([\w-]+\.woff2)\) format\(\"woff2\"\)", font, css)
+    return re.sub(r",url\(fonts/[\w-]+\.(woff|ttf)\) format\(\"(woff|truetype)\"\)", "", css)
 
 
 def icons_js():
@@ -191,6 +248,8 @@ def course_data(contents):
             f.update(doc=figs[n]["doc"], page=figs[n]["page"], url=f"docs/{quote(figs[n]['file'])}#page={figs[n]['page']}")
     docs, viewer = cited_docs(contents), pdfjs_files()            # what a phone stores for reading documents offline
     course["store"] = ["docs/" + quote(n) for n in docs] + ["pdfjs/" + n for n in viewer]
+    course["storeSize"] = {**{"docs/" + quote(n): phone_doc(contents, n).stat().st_size for n in docs},   # a changed copy is fetched again
+                           **{"pdfjs/" + n: (SRC / "assets" / "vendor" / "pdfjs" / n).stat().st_size for n in viewer}}
     course["storeBytes"] = (sum(phone_doc(contents, n).stat().st_size for n in docs)
                             + sum((SRC / "assets" / "vendor" / "pdfjs" / n).stat().st_size for n in viewer))
     js = "window.ESP32TOUR_COURSE=" + js_json(course) + ";\n"
@@ -244,7 +303,7 @@ def manifest(course):
 
 
 def build_folder(course, version, icons, course_js, prism, contents):
-    for d in ("app", "fonts", "data", "docs", "licenses", "icons", "content", "figures"):
+    for d in ("app", "fonts", "data", "docs", "licenses", "icons", "content", "figures", "diagrams"):
         (APP / d).mkdir(parents=True, exist_ok=True)
     for old in (APP / "content").glob("*.js"):                    # drop content that no longer exists
         old.unlink()
@@ -253,6 +312,17 @@ def build_folder(course, version, icons, course_js, prism, contents):
             old.unlink()
     for n in used_figures(contents):
         shutil.copyfile(SRC / "assets" / "figures" / f"{n}.webp", APP / "figures" / f"{n}.webp")
+    for old in (APP / "diagrams").glob("*.js"):                   # diagrams drawn with code (SVG.js), used by the lessons
+        old.unlink()
+    for n in used_diagrams(contents):
+        shutil.copyfile(SRC / "diagrams" / f"{n}.js", APP / "diagrams" / f"{n}.js")
+    shutil.copyfile(SRC / "assets" / "vendor" / "svgjs" / "svg.min.js", APP / "app" / "svg.min.js")
+    if (APP / "app" / "lib").exists():                            # extra diagram tools: only those a diagram asks for
+        remove_tree(APP / "app" / "lib")
+    for tool in used_libs(contents):
+        for src, rel in lib_files(tool):
+            (APP / "app" / "lib" / rel).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(src, APP / "app" / "lib" / rel)
     for cid, data in contents.items():
         (APP / "content" / f"{cid}.js").write_text(content_js(cid, data), encoding="utf-8")
     (APP / "app" / "course.js").write_text(course_js, encoding="utf-8")
@@ -296,8 +366,10 @@ def build_folder(course, version, icons, course_js, prism, contents):
 
     # Service worker: pre-caches exactly the app's own files (not licences, not docs)
     files = ["./", "index.html", "manifest.webmanifest"]
-    for sub in ("app", "content", "figures", "fonts", "icons", "data"):
+    for sub in ("app", "content", "diagrams", "figures", "fonts", "icons", "data"):
         files += sorted(p.relative_to(APP).as_posix() for p in (APP / sub).iterdir() if p.is_file())
+    if (APP / "app" / "lib").exists():
+        files += sorted(p.relative_to(APP).as_posix() for p in (APP / "app" / "lib").rglob("*") if p.is_file())
     sw = (SRC / "templates" / "sw.js").read_text(encoding="utf-8")
     sw = sw.replace("{{VERSION}}", version).replace("{{FILES}}", json.dumps(files, indent=1))
     (APP / "sw.js").write_text(sw, encoding="utf-8")
@@ -430,7 +502,16 @@ def build_single(course_js, icons, prism, contents, version):
         elif s == "prism.js":                              # "<!--" then "<script" would confuse the HTML parser inline
             body = prism.replace("<!--", "\\x3C!--").replace("<script", "\\x3Cscript")
         elif s == "course.js":
-            body = course_js + figures_js(contents) + "".join(content_js(cid, d) for cid, d in contents.items())   # lessons travel inside the file
+            dg = used_diagrams(contents)                    # diagrams and SVG.js travel inside the file when a lesson uses one
+            if dg:
+                parts.append("<script>" + (SRC / "assets" / "vendor" / "svgjs" / "svg.min.js").read_text(encoding="utf-8") + "</script>")
+            for tool in used_libs(contents):            # the extra tools travel inside the file too
+                for src, rel in lib_files(tool):
+                    if rel.endswith(".js"):
+                        parts.append("<script>" + src.read_text(encoding="utf-8").replace("</script", "<\\/script") + "</script>")
+                    elif rel.endswith(".css"):
+                        parts.append("<style>" + (katex_css_inline() if tool == "katex" else src.read_text(encoding="utf-8")) + "</style>")
+            body = course_js + figures_js(contents) + "".join((SRC / "diagrams" / f"{n}.js").read_text(encoding="utf-8") for n in dg) + "".join(content_js(cid, d) for cid, d in contents.items())   # lessons travel inside the file
         elif s.startswith("../"):
             parts.append('<script id="accounts-data">' + EMPTY_ACCOUNTS + '</script>')
             continue

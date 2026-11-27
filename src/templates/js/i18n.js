@@ -184,6 +184,7 @@
     'learn.sources': 'Sources',
     'learn.sources.note': 'The explanation above is complete without them. The links open the official documents online.',
     'learn.sources.local': 'The explanation above is complete without them. The documents are inside the app: the links open the exact page, without internet.',
+    'dg.loading': 'Drawing the diagram…', 'dg.hint': 'Tap a pin, a wire or a part to read what it does.', 'dg.err': 'This diagram could not be drawn.',
     'learn.refs': 'Read more:', 'fig.enlarge': 'Enlarge the picture',
     'learn.back.to': 'Back to {where}',
 
@@ -393,6 +394,7 @@
     'learn.sources': 'Sources',
     'learn.sources.note': 'L’explication ci-dessus se suffit à elle-même. Les liens ouvrent les documents officiels en ligne.',
     'learn.sources.local': 'L’explication ci-dessus se suffit à elle-même. Les documents sont dans l’application : les liens ouvrent la page exacte, sans internet.',
+    'dg.loading': 'Dessin du schéma…', 'dg.hint': 'Touchez une broche, un fil ou un composant pour lire son rôle.', 'dg.err': 'Ce schéma n’a pas pu être dessiné.',
     'learn.refs': 'Pour en savoir plus :', 'fig.enlarge': 'Agrandir l’image',
     'learn.back.to': 'Retour à {where}',
 

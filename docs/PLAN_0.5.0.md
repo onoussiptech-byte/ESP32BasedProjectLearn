@@ -132,9 +132,9 @@ the code goes. The build checks that every firmware line is taught somewhere.
 Not used by AquaNode, kept as reference only: LM317, CJQ4435, and the DFRobot SEN0161-V2 page, kept as the PDF
 `docs/DFRobot_SEN0161-V2_pH_sensor.pdf` (another pH board).
 
-Large documents on phones: a document over 8 MB (FAO manual 59 MB, ESP-IDF guide 39 MB, TRM 10 MB) goes to the phones as a
+Large documents on phones: a document over 2 MB (FAO manual, ESP-IDF guide, TRM, LM2596, ADS1115...) goes to the phones as a
 light copy built by `build.py`: the same number of pages, so every link opens the same page, but only the cited pages and
-the page after each keep their content. The computer version always carries the full documents.
+the page after each keep their content, as pictures (130 dpi), so 0.8.0 phones store 21 MB. The computer version always carries the full documents.
 
 ## 8. Sub-lesson 3.1.3 (written in 0.8.0) "Aquaponics Structure and Code folders packages structure"
 
@@ -150,6 +150,43 @@ Planned pages (1 to 4), with the 7 parts:
 | 4 | 5 PlatformIO, 6 pitfalls, 7 conclusion | Where each folder lives in the PlatformIO project (nothing to run yet, PlatformIO comes in 3.1.7); pitfalls: mixing modules across folders, wrong include path, units in the manuals (gallons, inches: give litres, cm) | fao: Appendix 6; srac: Management, Water quality | - |
 
 Quiz: 8 questions, at least 4 types (order of the water path, match folder to work package, include path code output...).
+
+## 8b. Sub-lesson 3.1.4 (written in 0.9.0) "ESP32 pins and the Aquaponic project circuit"
+
+FR: "Les broches de l'ESP32 et le circuit du projet aquaponique". Prepared: the title (EN/FR), the diagram tool and the `diagram` lesson block.
+Tool: SVG.js 3.2.8 (MIT) only, with our kit `src/templates/js/diagrams.js` (see `src/diagrams/README.md`). No simulation in the app, so
+CircuitJS1 is not installed; Mermaid, JSXGraph, WaveDrom, KaTeX are not needed for this sub-lesson. Parts the kit does not have (ESP32 DevKit,
+PH-4502C board, ADS1115, LM2596 module, YF-S201, DS18B20, float switch, adapter) are drawn as named rectangles with professionally named pins.
+
+Two diagrams (files to write with the lesson):
+
+1. `src/diagrams/esp32-pins.js`: the ESP32 DevKit V1 (30 pin) as a box "ESP32 DevKit V1 (ESP32-WROOM-32)", 15 pins per side, each pin tappable.
+   - Left side: EN, VP/GPIO36, VN/GPIO39, GPIO34, GPIO35, GPIO32, GPIO33, GPIO25, GPIO26, GPIO27, GPIO14, GPIO12, GPIO13, GND, VIN.
+   - Right side: GPIO23, GPIO22, TX0/GPIO1, RX0/GPIO3, GPIO21, GPIO19, GPIO18, GPIO5, GPIO17, GPIO16, GPIO4, GPIO2, GPIO15, GND, 3V3.
+   - Roles (colours): used = 21 SDA, 22 SCL, 4 DS18B20, 34 flow (input only), 27 float switch, 25 pump PWM, 26 aerator, 33 dosing, 32 heater,
+     2 status LED; reserved = 35 pH fallback (ADC1); spare = 13, 14, 16, 17; avoid = 0, 12, 15 (strapping), 1/3 (USB serial),
+     6 to 11 (internal flash, not on the header); input only = 34, 35, 36, 39; power = VIN 5 V, 3V3, GND; EN = reset.
+   - Note: ADC2 pins do not work with Wi-Fi on, so analogue inputs stay on ADC1 (32 to 39).
+2. `src/diagrams/aquanode-circuit.js`: the whole circuit, wires in the ICD colours (red 19 V, orange 12 V, pink 5 V, black GND, yellow signals).
+   - Power: laptop adapter 19 V (>= 3 A) -> DC jack -> fuse 3 A -> LM2596 #1 (12.0 V) and LM2596 #2 (5.0 V); star ground at the adapter negative.
+   - 5 V rail: ESP32 VIN, PH-4502C V+, YF-S201 VCC, dosing pump; 3.3 V (ESP32 3V3): ADS1115 VDD, DS18B20 VDD, pull-ups.
+   - Sensors: PH-4502C Po -> 10 k / 15 k divider -> ADS1115 A0; ADS1115 SDA/SCL -> GPIO21/22, ADDR -> GND (0x48);
+     DS18B20 DQ -> GPIO4 with 4.7 k to 3.3 V; YF-S201 signal -> 10 k / 15 k divider -> GPIO34; float switch GPIO27 to GND (internal pull-up).
+   - Outputs, each: IRLZ44N low side, 220 ohm gate resistor, 10 k gate pull-down, load to drain, source to GND, flyback diode on motors:
+     Q1 GPIO25 pump (12 V, PWM 20 kHz), Q2 GPIO26 air pump (12 V) with the SPDT bypass "ALWAYS ON / ESP32", Q3 GPIO33 dosing pump (5 V),
+     Q4 GPIO32 heater demo 2 x 47 ohm 5 W in parallel (12 V, about 6 W, no diode needed).
+   - Animated current flow on the rails (optional), info text on every part and pin.
+
+Planned pages (1 to 4):
+
+| Page | Content | References (doc key: section) |
+|---|---|---|
+| 1 | ESP32 pins in general: power pins, GPIO, input-only pins, ADC1/ADC2, strapping pins, flash pins, UART0; diagram `esp32-pins` | datasheet: 2.2 Pin Overview (p14), 2.3.1 Restrictions (p17), 3 Boot Configurations (p22), 4.8.1 GPIO (p36), 4.9.1 ADC (p43); hwdesign: Strapping Pins (p16), GPIO (p17), ADC (p18) |
+| 2 | The AquaNode pin map: which pins are used and why, which are spare or avoided; the firmware `namespace pins` | firmware: `include/config.h` namespace pins; ICD 4.2 |
+| 3 | The whole circuit: diagram `aquanode-circuit`; the power path and rails | lm2596; fuse; dcjack; irlz44n; d1n5819 / d1n4007; toggle; resistor_sqp |
+| 4 | Brief explanation of each block (sensors and their conditioning, outputs and flyback, safety: fuse, bypass, pull-downs), pitfalls, conclusion | ph4502c; ads1115; ds18b20; yfs201; floatswitch; waterpump; airpump; dosingpump; fao: 4.2.6 aeration; srac: Movement of water |
+
+Quiz: 8 questions, at least 4 types (match pin to role, which pin to avoid, divider output voltage, why a flyback diode...).
 
 ## 9. Order of work
 

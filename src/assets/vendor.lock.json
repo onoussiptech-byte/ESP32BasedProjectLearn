@@ -23,5 +23,30 @@
   "version": "4.10.38",
   "url": "https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-4.10.38.tgz",
   "sha256": "1011b38553532d7078c59f26b15a471f8dae00f101b60e2add9b8511737a1ce0"
+ },
+ "@svgdotjs/svg.js": {
+  "version": "3.2.8",
+  "url": "https://registry.npmjs.org/@svgdotjs/svg.js/-/svg.js-3.2.8.tgz",
+  "sha256": "71c1798f9f542a2cee5a1ddd078972c119caec34778be4b8a947f56f69f785a7"
+ },
+ "katex": {
+  "version": "0.16.11",
+  "url": "https://registry.npmjs.org/katex/-/katex-0.16.11.tgz",
+  "sha256": "8c5494c5f7d8e8bf73ff3fe64d4bd09a340e4878b7eec9bbd9ef8d8f3e24193f"
+ },
+ "wavedrom": {
+  "version": "3.5.0",
+  "url": "https://registry.npmjs.org/wavedrom/-/wavedrom-3.5.0.tgz",
+  "sha256": "7efce288c7e1e6f4072ba93345592ccd1e09442817a91cc2f3b351b777b6b0e9"
+ },
+ "jsxgraph": {
+  "version": "1.10.1",
+  "url": "https://registry.npmjs.org/jsxgraph/-/jsxgraph-1.10.1.tgz",
+  "sha256": "3dd7e4d7208dae6050618c45b32f2e0bd16aebc8e8fc92de2f2d7be13cc4969e"
+ },
+ "mermaid": {
+  "version": "11.4.1",
+  "url": "https://registry.npmjs.org/mermaid/-/mermaid-11.4.1.tgz",
+  "sha256": "ec7b61b391aaa24bf666fd20e48d0a626eeb4a95b95bc6b3016a122d7f0bc2af"
  }
 }
