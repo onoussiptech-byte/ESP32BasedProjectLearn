@@ -82,6 +82,7 @@
         i < b.items.length - 1 ? h('span', { class: 'flow-arrow', 'aria-hidden': 'true' }, icon('arrow-right')) : null]));
       case 'steps': return h('ol', { class: 'steps' }, b.items.map((it) => h('li', null, h('div', null, h('b', null, L(it.title)), h('p', null, rich(it.text))))));
       case 'figure': return UI.figureBlock(b.name, rich(b.caption));
+      case 'diagram': return Diagrams.block(b.name, b.caption ? h('span', null, rich(b.caption)) : null);
       case 'gallery': return h('div', { class: 'gallery' }, b.items.map((it) => h('section', { class: 'gal-card' },
         it.name ? UI.figureBlock(it.name, null) : h('div', { class: 'gal-icon' }, icon(it.icon)),
         h('div', { class: 'gal-text' }, h('b', null, L(it.title)), h('p', null, rich(it.text)),

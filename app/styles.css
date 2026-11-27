@@ -451,6 +451,33 @@ button.chip-link:hover { background: var(--blue-100); transform: translateY(-1px
 .pdf-num { font-weight: 600; font-size: 13.5px; min-width: 92px; text-align: center; font-variant-numeric: tabular-nums; }
 .pdf-body { flex: 1; overflow: auto; padding: 8px; outline: none; } .pdf-page { display: block; margin: 0 auto; background: #fff; box-shadow: var(--shadow); }
 .pdf-err { max-width: 420px; margin: 16vh auto 0; padding: 0 16px; text-align: center; color: var(--muted); } .pdf-err .ic { width: 40px; height: 40px; color: var(--amber); }
+.dg { margin: 16px 0; position: relative; } .dg-holder { border: 1px solid var(--line); border-radius: 14px; background: var(--card); padding: 8px; overflow-x: auto; min-height: 120px; }
+.dg-holder.big { border: 0; padding: 0; } .dg-svg { display: block; width: 100%; height: auto; min-width: 560px; } .dg-holder.big .dg-svg { min-width: 760px; }
+.dg-big { position: absolute; top: 8px; right: 8px; z-index: 2; width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--line); background: var(--card-2); display: grid; place-items: center; color: var(--muted); }
+.dg figcaption { margin-top: 8px; font-size: 13px; color: var(--muted); text-align: center; }
+.dg-info { display: flex; gap: 8px; align-items: flex-start; margin-top: 8px; padding: 8px 12px; border-radius: 10px; background: var(--blue-50); font-size: 13px; min-height: 38px; } .dg-info .ic { color: var(--blue-500); margin-top: 2px; }
+.dg-err { display: flex; gap: 8px; align-items: center; color: var(--muted); }
+.dg-text { fill: var(--text); font-family: var(--font); } .dg-muted { fill: var(--muted); } .dg-net { fill: var(--muted); font-style: italic; }
+.dg-svg line, .dg-svg polyline { stroke: var(--text); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.dg-fill, .dg-head { fill: var(--text); stroke: none; } .dg-hollow { fill: var(--card); stroke: var(--text); stroke-width: 2; }
+.dg-dot { fill: var(--text); }
+.dg-box rect { fill: var(--card-2); stroke: var(--blue-500); stroke-width: 2; }
+.dg-chip-body { fill: var(--blue-50); stroke: var(--blue-600); stroke-width: 2.2; }
+.dg-pin-end { fill: var(--card); stroke: var(--text); stroke-width: 1.5; }
+.dg-pin.used line { stroke: var(--green); stroke-width: 3; } .dg-pin.avoid line { stroke: var(--red); } .dg-pin.power line { stroke: var(--orange); } .dg-pin.free line { stroke: var(--grey); }
+.dg-pin.input line { stroke: var(--amber); } .dg-pin.spare line { stroke: var(--blue-500); stroke-width: 2.5; } .dg-pin.gnd line { stroke: var(--text); }
+.dg-wire.v19 polyline, line.dg-wire.v19 { stroke: #e0413a; stroke-width: 3; } .dg-wire.v12 polyline, line.dg-wire.v12 { stroke: #f26b1d; stroke-width: 3; }
+.dg-wire.v5 polyline, line.dg-wire.v5 { stroke: #e05aa8; stroke-width: 3; } .dg-wire.v33 polyline, line.dg-wire.v33 { stroke: var(--blue-500); stroke-width: 2.5; }
+.dg-wire.gnd polyline, line.dg-wire.gnd { stroke: var(--text); stroke-width: 2.5; } .dg-wire.sig polyline, line.dg-wire.sig { stroke: #d99a00; stroke-width: 2; }
+.dg-wire.data polyline, line.dg-wire.data { stroke: var(--green); stroke-width: 2; } .dg-dash polyline { stroke-dasharray: 6 5; }
+.dg-flow polyline { stroke-dasharray: 9 7; animation: dg-flow 1.2s linear infinite; } @keyframes dg-flow { to { stroke-dashoffset: -16; } }
+.dg-hot { cursor: pointer; } .dg-hot:hover line, .dg-hot:hover polyline, .dg-on line, .dg-on polyline { filter: drop-shadow(0 0 3px var(--blue-400)); }
+.dg-hot:hover rect, .dg-on rect { stroke-width: 3; }
+.dg-svg.dg-off { display: none; } .dg-panels:empty { display: none; } .dg-panels { display: grid; gap: 10px; margin-top: 8px; }
+.dg-panel { background: #fff; color: #14213d; border-radius: 10px; padding: 8px; overflow-x: auto; } .dg-panel svg { max-width: 100%; height: auto; }
+.dg-graph { padding: 0; overflow: hidden; } .dg-graph .jxgbox { border: 0; border-radius: 10px; background: #fff; }
+.dg-info[hidden] { display: none; } .dg-math { color: var(--text); line-height: 1.2; display: flex; align-items: center; } .dg-quiz { margin: 12px 0; }
+.dg-math[style*="center"] { justify-content: center; } .dg-math[style*="right"] { justify-content: flex-end; }
 .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 14px; margin: 16px 0; }
 .gal-card { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
 .gal-card .fig { margin: 0; } .gal-card .fig-open { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; height: 160px; display: grid; place-items: center; } .gal-card .fig-img { max-height: 138px; } .gal-card figcaption { display: none; }
