@@ -457,7 +457,7 @@ button.chip-link:hover { background: var(--blue-100); transform: translateY(-1px
 .dg figcaption { margin-top: 8px; font-size: 13px; color: var(--muted); text-align: center; }
 .dg-info { display: flex; gap: 8px; align-items: flex-start; margin-top: 8px; padding: 8px 12px; border-radius: 10px; background: var(--blue-50); font-size: 13px; min-height: 38px; } .dg-info .ic { color: var(--blue-500); margin-top: 2px; }
 .dg-err { display: flex; gap: 8px; align-items: center; color: var(--muted); }
-.dg-text { fill: var(--text); font-family: var(--font); } .dg-muted { fill: var(--muted); } .dg-net { fill: var(--muted); font-style: italic; }
+.dg-text { fill: var(--text); font-family: var(--font); } .dg-text.dg-mono { font-family: var(--mono); } .dg-muted { fill: var(--muted); } .dg-net { fill: var(--muted); font-style: italic; }
 .dg-svg line, .dg-svg polyline { stroke: var(--text); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .dg-fill, .dg-head { fill: var(--text); stroke: none; } .dg-hollow { fill: var(--card); stroke: var(--text); stroke-width: 2; }
 .dg-dot { fill: var(--text); }

@@ -3,7 +3,7 @@
  * - Anything else (other origins, online links, POSTs): passed straight through, never touched or blocked.
  * - A new version waits until the app asks for it: at start, or when the person taps "Reload". Versions up to 0.7.1
  *   only had the message, so a new version takes over from them by itself. */
-const CACHE = 'esp32tour-v0.9.0';
+const CACHE = 'esp32tour-v1.0.0';
 const DOCS = 'esp32tour-docs-1';        // documents and PDF viewer: kept when the app is updated, not downloaded again
 const FILES = [
  "./",
@@ -34,7 +34,10 @@ const FILES = [
  "content/t3.l01.s02.js",
  "content/t3.l01.s03.js",
  "content/t3.l01.s04.js",
+ "content/t3.l01.s05.js",
  "diagrams/aquanode-circuit.js",
+ "diagrams/aquanode-messages.js",
+ "diagrams/aquanode-modes.js",
  "diagrams/esp32-pins.js",
  "diagrams/q314-divider.js",
  "diagrams/q314-pins.js",
