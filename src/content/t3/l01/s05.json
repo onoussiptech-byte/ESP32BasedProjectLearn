@@ -1,0 +1,1027 @@
+{
+ "id": "t3.l01.s05",
+ "summary": {
+  "en": "How AquaNode and the phone talk (status lines, commands and replies), which alarms it raises, and the safe states it always keeps, phone or no phone.",
+  "fr": "Comment AquaNode et le téléphone se parlent (lignes d’état, commandes et réponses), quelles alarmes il lève, et les états sûrs qu’il garde toujours, avec ou sans téléphone."
+ },
+ "goals": [
+  {
+   "en": "Read a status message field by field and write the four commands.",
+   "fr": "Lire un message d’état champ par champ et écrire les quatre commandes."
+  },
+  {
+   "en": "Say which link carries what: HTTP over the Wi-Fi access point, or JSON lines over Bluetooth.",
+   "fr": "Dire quel lien transporte quoi : HTTP sur le point d’accès Wi-Fi, ou lignes JSON en Bluetooth."
+  },
+  {
+   "en": "Give the cause and the effect of each alarm, and their order of priority.",
+   "fr": "Donner la cause et l’effet de chaque alarme, et leur ordre de priorité."
+  },
+  {
+   "en": "List the safe defaults: boot, low water, phone gone, manual override, sensor fault, crash.",
+   "fr": "Lister les états sûrs : démarrage, eau basse, téléphone parti, commande manuelle, panne de capteur, plantage."
+  }
+ ],
+ "pages": [
+  {
+   "id": "p1",
+   "title": {
+    "en": "Messages between AquaNode and the phone",
+    "fr": "Les messages entre AquaNode et le téléphone"
+   },
+   "blocks": [
+    {
+     "type": "h",
+     "id": "why",
+     "text": {
+      "en": "1. Why this lesson",
+      "fr": "1. Pourquoi cette leçon"
+     }
+    },
+    {
+     "type": "p",
+     "text": {
+      "en": "In [[3.1.1|t3.l01.s01/p2#phone]] you read your first status line. In [[3.1.4|t3.l01.s04/p3#circuit]] you saw every wire. Now we look at the **conversation**: what AquaNode says, what the phone may ask, and what happens when something goes wrong. The rule of the project is simple: **the phone asks, AquaNode decides**, and the water stays safe even with no phone at all.",
+      "fr": "En [[3.1.1|t3.l01.s01/p2#phone]], vous avez lu votre première ligne d’état. En [[3.1.4|t3.l01.s04/p3#circuit]], vous avez vu chaque fil. Regardons maintenant la **conversation** : ce que dit AquaNode, ce que le téléphone peut demander, et ce qui se passe quand quelque chose va mal. La règle du projet est simple : **le téléphone demande, AquaNode décide**, et l’eau reste sûre même sans téléphone."
+     }
+    },
+    {
+     "type": "facts",
+     "items": [
+      {
+       "value": "1 s",
+       "label": {
+        "en": "a status line is sent every second",
+        "fr": "une ligne d’état est envoyée chaque seconde"
+       }
+      },
+      {
+       "value": "11",
+       "label": {
+        "en": "fields in each status line",
+        "fr": "champs dans chaque ligne d’état"
+       }
+      },
+      {
+       "value": "4",
+       "label": {
+        "en": "commands: set, mode, setpoint, cal",
+        "fr": "commandes : set, mode, setpoint, cal"
+       }
+      },
+      {
+       "value": "5",
+       "label": {
+        "en": "alarm codes, from LOW_WATER to PH_RANGE",
+        "fr": "codes d’alarme, de LOW_WATER à PH_RANGE"
+       }
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "id": "links",
+     "text": {
+      "en": "2. Useful concepts: two links, one language",
+      "fr": "2. Notions utiles : deux liens, une seule langue"
+     }
+    },
+    {
+     "type": "p",
+     "text": {
+      "en": "The ESP32 creates its own Wi-Fi network, `AQUA-NODE`, at the address `192.168.4.1`: there is no router and no internet. Over it the phone uses **HTTP**: it *requests* a page or the status, and *posts* a command. The ESP32 also offers **Bluetooth serial** (SPP), named `AQUA-NODE` too: there, AquaNode pushes one JSON line every second, and the phone writes one JSON line per command. Both links speak exactly the same JSON, because one module, `JsonProtocol`, writes and reads it for all of them. **Tap an arrow** in the drawing.",
+      "fr": "L’ESP32 crée son propre réseau Wi-Fi, `AQUA-NODE`, à l’adresse `192.168.4.1` : pas de routeur, pas d’internet. Le téléphone y utilise **HTTP** : il *demande* une page ou l’état, et *envoie* une commande. L’ESP32 offre aussi un **Bluetooth série** (SPP), nommé `AQUA-NODE` lui aussi : là, AquaNode envoie de lui-même une ligne JSON chaque seconde, et le téléphone écrit une ligne JSON par commande. Les deux liens parlent exactement le même JSON, car un seul module, `JsonProtocol`, l’écrit et le lit pour tous. **Touchez une flèche** du dessin."
+     }
+    },
+    {
+     "type": "diagram",
+     "name": "aquanode-messages",
+     "caption": {
+      "en": "The same JSON travels on Wi-Fi (HTTP) and on Bluetooth (one line per message).",
+      "fr": "Le même JSON circule en Wi-Fi (HTTP) et en Bluetooth (une ligne par message)."
+     }
+    },
+    {
+     "type": "table",
+     "head": [
+      {
+       "en": "Field",
+       "fr": "Champ"
+      },
+      {
+       "en": "Meaning",
+       "fr": "Sens"
+      },
+      {
+       "en": "Example",
+       "fr": "Exemple"
+      }
+     ],
+     "rows": [
+      [
+       "up",
+       {
+        "en": "seconds since the last start",
+        "fr": "secondes depuis le dernier démarrage"
+       },
+       "3600"
+      ],
+      [
+       "ph, temp, flow",
+       {
+        "en": "pH (2 decimals), water °C, flow in L/min",
+        "fr": "pH (2 décimales), °C de l’eau, débit en L/min"
+       },
+       "6.82, 26.4, 1.4"
+      ],
+      [
+       "level",
+       {
+        "en": "1 = water OK, 0 = low water",
+        "fr": "1 = eau correcte, 0 = eau basse"
+       },
+       "1"
+      ],
+      [
+       "pump",
+       {
+        "en": "circulation pump duty, 0 to 100 %",
+        "fr": "rapport cyclique de la pompe, 0 à 100 %"
+       },
+       "60"
+      ],
+      [
+       "aer, dose, heat",
+       {
+        "en": "air pump, dosing pump, heater: 1 = ON",
+        "fr": "pompe à air, pompe doseuse, chauffage : 1 = en marche"
+       },
+       "1, 0, 0"
+      ],
+      [
+       "mode",
+       {
+        "en": "AUTO or MANUAL",
+        "fr": "AUTO ou MANUAL"
+       },
+       "\"AUTO\""
+      ],
+      [
+       "alarm",
+       {
+        "en": "the most urgent active alarm, \"\" when none",
+        "fr": "l’alarme active la plus urgente, \"\" s’il n’y en a pas"
+       },
+       "\"\""
+      ]
+     ]
+    },
+    {
+     "type": "h",
+     "id": "code",
+     "text": {
+      "en": "3. The code: one builder, one parser",
+      "fr": "3. Le code : un constructeur, un analyseur"
+     }
+    },
+    {
+     "type": "p",
+     "text": {
+      "en": "The status line is built every second, so it is written with `snprintf` into a fixed buffer: no memory is allocated, nothing can leak during a 24-hour run. The field names are written here once, exactly as in the interface document.",
+      "fr": "La ligne d’état est construite chaque seconde : elle est écrite avec `snprintf` dans un tampon fixe, sans allocation de mémoire, donc rien ne peut fuir pendant 24 heures de marche. Les noms des champs sont écrits ici une seule fois, exactement comme dans le document d’interface."
+     }
+    },
+    {
+     "type": "code",
+     "firmware": "src/e2_core/JsonProtocol.cpp",
+     "start": "size_t buildStatus(const StatusSnapshot& s, char* buf, size_t len) {",
+     "end": "return (n > 0 && static_cast<size_t>(n) < len)"
+    },
+    {
+     "type": "p",
+     "text": {
+      "en": "A command is checked **before** anything moves. A wrong value is refused with a short reason, and the outputs do not change:",
+      "fr": "Une commande est vérifiée **avant** que quoi que ce soit ne bouge. Une valeur fausse est refusée avec une courte raison, et les sorties ne changent pas :"
+     }
+    },
+    {
+     "type": "table",
+     "head": [
+      {
+       "en": "Command",
+       "fr": "Commande"
+      },
+      {
+       "en": "What it does",
+       "fr": "Ce qu’elle fait"
+      },
+      {
+       "en": "Refused when…",
+       "fr": "Refusée quand…"
+      }
+     ],
+     "rows": [
+      [
+       "{\"cmd\":\"set\",\"pump\":70} · {\"cmd\":\"set\",\"aer\":1}",
+       {
+        "en": "pump duty or air pump (used in MANUAL)",
+        "fr": "rapport de la pompe ou pompe à air (utilisé en MANUAL)"
+       },
+       {
+        "en": "pump outside 0–100: \"pump 0-100\"; aer not 0/1: \"aer 0/1\"",
+        "fr": "pompe hors 0–100 : \"pump 0-100\" ; aer pas 0/1 : \"aer 0/1\""
+       }
+      ],
+      [
+       "{\"cmd\":\"mode\",\"value\":\"AUTO\"}",
+       {
+        "en": "switch AUTO / MANUAL",
+        "fr": "passer en AUTO / MANUAL"
+       },
+       "\"value AUTO|MANUAL\""
+      ],
+      [
+       "{\"cmd\":\"setpoint\",\"ph\":6.8,\"temp\":27}",
+       {
+        "en": "new pH and temperature targets, kept in flash",
+        "fr": "nouvelles cibles de pH et de température, gardées en flash"
+       },
+       {
+        "en": "pH outside 6.0–7.5 or temperature outside its band",
+        "fr": "pH hors 6,0–7,5 ou température hors de sa plage"
+       }
+      ],
+      [
+       "{\"cmd\":\"cal\",\"ph\":\"7.00\"}",
+       {
+        "en": "one pH calibration step (7.00, then 4.01)",
+        "fr": "une étape d’étalonnage du pH (7,00, puis 4,01)"
+       },
+       {
+        "en": "not a known buffer: 4.01, 6.86, 7.00, 9.18",
+        "fr": "pas un tampon connu : 4,01, 6,86, 7,00, 9,18"
+       }
+      ]
+     ]
+    },
+    {
+     "type": "refs",
+     "items": [
+      {
+       "doc": "arduino",
+       "page": "api/wifi",
+       "section": "Working as AP"
+      },
+      {
+       "doc": "arduino",
+       "page": "api/bluetooth",
+       "section": "Stream interface"
+      },
+      {
+       "doc": "idf",
+       "section": "HTTP Server",
+       "page": 219
+      }
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "doc": "arduino",
+     "page": "api/wifi",
+     "section": "Working as AP"
+    },
+    {
+     "doc": "arduino",
+     "page": "api/bluetooth",
+     "section": "Stream interface"
+    },
+    {
+     "doc": "idf",
+     "section": "HTTP Server",
+     "page": 219
+    },
+    {
+     "doc": "idf",
+     "section": "SPP API"
+    }
+   ]
+  },
+  {
+   "id": "p2",
+   "title": {
+    "en": "Alarms, safe defaults, pitfalls and conclusion",
+    "fr": "Alarmes, états sûrs, pièges et conclusion"
+   },
+   "blocks": [
+    {
+     "type": "h",
+     "id": "alarms",
+     "text": {
+      "en": "The five alarms",
+      "fr": "Les cinq alarmes"
+     }
+    },
+    {
+     "type": "table",
+     "head": [
+      {
+       "en": "Code",
+       "fr": "Code"
+      },
+      {
+       "en": "Raised when",
+       "fr": "Levée quand"
+      },
+      {
+       "en": "What AquaNode does",
+       "fr": "Ce que fait AquaNode"
+      }
+     ],
+     "rows": [
+      [
+       "LOW_WATER",
+       {
+        "en": "the float switch reads LOW for 0.3 s",
+        "fr": "le flotteur lit LOW pendant 0,3 s"
+       },
+       {
+        "en": "pump, dosing and heater OFF; pump back only after 3 s of good level",
+        "fr": "pompe, dosage et chauffage arrêtés ; pompe relancée seulement après 3 s de niveau correct"
+       }
+      ],
+      [
+       "NO_FLOW",
+       {
+        "en": "the pump runs (30 % or more) but the flow stays under 0.5 L/min for 20 s",
+        "fr": "la pompe tourne (30 % ou plus) mais le débit reste sous 0,5 L/min pendant 20 s"
+       },
+       {
+        "en": "keeps the last pump duty, no dosing (the water is not mixing)",
+        "fr": "garde le dernier rapport de pompe, pas de dosage (l’eau ne se mélange pas)"
+       }
+      ],
+      [
+       "SENSOR_FAULT",
+       {
+        "en": "pH or temperature invalid 3 times in a row",
+        "fr": "pH ou température invalide 3 fois de suite"
+       },
+       {
+        "en": "holds the last safe state, stops dosing",
+        "fr": "garde le dernier état sûr, arrête le dosage"
+       }
+      ],
+      [
+       "TEMP_RANGE",
+       {
+        "en": "water under 20 °C or over 32 °C",
+        "fr": "eau sous 20 °C ou au-dessus de 32 °C"
+       },
+       {
+        "en": "warns the phone; the heater control goes on",
+        "fr": "avertit le téléphone ; la régulation du chauffage continue"
+       }
+      ],
+      [
+       "PH_RANGE",
+       {
+        "en": "pH under 6.0 or over 7.5",
+        "fr": "pH sous 6,0 ou au-dessus de 7,5"
+       },
+       {
+        "en": "warns the phone; the dose-and-wait control goes on",
+        "fr": "avertit le téléphone ; la régulation dose-et-attente continue"
+       }
+      ]
+     ]
+    },
+    {
+     "type": "p",
+     "text": {
+      "en": "Several alarms can be active at once (one bit each), but the `alarm` field has room for one code: the **most urgent** is sent. A dry pump is worse than a slightly wrong pH, so the order is fixed in the code:",
+      "fr": "Plusieurs alarmes peuvent être actives ensemble (un bit chacune), mais le champ `alarm` n’a de place que pour un code : la **plus urgente** est envoyée. Une pompe à sec est plus grave qu’un pH un peu faux, donc l’ordre est fixé dans le code :"
+     }
+    },
+    {
+     "type": "code",
+     "firmware": "src/e2_core/JsonProtocol.cpp",
+     "start": "const char* alarmCode(uint8_t a) {",
+     "end": "return \"\";                                   // no alarm"
+    },
+    {
+     "type": "h",
+     "id": "defaults",
+     "text": {
+      "en": "Safe defaults: what must always hold",
+      "fr": "États sûrs : ce qui doit toujours tenir"
+     }
+    },
+    {
+     "type": "diagram",
+     "name": "aquanode-modes",
+     "caption": {
+      "en": "Boot, AUTO and MANUAL, with the safety task above both.",
+      "fr": "Démarrage, AUTO et MANUAL, avec la tâche de sécurité au-dessus des deux."
+     }
+    },
+    {
+     "type": "table",
+     "head": [
+      {
+       "en": "Situation",
+       "fr": "Situation"
+      },
+      {
+       "en": "Required behaviour",
+       "fr": "Comportement exigé"
+      }
+     ],
+     "rows": [
+      [
+       {
+        "en": "Boot or reset",
+        "fr": "Démarrage ou reset"
+       },
+       {
+        "en": "Air pump ON, pump ramps to 60 %, dosing OFF, heater OFF",
+        "fr": "Pompe à air en marche, pompe montée à 60 %, dosage arrêté, chauffage arrêté"
+       }
+      ],
+      [
+       {
+        "en": "Low water",
+        "fr": "Eau basse"
+       },
+       {
+        "en": "Pump OFF, dosing OFF, alarm LOW_WATER",
+        "fr": "Pompe arrêtée, dosage arrêté, alarme LOW_WATER"
+       }
+      ],
+      [
+       {
+        "en": "Phone or app disconnected",
+        "fr": "Téléphone ou appli déconnecté"
+       },
+       {
+        "en": "Keep running with the last settings in AUTO",
+        "fr": "Continuer avec les derniers réglages en AUTO"
+       }
+      ],
+      [
+       {
+        "en": "Manual override",
+        "fr": "Commande manuelle"
+       },
+       {
+        "en": "Expires after 30 minutes and returns to AUTO",
+        "fr": "Expire après 30 minutes et revient en AUTO"
+       }
+      ],
+      [
+       {
+        "en": "Sensor fault",
+        "fr": "Panne de capteur"
+       },
+       {
+        "en": "Hold the last safe state, raise SENSOR_FAULT, stop dosing",
+        "fr": "Garder le dernier état sûr, lever SENSOR_FAULT, arrêter le dosage"
+       }
+      ],
+      [
+       {
+        "en": "ESP32 crashed",
+        "fr": "ESP32 planté"
+       },
+       {
+        "en": "Air pump stays powered through the bypass switch; the 5 s watchdog restarts the board",
+        "fr": "La pompe à air reste alimentée par l’interrupteur de secours ; le chien de garde de 5 s redémarre la carte"
+       }
+      ]
+     ]
+    },
+    {
+     "type": "p",
+     "text": {
+      "en": "These rules are enforced by the safety task, every 100 ms and at the highest priority. Whatever the mode or the last command, its locks are applied just before the outputs are updated:",
+      "fr": "Ces règles sont imposées par la tâche de sécurité, toutes les 100 ms et à la plus haute priorité. Quels que soient le mode ou la dernière commande, ses verrous sont appliqués juste avant la mise à jour des sorties :"
+     }
+    },
+    {
+     "type": "code",
+     "firmware": "src/e2_core/SafetyManager.cpp",
+     "start": "OutputManager::setPumpInhibit(lowWater);",
+     "end": "OutputManager::service(elapsed);"
+    },
+    {
+     "type": "h",
+     "id": "development",
+     "text": {
+      "en": "4. Development and 5. PlatformIO",
+      "fr": "4. Développement et 5. PlatformIO"
+     }
+    },
+    {
+     "type": "list",
+     "items": [
+      {
+       "en": "The app is first tested against a small Python **mock server** that answers `/api/status` and `/api/cmd` with the same JSON, before any hardware exists.",
+       "fr": "L’appli est d’abord testée contre un petit **serveur simulé** en Python qui répond à `/api/status` et `/api/cmd` avec le même JSON, avant tout matériel."
+      },
+      {
+       "en": "On the board, each safe default is tested on purpose: unplug a sensor, lift the float, switch the phone off, wait 30 min in MANUAL, press reset.",
+       "fr": "Sur la carte, chaque état sûr est testé exprès : débrancher un capteur, soulever le flotteur, éteindre le téléphone, attendre 30 min en MANUAL, appuyer sur reset."
+      },
+      {
+       "en": "In PlatformIO, the `SIM_MODE` build prints the same status lines on the USB serial monitor, which replaces Bluetooth in simulation.",
+       "fr": "Dans PlatformIO, la compilation `SIM_MODE` écrit les mêmes lignes d’état sur le moniteur série USB, qui remplace le Bluetooth en simulation."
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "id": "pitfalls",
+     "text": {
+      "en": "6. Pitfalls",
+      "fr": "6. Pièges"
+     }
+    },
+    {
+     "type": "table",
+     "head": [
+      {
+       "en": "Pitfall",
+       "fr": "Piège"
+      },
+      {
+       "en": "What to do",
+       "fr": "Que faire"
+      }
+     ],
+     "rows": [
+      [
+       {
+        "en": "A field renamed in the app (\"temperature\" instead of \"temp\")",
+        "fr": "Un champ renommé dans l’appli (\"temperature\" au lieu de \"temp\")"
+       },
+       {
+        "en": "Keep every name exactly as in the interface document; the firmware never changes them.",
+        "fr": "Garder chaque nom exactement comme dans le document d’interface ; le firmware ne les change jamais."
+       }
+      ],
+      [
+       {
+        "en": "A Bluetooth command sent without the final newline",
+        "fr": "Une commande Bluetooth envoyée sans le retour à la ligne final"
+       },
+       {
+        "en": "AquaNode waits for the end of the line: always end with \\n.",
+        "fr": "AquaNode attend la fin de la ligne : toujours finir par \\n."
+       }
+      ],
+      [
+       {
+        "en": "Reading only \"alarm\" and missing a second alarm",
+        "fr": "Lire seulement \"alarm\" et manquer une deuxième alarme"
+       },
+       {
+        "en": "Fix the most urgent one first; the next one then appears in the field.",
+        "fr": "Régler d’abord la plus urgente ; la suivante apparaît alors dans le champ."
+       }
+      ],
+      [
+       {
+        "en": "Trusting the app to stop a pump",
+        "fr": "Compter sur l’appli pour arrêter une pompe"
+       },
+       {
+        "en": "Safety lives in the firmware and the hardware (float switch, bypass), never only in the phone.",
+        "fr": "La sécurité est dans le firmware et le matériel (flotteur, secours), jamais seulement dans le téléphone."
+       }
+      ]
+     ]
+    },
+    {
+     "type": "h",
+     "id": "conclusion",
+     "text": {
+      "en": "7. Conclusion",
+      "fr": "7. Conclusion"
+     }
+    },
+    {
+     "type": "list",
+     "items": [
+      {
+       "en": "AquaNode sends an 11-field status line every second; the phone sends one of four commands and always gets `{\"ok\":true}` or a reason.",
+       "fr": "AquaNode envoie une ligne d’état de 11 champs chaque seconde ; le téléphone envoie une des quatre commandes et reçoit toujours `{\"ok\":true}` ou une raison."
+      },
+      {
+       "en": "Five alarms, sent by urgency: LOW_WATER, NO_FLOW, SENSOR_FAULT, TEMP_RANGE, PH_RANGE.",
+       "fr": "Cinq alarmes, envoyées par urgence : LOW_WATER, NO_FLOW, SENSOR_FAULT, TEMP_RANGE, PH_RANGE."
+      },
+      {
+       "en": "Safe defaults hold in every mode: the phone can leave, MANUAL always ends, and low water always stops the pump.",
+       "fr": "Les états sûrs tiennent dans chaque mode : le téléphone peut partir, MANUAL finit toujours, et l’eau basse arrête toujours la pompe."
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "text": {
+      "en": "Next, in 3.1.6, the safety rules for the people working around the water.",
+      "fr": "Ensuite, en 3.1.6, les règles de sécurité pour les personnes qui travaillent près de l’eau."
+     }
+    },
+    {
+     "type": "refs",
+     "items": [
+      {
+       "doc": "fao_aquaponics",
+       "section": "4.2.5 Aeration"
+      },
+      {
+       "doc": "srac5007",
+       "section": "Water quality"
+      }
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "doc": "fao_aquaponics",
+     "section": "4.2.5 Aeration"
+    },
+    {
+     "doc": "srac5007",
+     "section": "Water quality"
+    },
+    {
+     "doc": "floatswitch",
+     "section": "Technical specifications"
+    },
+    {
+     "doc": "toggle",
+     "section": "MTS series: circuits and ratings"
+    }
+   ]
+  }
+ ],
+ "quiz": {
+  "questions": [
+   {
+    "id": "q1",
+    "type": "code_output",
+    "prompt": {
+     "en": "The water is low and the pH is 5.8 at the same time. What does this call return?",
+     "fr": "L’eau est basse et le pH vaut 5,8 en même temps. Que renvoie cet appel ?"
+    },
+    "code": {
+     "lang": "cpp",
+     "text": "uint8_t a = alarmbit::LOW_WATER | alarmbit::PH_RANGE;\nconst char* code = JsonProtocol::alarmCode(a);"
+    },
+    "options": [
+     {
+      "id": "a",
+      "correct": true,
+      "text": "\"LOW_WATER\""
+     },
+     {
+      "id": "b",
+      "text": "\"PH_RANGE\""
+     },
+     {
+      "id": "c",
+      "text": "\"LOW_WATER,PH_RANGE\""
+     },
+     {
+      "id": "d",
+      "text": "\"\""
+     }
+    ],
+    "explain": {
+     "en": "Both bits are set, but the field carries one code: the most urgent, LOW_WATER, is tested first.",
+     "fr": "Les deux bits sont actifs, mais le champ porte un seul code : le plus urgent, LOW_WATER, est testé en premier."
+    }
+   },
+   {
+    "id": "q2",
+    "type": "single",
+    "diagram": {
+     "name": "aquanode-modes",
+     "caption": {
+      "en": "The modes of AquaNode.",
+      "fr": "Les modes d’AquaNode."
+     }
+    },
+    "prompt": {
+     "en": "At 10:00 the phone switches AquaNode to MANUAL. At 10:05 the phone is switched off. What is the mode at 10:31?",
+     "fr": "À 10 h 00, le téléphone passe AquaNode en MANUAL. À 10 h 05, le téléphone est éteint. Quel est le mode à 10 h 31 ?"
+    },
+    "options": [
+     {
+      "id": "a",
+      "correct": true,
+      "text": {
+       "en": "AUTO: MANUAL expired after 30 min",
+       "fr": "AUTO : MANUAL a expiré après 30 min"
+      }
+     },
+     {
+      "id": "b",
+      "text": {
+       "en": "MANUAL, until the phone sends AUTO",
+       "fr": "MANUAL, jusqu’à ce que le téléphone envoie AUTO"
+      }
+     },
+     {
+      "id": "c",
+      "text": {
+       "en": "Everything stopped since 10:05",
+       "fr": "Tout est arrêté depuis 10 h 05"
+      }
+     },
+     {
+      "id": "d",
+      "text": {
+       "en": "Boot: the board restarted",
+       "fr": "Démarrage : la carte a redémarré"
+      }
+     }
+    ],
+    "explain": {
+     "en": "The phone leaving changes nothing, and a manual override always expires 30 min after it began (10:30).",
+     "fr": "Le départ du téléphone ne change rien, et une commande manuelle expire toujours 30 min après son début (10 h 30)."
+    }
+   },
+   {
+    "id": "q3",
+    "type": "multi",
+    "prompt": {
+     "en": "The float switch reports low water. What happens? Choose all that apply.",
+     "fr": "Le flotteur signale une eau basse. Que se passe-t-il ? Choisissez toutes les bonnes réponses."
+    },
+    "options": [
+     {
+      "id": "a",
+      "correct": true,
+      "text": {
+       "en": "The circulation pump stops",
+       "fr": "La pompe de circulation s’arrête"
+      }
+     },
+     {
+      "id": "b",
+      "correct": true,
+      "text": {
+       "en": "Dosing is blocked",
+       "fr": "Le dosage est bloqué"
+      }
+     },
+     {
+      "id": "c",
+      "correct": true,
+      "text": {
+       "en": "The heater stops",
+       "fr": "Le chauffage s’arrête"
+      }
+     },
+     {
+      "id": "d",
+      "correct": true,
+      "text": {
+       "en": "\"alarm\":\"LOW_WATER\" appears in the status",
+       "fr": "\"alarm\":\"LOW_WATER\" apparaît dans l’état"
+      }
+     },
+     {
+      "id": "e",
+      "text": {
+       "en": "The air pump stops",
+       "fr": "La pompe à air s’arrête"
+      }
+     },
+     {
+      "id": "f",
+      "text": {
+       "en": "The ESP32 restarts",
+       "fr": "L’ESP32 redémarre"
+      }
+     }
+    ],
+    "explain": {
+     "en": "Pump, dosing and heater are locked OFF and the alarm is sent. The air pump keeps running: the fish still need oxygen.",
+     "fr": "Pompe, dosage et chauffage sont verrouillés à l’arrêt et l’alarme est envoyée. La pompe à air continue : les poissons ont toujours besoin d’oxygène."
+    }
+   },
+   {
+    "id": "q4",
+    "type": "truefalse",
+    "answer": false,
+    "prompt": {
+     "en": "When the phone disconnects, AquaNode stops the pumps until the phone comes back.",
+     "fr": "Quand le téléphone se déconnecte, AquaNode arrête les pompes jusqu’au retour du téléphone."
+    },
+    "explain": {
+     "en": "False. AquaNode keeps running with the last settings in AUTO: the phone only shows and asks.",
+     "fr": "Faux. AquaNode continue avec les derniers réglages en AUTO : le téléphone ne fait qu’afficher et demander."
+    }
+   },
+   {
+    "id": "q5",
+    "type": "fill_blank",
+    "prompt": {
+     "en": "Complete the Wi-Fi requests by tapping a word for each blank.",
+     "fr": "Complétez les requêtes Wi-Fi en touchant un mot pour chaque trou."
+    },
+    "template": {
+     "en": "The dashboard page is {1}. The status is {2}. A command is sent with {3} to {4}.",
+     "fr": "La page du tableau de bord est {1}. L’état est {2}. Une commande est envoyée avec {3} vers {4}."
+    },
+    "choices": [
+     {
+      "id": "root",
+      "text": {
+       "en": "GET /",
+       "fr": "GET /"
+      }
+     },
+     {
+      "id": "status",
+      "text": {
+       "en": "GET /api/status",
+       "fr": "GET /api/status"
+      }
+     },
+     {
+      "id": "post",
+      "text": {
+       "en": "POST",
+       "fr": "POST"
+      }
+     },
+     {
+      "id": "cmd",
+      "text": {
+       "en": "/api/cmd",
+       "fr": "/api/cmd"
+      }
+     },
+     {
+      "id": "alarm",
+      "text": {
+       "en": "/api/alarm",
+       "fr": "/api/alarm"
+      }
+     }
+    ],
+    "blanks": {
+     "1": "root",
+     "2": "status",
+     "3": "post",
+     "4": "cmd"
+    },
+    "explain": {
+     "en": "GET / gives the page, GET /api/status the JSON, and commands are POSTed to /api/cmd. There is no /api/alarm: the alarm is a field of the status.",
+     "fr": "GET / donne la page, GET /api/status le JSON, et les commandes sont envoyées en POST vers /api/cmd. Il n’y a pas de /api/alarm : l’alarme est un champ de l’état."
+    }
+   },
+   {
+    "id": "q6",
+    "type": "order",
+    "prompt": {
+     "en": "Order the alarms from the most urgent to the least urgent, as AquaNode reports them.",
+     "fr": "Classez les alarmes de la plus urgente à la moins urgente, comme AquaNode les signale."
+    },
+    "items": [
+     {
+      "id": "low",
+      "text": {
+       "en": "LOW_WATER",
+       "fr": "LOW_WATER"
+      }
+     },
+     {
+      "id": "flow",
+      "text": {
+       "en": "NO_FLOW",
+       "fr": "NO_FLOW"
+      }
+     },
+     {
+      "id": "fault",
+      "text": {
+       "en": "SENSOR_FAULT",
+       "fr": "SENSOR_FAULT"
+      }
+     },
+     {
+      "id": "temp",
+      "text": {
+       "en": "TEMP_RANGE",
+       "fr": "TEMP_RANGE"
+      }
+     },
+     {
+      "id": "ph",
+      "text": {
+       "en": "PH_RANGE",
+       "fr": "PH_RANGE"
+      }
+     }
+    ],
+    "explain": {
+     "en": "A dry pump first, then a blocked pipe, then a blind controller, then the water out of its bands.",
+     "fr": "D’abord une pompe à sec, puis un tuyau bouché, puis un contrôleur aveugle, puis l’eau hors de ses plages."
+    }
+   },
+   {
+    "id": "q7",
+    "type": "single",
+    "diagram": {
+     "name": "aquanode-messages",
+     "caption": {
+      "en": "Messages between the phone and AquaNode.",
+      "fr": "Messages entre le téléphone et AquaNode."
+     }
+    },
+    "prompt": {
+     "en": "The phone posts {\"cmd\":\"set\",\"pump\":140}. What does AquaNode reply?",
+     "fr": "Le téléphone envoie {\"cmd\":\"set\",\"pump\":140}. Que répond AquaNode ?"
+    },
+    "options": [
+     {
+      "id": "a",
+      "correct": true,
+      "text": "{\"ok\":false,\"err\":\"pump 0-100\"}"
+     },
+     {
+      "id": "b",
+      "text": "{\"ok\":true}"
+     },
+     {
+      "id": "c",
+      "text": {
+       "en": "{\"ok\":true} and the pump runs at 100 %",
+       "fr": "{\"ok\":true} et la pompe tourne à 100 %"
+      }
+     },
+     {
+      "id": "d",
+      "text": {
+       "en": "No reply at all",
+       "fr": "Aucune réponse"
+      }
+     }
+    ],
+    "explain": {
+     "en": "The value is checked before anything moves: 140 is outside 0–100, so the command is refused with its reason and the pump does not change.",
+     "fr": "La valeur est vérifiée avant tout mouvement : 140 est hors de 0–100, la commande est refusée avec sa raison et la pompe ne change pas."
+    }
+   },
+   {
+    "id": "q8",
+    "type": "single",
+    "prompt": {
+     "en": "The power comes back after a cut. What does AquaNode do with its outputs first?",
+     "fr": "Le courant revient après une coupure. Que fait d’abord AquaNode de ses sorties ?"
+    },
+    "options": [
+     {
+      "id": "a",
+      "correct": true,
+      "text": {
+       "en": "Air pump ON, pump ramps to 60 %, dosing and heater OFF",
+       "fr": "Pompe à air en marche, pompe montée à 60 %, dosage et chauffage arrêtés"
+      }
+     },
+     {
+      "id": "b",
+      "text": {
+       "en": "Everything OFF until the phone connects",
+       "fr": "Tout arrêté jusqu’à la connexion du téléphone"
+      }
+     },
+     {
+      "id": "c",
+      "text": {
+       "en": "The settings of the last MANUAL command",
+       "fr": "Les réglages de la dernière commande MANUAL"
+      }
+     },
+     {
+      "id": "d",
+      "text": {
+       "en": "Pump at 100 % to refill the tank",
+       "fr": "Pompe à 100 % pour remplir le bac"
+      }
+     }
+    ],
+    "explain": {
+     "en": "These are the boot safe defaults of the interface document. AquaNode then starts in AUTO.",
+     "fr": "Ce sont les états sûrs de démarrage du document d’interface. AquaNode démarre ensuite en AUTO."
+    }
+   }
+  ]
+ }
+}

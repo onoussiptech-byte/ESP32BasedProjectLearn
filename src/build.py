@@ -94,7 +94,7 @@ def cited_docs(contents):
                 elif b["type"] == "gallery":
                     urls += [it["ref"]["url"] for it in b["items"] if it.get("ref")]
     figs = json.loads((SRC / "references" / "figures.json").read_text(encoding="utf-8"))["figures"]
-    names = {unquote(u.split("#")[0])[len("docs/"):] for u in urls}
+    names = {unquote(u.split("#")[0])[len("docs/"):] for u in urls if u.startswith("docs/")}   # web pages (Arduino docs) are not stored
     names |= {figs[n]["file"] for n in used_figures(contents) if figs[n].get("doc")}
     return sorted(names)
 

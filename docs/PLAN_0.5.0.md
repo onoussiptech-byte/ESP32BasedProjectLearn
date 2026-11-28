@@ -188,6 +188,10 @@ Planned pages (1 to 4):
 
 Quiz: 8 questions, at least 4 types (match pin to role, which pin to avoid, divider output voltage, why a flyback diode...).
 
+## 8c. Sub-lesson 3.1.5 (written in 1.0.0) "Messages, alarms and safe defaults"
+
+Two pages only (kept short on purpose). p1: the two links (HTTP on the AQUA-NODE access point, JSON lines on Bluetooth SPP), diagram `aquanode-messages`, the 11 status fields, `JsonProtocol::buildStatus`, the four commands and their refusals. p2: the five alarms and `alarmCode` priority, diagram `aquanode-modes` (boot, AUTO, MANUAL, safety task), the ICD 4.6 safe defaults, `SafetyManager` interlocks, development, pitfalls, conclusion. Quiz: 8 questions, 6 types, 2 with a diagram.
+
 ## 9. Order of work
 
 1. Overview, Account, Settings, workspace switch, separate scores, recovery code removed, Tabs 3 and 4 with all titles (EN/FR).
